@@ -1,0 +1,28 @@
+apiVersion: compliance.kubeshield.io/v1alpha1
+kind: ComplianceConfig
+metadata:
+  name: soc2-compliance
+  namespace: kubeshield-system
+spec:
+  framework: SOC2
+  controls:
+    enabled: []
+    disabled: []
+  scanning:
+    interval: "5m"
+    excludeNamespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+  auditLogging:
+    enabled: false
+  remediation:
+    autoRemediate: false
+    dryRun: true
+  reports:
+    formats:
+      - json
+    schedule: "0 0 * * 0"
+  alerts:
+    scoreThreshold: 70
+    criticalViolations: 0
