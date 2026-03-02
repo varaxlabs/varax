@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kubeshield/operator/pkg/models"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/scanning"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -31,15 +31,15 @@ func (c *ClusterAdminCheck) Run(ctx context.Context, client kubernetes.Interface
 		Severity:    c.Severity(),
 	}
 
-	bindings, err := client.RbacV1().ClusterRoleBindings().List(ctx, metav1.ListOptions{})
+	bindings, err := scanning.ListClusterRoleBindings(ctx, client)
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list ClusterRoleBindings: %v", err)
+		result.Message = "failed to list ClusterRoleBindings"
 		return result
 	}
 
 	var evidence []models.Evidence
-	for _, binding := range bindings.Items {
+	for _, binding := range bindings {
 		if binding.RoleRef.Name != "cluster-admin" {
 			continue
 		}

@@ -1,0 +1,40 @@
+# Version control
+.git/
+.gitignore
+
+# Documentation
+docs/
+*.md
+LICENSE
+
+# IDE and editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Test artifacts
+*_test.go
+coverage.*
+*.out
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Helm chart (not needed in image)
+helm/
+
+# Local data
+*.db
+kubeconfig
+.env*
+
+# Build artifacts
+bin/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db

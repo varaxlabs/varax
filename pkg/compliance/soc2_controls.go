@@ -1,8 +1,8 @@
 package compliance
 
-import "github.com/kubeshield/operator/pkg/models"
+import "github.com/varax/operator/pkg/models"
 
-// SOC2Controls returns all SOC2 Trust Services Criteria controls tracked by KubeShield.
+// SOC2Controls returns all SOC2 Trust Services Criteria controls tracked by Varax.
 func SOC2Controls() []models.Control {
 	return []models.Control{
 		{

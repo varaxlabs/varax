@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/kubeshield/operator/pkg/cli"
-	"github.com/kubeshield/operator/pkg/compliance"
-	"github.com/kubeshield/operator/pkg/storage"
+	"github.com/varax/operator/pkg/cli"
+	"github.com/varax/operator/pkg/compliance"
+	"github.com/varax/operator/pkg/storage"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +29,7 @@ func runStatus(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to read latest scan: %w", err)
 	}
 	if scanResult == nil {
-		fmt.Println("No scan results found. Run 'kubeshield scan' first.")
+		fmt.Println("No scan results found. Run 'varax scan' first.")
 		return nil
 	}
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kubeshield/operator/pkg/models"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/scanning"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -33,14 +33,14 @@ func (c *EscalatePermsCheck) Run(ctx context.Context, client kubernetes.Interfac
 
 	var evidence []models.Evidence
 
-	clusterRoles, err := client.RbacV1().ClusterRoles().List(ctx, metav1.ListOptions{})
+	clusterRoles, err := scanning.ListClusterRoles(ctx, client)
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list ClusterRoles: %v", err)
+		result.Message = "failed to list ClusterRoles"
 		return result
 	}
 
-	for _, cr := range clusterRoles.Items {
+	for _, cr := range clusterRoles {
 		if isSystemRole(cr.Name) {
 			continue
 		}
@@ -60,14 +60,14 @@ func (c *EscalatePermsCheck) Run(ctx context.Context, client kubernetes.Interfac
 		}
 	}
 
-	roles, err := client.RbacV1().Roles("").List(ctx, metav1.ListOptions{})
+	roles, err := scanning.ListRoles(ctx, client)
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list Roles: %v", err)
+		result.Message = "failed to list Roles"
 		return result
 	}
 
-	for _, role := range roles.Items {
+	for _, role := range roles {
 		if isSystemNamespace(role.Namespace) {
 			continue
 		}

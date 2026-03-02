@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
 )
 
 var (

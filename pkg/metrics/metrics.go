@@ -8,7 +8,7 @@ import (
 var (
 	ComplianceScore = promauto.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "kubeshield_compliance_score",
+			Name: "varax_compliance_score",
 			Help: "Current compliance score (0-100)",
 		},
 		[]string{"framework", "cluster"},
@@ -16,7 +16,7 @@ var (
 
 	ViolationsTotal = promauto.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "kubeshield_violations_total",
+			Name: "varax_violations_total",
 			Help: "Total number of compliance violations",
 		},
 		[]string{"severity", "framework"},
@@ -24,7 +24,7 @@ var (
 
 	ControlStatus = promauto.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "kubeshield_control_status",
+			Name: "varax_control_status",
 			Help: "Control compliance status (1=pass, 0=fail, 0.5=partial, -1=not assessed)",
 		},
 		[]string{"framework", "control"},
@@ -32,24 +32,32 @@ var (
 
 	LastScanTimestamp = promauto.NewGauge(
 		prometheus.GaugeOpts{
-			Name: "kubeshield_last_scan_timestamp",
+			Name: "varax_last_scan_timestamp",
 			Help: "Unix timestamp of the last compliance scan",
 		},
 	)
 
 	ScanDuration = promauto.NewGauge(
 		prometheus.GaugeOpts{
-			Name: "kubeshield_scan_duration_seconds",
+			Name: "varax_scan_duration_seconds",
 			Help: "Duration of the last compliance scan in seconds",
 		},
 	)
 
 	ChecksTotal = promauto.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "kubeshield_checks_total",
+			Name: "varax_checks_total",
 			Help: "Total number of compliance checks by status",
 		},
 		[]string{"status"},
+	)
+
+	AuditLoggingEnabled = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "varax_audit_logging_enabled",
+			Help: "Whether audit logging is enabled (1=yes, 0=no)",
+		},
+		[]string{"provider", "cluster"},
 	)
 )
 

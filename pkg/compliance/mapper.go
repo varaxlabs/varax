@@ -1,6 +1,6 @@
 package compliance
 
-import "github.com/kubeshield/operator/pkg/models"
+import "github.com/varax/operator/pkg/models"
 
 // Mapper maps scan results to compliance control results.
 type Mapper struct {

@@ -1,6 +1,6 @@
 package checks
 
-import "github.com/kubeshield/operator/pkg/scanning"
+import "github.com/varax/operator/pkg/scanning"
 
 // RegisterAll registers all built-in checks with the given registry.
 func RegisterAll(r *scanning.Registry) {

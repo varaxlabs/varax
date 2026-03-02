@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kubeshield/operator/pkg/models"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/scanning"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -31,15 +31,15 @@ func (c *DefaultNamespaceCheck) Run(ctx context.Context, client kubernetes.Inter
 		Severity:    c.Severity(),
 	}
 
-	pods, err := client.CoreV1().Pods("default").List(ctx, metav1.ListOptions{})
+	pods, err := scanning.ListPods(ctx, client, "default")
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list Pods in default namespace: %v", err)
+		result.Message = "failed to list Pods in default namespace"
 		return result
 	}
 
 	var evidence []models.Evidence
-	for _, pod := range pods.Items {
+	for _, pod := range pods {
 		evidence = append(evidence, models.Evidence{
 			Message: fmt.Sprintf("Pod '%s' is running in the default namespace", pod.Name),
 			Resource: models.Resource{

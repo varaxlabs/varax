@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/scanning"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -32,20 +32,20 @@ func (c *DropCapabilitiesCheck) Run(ctx context.Context, client kubernetes.Inter
 		Severity:    c.Severity(),
 	}
 
-	pods, err := client.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
+	pods, err := scanning.ListPods(ctx, client, "")
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list Pods: %v", err)
+		result.Message = "failed to list Pods"
 		return result
 	}
 
 	var evidence []models.Evidence
-	for _, pod := range pods.Items {
+	for _, pod := range pods {
 		if isSystemNamespace(pod.Namespace) {
 			continue
 		}
 
-		containers := append(pod.Spec.InitContainers, pod.Spec.Containers...)
+		containers := allContainers(pod)
 		for _, container := range containers {
 			if !dropsAllCapabilities(container) {
 				evidence = append(evidence, models.Evidence{

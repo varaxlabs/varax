@@ -1,0 +1,16 @@
+apiVersion: compliance.varax.io/v1alpha1
+kind: ComplianceConfig
+metadata:
+  name: default
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "varax.labels" . | nindent 4 }}
+spec:
+  framework: {{ .Values.config.framework }}
+  scanning:
+    interval: {{ .Values.config.scanInterval | quote }}
+  auditLogging:
+    enabled: {{ .Values.config.auditLogging.autoEnable }}
+  remediation:
+    autoRemediate: {{ .Values.config.remediation.enabled }}
+    dryRun: {{ .Values.config.remediation.dryRun }}

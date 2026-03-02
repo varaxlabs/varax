@@ -11,10 +11,11 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	metricsfilters "sigs.k8s.io/controller-runtime/pkg/metrics/filters"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	compliancev1alpha1 "github.com/kubeshield/operator/api/v1alpha1"
-	"github.com/kubeshield/operator/internal/controller"
+	compliancev1alpha1 "github.com/varax/operator/api/v1alpha1"
+	"github.com/varax/operator/internal/controller"
 )
 
 var scheme = runtime.NewScheme()
@@ -27,22 +28,24 @@ func init() {
 func newOperatorCmd() *cobra.Command {
 	var metricsAddr string
 	var probeAddr string
+	var secureMetrics bool
 
 	cmd := &cobra.Command{
 		Use:   "operator",
-		Short: "Start the KubeShield controller-runtime operator",
+		Short: "Start the Varax controller-runtime operator",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runOperator(metricsAddr, probeAddr)
+			return runOperator(metricsAddr, probeAddr, secureMetrics)
 		},
 	}
 
-	cmd.Flags().StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to")
+	cmd.Flags().StringVar(&metricsAddr, "metrics-bind-address", ":8443", "The address the metric endpoint binds to")
 	cmd.Flags().StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to")
+	cmd.Flags().BoolVar(&secureMetrics, "metrics-secure", true, "Serve metrics over HTTPS with authn/authz")
 
 	return cmd
 }
 
-func runOperator(metricsAddr, probeAddr string) error {
+func runOperator(metricsAddr, probeAddr string, secureMetrics bool) error {
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 	log := ctrl.Log.WithName("setup")
 
@@ -51,11 +54,17 @@ func runOperator(metricsAddr, probeAddr string) error {
 		return fmt.Errorf("failed to build REST config: %w", err)
 	}
 
+	metricsOpts := metricsserver.Options{
+		BindAddress:   metricsAddr,
+		SecureServing: secureMetrics,
+	}
+	if secureMetrics {
+		metricsOpts.FilterProvider = metricsfilters.WithAuthenticationAndAuthorization
+	}
+
 	mgr, err := ctrl.NewManager(config, ctrl.Options{
-		Scheme: scheme,
-		Metrics: metricsserver.Options{
-			BindAddress: metricsAddr,
-		},
+		Scheme:                scheme,
+		Metrics:               metricsOpts,
 		HealthProbeBindAddress: probeAddr,
 	})
 	if err != nil {

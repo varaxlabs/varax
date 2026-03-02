@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

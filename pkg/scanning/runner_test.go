@@ -3,8 +3,9 @@ package scanning
 import (
 	"context"
 	"testing"
+	"time"
 
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/client-go/kubernetes"
@@ -88,4 +89,106 @@ func TestScanRunner_ContextCancellation(t *testing.T) {
 
 	_, err := runner.RunAll(ctx, nil)
 	assert.Error(t, err)
+}
+
+type panicCheck struct{}
+
+func (p *panicCheck) ID() string                { return "PANIC-1" }
+func (p *panicCheck) Name() string              { return "Panic Check" }
+func (p *panicCheck) Description() string       { return "panics" }
+func (p *panicCheck) Severity() models.Severity { return models.SeverityHigh }
+func (p *panicCheck) Benchmark() string         { return "TEST" }
+func (p *panicCheck) Section() string           { return "0.0" }
+func (p *panicCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
+	panic("intentional panic")
+}
+
+func TestScanRunner_PanicRecovery(t *testing.T) {
+	registry := NewRegistry()
+	registry.Register(&panicCheck{})
+
+	client := fake.NewSimpleClientset()
+	runner := NewScanRunner(registry, client)
+
+	result, err := runner.RunAll(context.Background(), nil)
+	require.NoError(t, err)
+
+	assert.Len(t, result.Results, 1)
+	assert.Equal(t, models.StatusSkip, result.Results[0].Status)
+	assert.Contains(t, result.Results[0].Message, "internal error")
+}
+
+func TestByBenchmark(t *testing.T) {
+	registry := NewRegistry()
+	registry.Register(&mockCheck{id: "T-1", name: "CIS Check", status: models.StatusPass})
+	registry.Register(&mockCheck{id: "T-2", name: "CIS Check 2", status: models.StatusFail})
+
+	cisChecks := registry.ByBenchmark("MOCK")
+	assert.Len(t, cisChecks, 2)
+
+	otherChecks := registry.ByBenchmark("OTHER")
+	assert.Len(t, otherChecks, 0)
+}
+
+func TestComputeSummary_AllStatuses(t *testing.T) {
+	results := []models.CheckResult{
+		{Status: models.StatusPass},
+		{Status: models.StatusPass},
+		{Status: models.StatusFail},
+		{Status: models.StatusWarn},
+		{Status: models.StatusSkip},
+	}
+
+	summary := computeSummary(results)
+	assert.Equal(t, 5, summary.TotalChecks)
+	assert.Equal(t, 2, summary.PassCount)
+	assert.Equal(t, 1, summary.FailCount)
+	assert.Equal(t, 1, summary.WarnCount)
+	assert.Equal(t, 1, summary.SkipCount)
+}
+
+func TestComputeSummary_Empty(t *testing.T) {
+	summary := computeSummary([]models.CheckResult{})
+	assert.Equal(t, 0, summary.TotalChecks)
+}
+
+// slowCheck simulates a check that respects context cancellation.
+type slowCheck struct{}
+
+func (s *slowCheck) ID() string                { return "SLOW-1" }
+func (s *slowCheck) Name() string              { return "Slow Check" }
+func (s *slowCheck) Description() string       { return "blocks until context cancelled" }
+func (s *slowCheck) Severity() models.Severity { return models.SeverityMedium }
+func (s *slowCheck) Benchmark() string         { return "TEST" }
+func (s *slowCheck) Section() string           { return "0.0" }
+func (s *slowCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
+	// Block until the per-check timeout fires
+	<-ctx.Done()
+	return models.CheckResult{
+		ID:      "SLOW-1",
+		Name:    "Slow Check",
+		Status:  models.StatusSkip,
+		Message: "timed out",
+	}
+}
+
+func TestScanRunner_PerCheckTimeout(t *testing.T) {
+	registry := NewRegistry()
+	registry.Register(&slowCheck{})
+	registry.Register(&mockCheck{id: "T-1", name: "Fast Check", status: models.StatusPass})
+
+	client := fake.NewSimpleClientset()
+	runner := NewScanRunner(registry, client)
+
+	start := time.Now()
+	result, err := runner.RunAll(context.Background(), nil)
+	elapsed := time.Since(start)
+
+	require.NoError(t, err)
+	assert.Len(t, result.Results, 2)
+	// The slow check should have been cut off by the per-check timeout (30s),
+	// not block indefinitely. Verify it completed in a reasonable time.
+	assert.Less(t, elapsed, checkTimeout+5*time.Second)
+	// Second check should still have run successfully
+	assert.Equal(t, models.StatusPass, result.Results[1].Status)
 }

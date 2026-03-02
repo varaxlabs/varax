@@ -1,0 +1,18 @@
+{{- if .Values.prometheus.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "varax.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "varax.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8443
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    {{- include "varax.selectorLabels" . | nindent 4 }}
+{{- end }}

@@ -1,0 +1,65 @@
+image:
+  repository: ghcr.io/varax/operator
+  tag: ""
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+config:
+  scanInterval: "1h"
+  framework: SOC2
+  auditLogging:
+    autoEnable: false
+  remediation:
+    enabled: false
+    dryRun: true
+
+cloudProvider:
+  aws:
+    enabled: false
+    serviceAccount:
+      annotations: {}
+      # eks.amazonaws.com/role-arn: "arn:aws:iam::ACCOUNT:role/varax"
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: ""
+
+metrics:
+  secure: true
+
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+serviceAccount:
+  create: true
+  name: varax-operator
+  annotations: {}
+
+networkPolicy:
+  enabled: false
+  # Restrict metrics scraping to specific sources (e.g., Prometheus namespace)
+  # metricsFrom:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         kubernetes.io/metadata.name: monitoring
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

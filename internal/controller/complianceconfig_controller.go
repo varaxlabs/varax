@@ -11,12 +11,15 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	compliancev1alpha1 "github.com/kubeshield/operator/api/v1alpha1"
-	"github.com/kubeshield/operator/pkg/compliance"
-	"github.com/kubeshield/operator/pkg/metrics"
-	"github.com/kubeshield/operator/pkg/models"
-	"github.com/kubeshield/operator/pkg/scanning"
-	"github.com/kubeshield/operator/pkg/scanning/checks"
+	compliancev1alpha1 "github.com/varax/operator/api/v1alpha1"
+	"github.com/varax/operator/pkg/compliance"
+	"github.com/varax/operator/pkg/metrics"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/providers"
+	awsprovider "github.com/varax/operator/pkg/providers/aws"
+	"github.com/varax/operator/pkg/providers/selfhosted"
+	"github.com/varax/operator/pkg/scanning"
+	"github.com/varax/operator/pkg/scanning/checks"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -27,9 +30,9 @@ type ComplianceConfigReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=compliance.kubeshield.io,resources=complianceconfigs,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=compliance.kubeshield.io,resources=complianceconfigs/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=compliance.kubeshield.io,resources=complianceconfigs/finalizers,verbs=update
+// +kubebuilder:rbac:groups=compliance.varax.io,resources=complianceconfigs,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=compliance.varax.io,resources=complianceconfigs/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=compliance.varax.io,resources=complianceconfigs/finalizers,verbs=update
 // +kubebuilder:rbac:groups="",resources=pods;namespaces;serviceaccounts,verbs=get;list;watch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles;clusterrolebindings;roles;rolebindings,verbs=get;list;watch
 // +kubebuilder:rbac:groups=networking.k8s.io,resources=networkpolicies,verbs=get;list;watch
@@ -59,6 +62,13 @@ func (r *ComplianceConfigReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	clientset, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
 		return ctrl.Result{}, fmt.Errorf("failed to create clientset: %w", err)
+	}
+
+	// Auto-enable audit logging if configured
+	if config.Spec.AuditLogging.Enabled {
+		if err := reconcileAuditLogging(ctx, clientset); err != nil {
+			logger.Error(err, "failed to enable audit logging (non-fatal, continuing scan)")
+		}
 	}
 
 	// Run scan
@@ -107,12 +117,15 @@ func (r *ComplianceConfigReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	// Record Prometheus metrics
 	recordMetrics(complianceResult, scanResult)
 
-	// Requeue based on scanning interval
+	// Requeue based on scanning interval (minimum 1 minute to prevent DoS)
 	interval := 5 * time.Minute
 	if config.Spec.Scanning.Interval != "" {
 		if parsed, err := time.ParseDuration(config.Spec.Scanning.Interval); err == nil {
 			interval = parsed
 		}
+	}
+	if interval < time.Minute {
+		interval = time.Minute
 	}
 
 	logger.Info("Scan complete", "score", complianceResult.Score, "requeueAfter", interval)
@@ -143,6 +156,85 @@ func countAssessedControls(result *models.ComplianceResult) int {
 		}
 	}
 	return count
+}
+
+func reconcileAuditLogging(ctx context.Context, clientset kubernetes.Interface) error {
+	logger := log.FromContext(ctx)
+
+	providerType, err := providers.DetectProvider(ctx, clientset)
+	if err != nil {
+		return fmt.Errorf("failed to detect cloud provider: %w", err)
+	}
+
+	var auditProvider providers.AuditLogProvider
+	clusterName := "unknown"
+
+	switch providerType {
+	case providers.ProviderEKS:
+		// EKS cluster name is available via the node's providerID or labels
+		name, err := detectEKSClusterName(ctx, clientset)
+		if err != nil {
+			return fmt.Errorf("failed to detect EKS cluster name: %w", err)
+		}
+		clusterName = name
+		eksProvider, err := awsprovider.NewEKSProvider(ctx, clusterName)
+		if err != nil {
+			return fmt.Errorf("failed to create EKS provider: %w", err)
+		}
+		auditProvider = eksProvider
+	case providers.ProviderSelfHosted:
+		clusterName = "self-hosted"
+		auditProvider = selfhosted.NewSelfHostedProvider(clientset)
+	default:
+		// AKS and GKE support will be added in Phase 2
+		logger.Info("Audit log enablement not yet supported for provider", "provider", providerType)
+		return nil
+	}
+
+	enabled, err := auditProvider.IsAuditLoggingEnabled(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to check audit logging status: %w", err)
+	}
+
+	if enabled {
+		logger.Info("Audit logging already enabled", "provider", providerType, "cluster", clusterName)
+		metrics.AuditLoggingEnabled.WithLabelValues(string(providerType), clusterName).Set(1)
+		return nil
+	}
+
+	logger.Info("Enabling audit logging", "provider", providerType, "cluster", clusterName)
+	if err := auditProvider.EnableAuditLogging(ctx); err != nil {
+		metrics.AuditLoggingEnabled.WithLabelValues(string(providerType), clusterName).Set(0)
+		return fmt.Errorf("failed to enable audit logging: %w", err)
+	}
+
+	metrics.AuditLoggingEnabled.WithLabelValues(string(providerType), clusterName).Set(1)
+	logger.Info("Audit logging enabled successfully", "provider", providerType, "cluster", clusterName)
+	return nil
+}
+
+// detectEKSClusterName extracts the EKS cluster name from node providerID.
+// The providerID format is: aws:///ZONE/INSTANCE_ID but the cluster name
+// is available via the eks.amazonaws.com/cluster label on EKS-managed nodes.
+func detectEKSClusterName(ctx context.Context, clientset kubernetes.Interface) (string, error) {
+	nodes, err := clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{Limit: 1})
+	if err != nil {
+		return "", err
+	}
+	if len(nodes.Items) == 0 {
+		return "", fmt.Errorf("no nodes found")
+	}
+
+	labels := nodes.Items[0].Labels
+	if name, ok := labels["alpha.eksctl.io/cluster-name"]; ok {
+		return name, nil
+	}
+	if name, ok := labels["eks.amazonaws.com/cluster"]; ok {
+		return name, nil
+	}
+
+	// Fallback: try node name patterns or ConfigMap
+	return "", fmt.Errorf("could not determine EKS cluster name from node labels; set CLUSTER_NAME env var")
 }
 
 func recordMetrics(complianceResult *models.ComplianceResult, scanResult *models.ScanResult) {

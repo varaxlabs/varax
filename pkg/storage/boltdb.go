@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
 	bolt "go.etcd.io/bbolt"
 )
 

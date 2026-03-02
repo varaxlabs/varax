@@ -1,4 +1,4 @@
-# KubeShield Compliance Automation Platform — Product Requirements Document
+# Varax Compliance Automation Platform — Product Requirements Document
 
 **Version**: 3.0
 **Last Updated**: February 2026
@@ -20,7 +20,7 @@
 7. [Customer Personas](#customer-personas)
 8. [Product Phases Overview](#product-phases-overview)
 9. [v1 Architecture: Operator + CLI Reports](#v1-architecture-operator--cli-reports)
-10. [Repository: kubeshield-operator (v1)](#repository-kubeshield-operator-v1)
+10. [Repository: varax-operator (v1)](#repository-varax-operator-v1)
 11. [CLI Report Generator](#cli-report-generator)
 12. [Compliance Framework Mapping (SOC2)](#compliance-framework-mapping-soc2)
 13. [Prometheus Metrics](#prometheus-metrics)
@@ -40,12 +40,12 @@
 
 ## Executive Summary
 
-**Product Name**: KubeShield
+**Product Name**: Varax
 **Tagline**: "Automated Kubernetes compliance for SOC2 — scan, evidence, report"
 **Business Model**: Open-source operator (Apache 2.0) with commercial CLI report generation and future SaaS dashboard
 **Primary Market**: B2B SaaS companies (50–500 employees) running Kubernetes who need SOC2 certification
 
-KubeShield is a Kubernetes-native compliance automation platform. **v1** is a single Go binary: an operator that continuously scans clusters for security violations, auto-enables audit logging, and generates audit-ready HTML/PDF compliance reports directly from the CLI. No SaaS backend, no web dashboard, no external dependencies.
+Varax is a Kubernetes-native compliance automation platform. **v1** is a single Go binary: an operator that continuously scans clusters for security violations, auto-enables audit logging, and generates audit-ready HTML/PDF compliance reports directly from the CLI. No SaaS backend, no web dashboard, no external dependencies.
 
 **v2** (built after v1 proves product-market fit with paying customers) adds a SaaS dashboard with multi-cluster aggregation, evidence management, and a visual compliance workflow.
 
@@ -127,7 +127,7 @@ Companies running Kubernetes face severe compliance challenges:
 
 ## The Solution
 
-KubeShield automates Kubernetes SOC2 compliance through three capabilities, delivered as a **single Go binary** that runs in the customer's cluster:
+Varax automates Kubernetes SOC2 compliance through three capabilities, delivered as a **single Go binary** that runs in the customer's cluster:
 
 ### 1. Auto-Enable Audit Logging
 The operator detects the cloud provider (EKS, AKS, GKE, self-hosted) and programmatically enables comprehensive audit logging. No manual configuration beyond installing the Helm chart.
@@ -153,16 +153,16 @@ The operator includes a built-in report generator invoked via CLI:
 
 ```bash
 # Generate SOC2 readiness report as HTML
-kubeshield report --framework soc2 --format html --output report.html
+varax report --framework soc2 --format html --output report.html
 
 # Generate SOC2 readiness report as PDF
-kubeshield report --framework soc2 --format pdf --output report.pdf
+varax report --framework soc2 --format pdf --output report.pdf
 
 # Generate executive summary
-kubeshield report --framework soc2 --type executive --format pdf
+varax report --framework soc2 --type executive --format pdf
 
 # Generate evidence package for a specific control
-kubeshield evidence --control CC6.1 --format html
+varax evidence --control CC6.1 --format html
 ```
 
 Reports include:
@@ -172,7 +172,7 @@ Reports include:
 - Timestamp and cluster metadata for audit trail
 - Historical trend data (stored locally in operator's PVC)
 
-**This is the key differentiator**: Kubescape tells you what's wrong. KubeShield generates the PDF your auditor needs.
+**This is the key differentiator**: Kubescape tells you what's wrong. Varax generates the PDF your auditor needs.
 
 ---
 
@@ -197,9 +197,9 @@ Realistic first-year capture with open-source strategy:
 - Target: $3K–$5K MRR
 
 ### Market Validation
-The compliance automation landscape (Vanta, Drata, Secureframe) validates massive demand. KubeShield targets the **Kubernetes-specific compliance gap** these platforms don't address deeply. It's a **complement** to Vanta/Drata, not a competitor.
+The compliance automation landscape (Vanta, Drata, Secureframe) validates massive demand. Varax targets the **Kubernetes-specific compliance gap** these platforms don't address deeply. It's a **complement** to Vanta/Drata, not a competitor.
 
-The 2026 Kubernetes market increasingly demands compliance by design — teams rely on policy-as-code and automated reporting to show which workloads meet specific controls. KubeShield is positioned exactly at this intersection.
+The 2026 Kubernetes market increasingly demands compliance by design — teams rely on policy-as-code and automated reporting to show which workloads meet specific controls. Varax is positioned exactly at this intersection.
 
 ---
 
@@ -242,7 +242,7 @@ The 2026 Kubernetes market increasingly demands compliance by design — teams r
 **Pain**: "Our CTO asked me to get us SOC2 compliant. I know Kubernetes, but I have no idea what controls we're missing or how to prove compliance to an auditor."
 **Budget**: $100–$500/month (can expense on corporate card without procurement)
 **Buying behavior**: Finds tools on GitHub, tries free tier, upgrades if it saves time
-**Why v1 works for her**: Install operator → run `kubeshield report` → hand PDF to auditor. No SaaS signup needed.
+**Why v1 works for her**: Install operator → run `varax report` → hand PDF to auditor. No SaaS signup needed.
 
 ### Secondary: CTO/VP Engineering at Early-Stage Startup (10–50 employees)
 
@@ -266,7 +266,7 @@ The 2026 Kubernetes market increasingly demands compliance by design — teams r
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         KubeShield Product Evolution             │
+│                         Varax Product Evolution             │
 │                                                                   │
 │  v1: Operator + CLI Reports (~14 weeks)                          │
 │  ┌─────────────────────────────────────────────────────────────┐ │
@@ -274,7 +274,7 @@ The 2026 Kubernetes market increasingly demands compliance by design — teams r
 │  │ • SOC2 framework only                                       │ │
 │  │ • CIS/NSA/PSS scanning → SOC2 control mapping             │ │
 │  │ • Auto-enable audit logging (EKS/AKS/GKE)                 │ │
-│  │ • CLI: kubeshield report --format pdf                       │ │
+│  │ • CLI: varax report --format pdf                       │ │
 │  │ • HTML/PDF reports with evidence                            │ │
 │  │ • Prometheus metrics                                        │ │
 │  │ • Helm chart installation                                   │ │
@@ -309,7 +309,7 @@ The 2026 Kubernetes market increasingly demands compliance by design — teams r
 │              Customer's Kubernetes Cluster                         │
 │                                                                    │
 │  ┌──────────────────────────────────────────────────────────┐    │
-│  │  KubeShield Operator (Single Go Binary)                    │    │
+│  │  Varax Operator (Single Go Binary)                    │    │
 │  │                                                             │    │
 │  │  ┌─────────────────────────────────────────────────────┐  │    │
 │  │  │  Compliance Scanner                                  │  │    │
@@ -395,7 +395,7 @@ No external dependencies. No SaaS. No database server. Everything in-cluster.
 
 ---
 
-## Repository: kubeshield-operator (v1)
+## Repository: varax-operator (v1)
 
 **License**: Apache 2.0 (Open Source) — with Pro features gated by license key
 **Single repository**: Everything lives here for v1.
@@ -403,15 +403,15 @@ No external dependencies. No SaaS. No database server. Everything in-cluster.
 ### Directory Structure
 
 ```
-kubeshield-operator/
+varax-operator/
 ├── cmd/
-│   └── kubeshield/
+│   └── varax/
 │       ├── main.go                          # Entry point (operator mode + CLI mode)
 │       ├── operator.go                      # Start operator (default)
-│       ├── report.go                        # CLI: kubeshield report
-│       ├── evidence.go                      # CLI: kubeshield evidence
-│       ├── scan.go                          # CLI: kubeshield scan (one-shot)
-│       └── version.go                       # CLI: kubeshield version
+│       ├── report.go                        # CLI: varax report
+│       ├── evidence.go                      # CLI: varax evidence
+│       ├── scan.go                          # CLI: varax scan (one-shot)
+│       └── version.go                       # CLI: varax version
 ├── api/
 │   └── v1alpha1/
 │       ├── complianceconfig_types.go        # CRD: ComplianceConfig
@@ -463,7 +463,7 @@ kubeshield-operator/
 │   │   │   ├── base.html                    # Shared layout
 │   │   │   └── styles.css                   # Embedded report styles
 │   │   └── assets/
-│   │       └── logo.png                     # KubeShield branding
+│   │       └── logo.png                     # Varax branding
 │   ├── cli/
 │   │   ├── styles.go                        # Lipgloss style definitions (colors, borders, badges)
 │   │   ├── theme.go                         # Adaptive light/dark terminal theme
@@ -491,7 +491,7 @@ kubeshield-operator/
 │       ├── evidence.go                      # Evidence data structures
 │       └── report.go                        # Report data models
 ├── helm/
-│   └── kubeshield/
+│   └── varax/
 │       ├── Chart.yaml
 │       ├── values.yaml
 │       └── templates/
@@ -537,11 +537,11 @@ kubeshield-operator/
 ### Custom Resource Definition
 
 ```yaml
-apiVersion: compliance.kubeshield.io/v1alpha1
+apiVersion: compliance.varax.io/v1alpha1
 kind: ComplianceConfig
 metadata:
   name: default
-  namespace: kubeshield-system
+  namespace: varax-system
 spec:
   # Compliance framework (v1: SOC2 only)
   framework: soc2
@@ -627,11 +627,11 @@ In v1, the CLI **is** the product. Every interaction — from installation to sc
 
 ### Deployment Validation ("Aha Moment")
 
-On first install via Helm, the operator runs an initial scan and outputs a styled summary to the pod logs. When a user runs `kubectl logs` or `kubeshield status`, they immediately see:
+On first install via Helm, the operator runs an initial scan and outputs a styled summary to the pod logs. When a user runs `kubectl logs` or `varax status`, they immediately see:
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│  KubeShield v1.0.0                                   │
+│  Varax v1.0.0                                   │
 │  Cluster: production-eks-us-east-1                   │
 │  Scan completed: 2026-06-15T10:23:45Z                │
 ├──────────────────────────────────────────────────────┤
@@ -646,8 +646,8 @@ On first install via Helm, the operator runs an initial scan and outputs a style
 │  ├── CC6.6  6 namespaces missing NetworkPolicies     │
 │  └── CC7.1  Audit logging not enabled                │
 │                                                      │
-│  Run 'kubeshield scan' for full details              │
-│  Run 'kubeshield report --format html' (Pro)         │
+│  Run 'varax scan' for full details              │
+│  Run 'varax report --format html' (Pro)         │
 └──────────────────────────────────────────────────────┘
 ```
 
@@ -657,44 +657,44 @@ This output uses Lipgloss for the bordered box, colored status badges (green ✓
 
 ```bash
 # Run as operator (default — starts controller loop)
-kubeshield operator
+varax operator
 
 # One-shot scan with styled output
-kubeshield scan                            # Interactive: Bubble Tea spinner + styled results
-kubeshield scan --output json              # Machine-readable JSON (for CI/CD pipelines)
-kubeshield scan --output table             # Styled table (default for TTY)
-kubeshield scan --output plain             # No colors/borders (for piping/logging)
-kubeshield scan --watch                    # Bubble Tea live-updating scan view
-kubeshield scan --kubeconfig ~/.kube/config # Explicit kubeconfig
+varax scan                            # Interactive: Bubble Tea spinner + styled results
+varax scan --output json              # Machine-readable JSON (for CI/CD pipelines)
+varax scan --output table             # Styled table (default for TTY)
+varax scan --output plain             # No colors/borders (for piping/logging)
+varax scan --watch                    # Bubble Tea live-updating scan view
+varax scan --kubeconfig ~/.kube/config # Explicit kubeconfig
 
 # Quick compliance status (lightweight, no full scan)
-kubeshield status                          # Styled summary box with score + top findings
+varax status                          # Styled summary box with score + top findings
 
 # Generate compliance report (Pro)
-kubeshield report --framework soc2 --format html --output soc2-report.html
-kubeshield report --framework soc2 --format pdf --output soc2-report.pdf
-kubeshield report --framework soc2 --format terminal   # Rich terminal report via Glamour
-kubeshield report --framework soc2 --type executive --format pdf
-kubeshield report --framework soc2 --type readiness --format html
+varax report --framework soc2 --format html --output soc2-report.html
+varax report --framework soc2 --format pdf --output soc2-report.pdf
+varax report --framework soc2 --format terminal   # Rich terminal report via Glamour
+varax report --framework soc2 --type executive --format pdf
+varax report --framework soc2 --type readiness --format html
 
 # Generate evidence for specific control (Pro)
-kubeshield evidence --control CC6.1 --format html --output cc6.1-evidence.html
-kubeshield evidence --all --format pdf --output evidence-package.pdf
+varax evidence --control CC6.1 --format html --output cc6.1-evidence.html
+varax evidence --all --format pdf --output evidence-package.pdf
 
 # Interactive control explorer (Pro)
-kubeshield explore                         # Bubble Tea TUI: navigate controls, drill into findings
+varax explore                         # Bubble Tea TUI: navigate controls, drill into findings
 
 # Check license status
-kubeshield license status
-kubeshield license activate <LICENSE_KEY>
+varax license status
+varax license activate <LICENSE_KEY>
 
 # Shell completions (auto-generated by Cobra)
-kubeshield completion bash > /etc/bash_completion.d/kubeshield
-kubeshield completion zsh > "${fpath[1]}/_kubeshield"
-kubeshield completion fish > ~/.config/fish/completions/kubeshield.fish
+varax completion bash > /etc/bash_completion.d/varax
+varax completion zsh > "${fpath[1]}/_varax"
+varax completion fish > ~/.config/fish/completions/varax.fish
 
 # Version
-kubeshield version
+varax version
 ```
 
 ### Output Modes
@@ -706,7 +706,7 @@ Every command that produces output supports multiple modes:
 | `--output table` | Styled table | Default for interactive TTY | Lipgloss colors, borders, badges |
 | `--output json` | JSON | CI/CD pipelines, scripting, integration | No styling, structured data |
 | `--output plain` | Plain text | Piping, logging, non-TTY environments | No colors, no borders |
-| `--format terminal` | Rich terminal | `kubeshield report` only — full report in terminal | Glamour markdown rendering |
+| `--format terminal` | Rich terminal | `varax report` only — full report in terminal | Glamour markdown rendering |
 | (auto-detect) | TTY detection | Automatic | If stdout is not a TTY, fall back to plain |
 
 ### Styled Output Components
@@ -717,13 +717,13 @@ Built with Lipgloss and Bubble Tea, reusable across all commands:
 
 **Control Status Badges**: Inline colored labels — `PASS` (green), `FAIL` (red), `PARTIAL` (yellow), `NOT ASSESSED` (gray). Consistent across all commands.
 
-**Summary Box**: Bordered container with scan metadata, score, and top findings. Used in `kubeshield status` and post-scan output.
+**Summary Box**: Bordered container with scan metadata, score, and top findings. Used in `varax status` and post-scan output.
 
-**Scan Progress**: Bubble Tea animated spinner with real-time check names. Shows which checks are running, how many have completed, and estimated time remaining. Used during `kubeshield scan` in interactive mode.
+**Scan Progress**: Bubble Tea animated spinner with real-time check names. Shows which checks are running, how many have completed, and estimated time remaining. Used during `varax scan` in interactive mode.
 
-**Control Table**: Styled table with control ID, description, status badge, and finding count. Proper column alignment, alternating row highlighting. Used in `kubeshield scan --output table`.
+**Control Table**: Styled table with control ID, description, status badge, and finding count. Proper column alignment, alternating row highlighting. Used in `varax scan --output table`.
 
-**Interactive Explorer** (Pro): Bubble Tea full-screen TUI for `kubeshield explore`. Navigate controls with arrow keys, press Enter to drill into findings, view evidence, and see remediation steps. Vim-style keybindings (`j`/`k` navigation, `q` to quit).
+**Interactive Explorer** (Pro): Bubble Tea full-screen TUI for `varax explore`. Navigate controls with arrow keys, press Enter to drill into findings, view evidence, and see remediation steps. Vim-style keybindings (`j`/`k` navigation, `q` to quit).
 
 ### Free vs Pro Feature Gating
 
@@ -732,7 +732,7 @@ Built with Lipgloss and Bubble Tea, reusable across all commands:
 | Compliance scanning (all checks) | ✅ | ✅ |
 | Prometheus metrics | ✅ | ✅ |
 | Auto-enable audit logging | ✅ | ✅ |
-| `kubeshield scan` (one-shot) | ✅ | ✅ |
+| `varax scan` (one-shot) | ✅ | ✅ |
 | Basic CLI report (summary only, text/table) | ✅ | ✅ |
 | Full SOC2 readiness report (HTML/PDF) | ❌ | ✅ |
 | Per-control evidence pages | ❌ | ✅ |
@@ -749,14 +749,14 @@ Built with Lipgloss and Bubble Tea, reusable across all commands:
 **Mechanism**: Ed25519-signed license keys validated entirely offline — no phone-home, no external dependency.
 
 **How it works**:
-1. Customer purchases Pro on kubeshield.io (Stripe Checkout)
+1. Customer purchases Pro on varax.io (Stripe Checkout)
 2. Stripe webhook triggers key generation on a lightweight backend (single serverless function)
 3. Backend generates an Ed25519-signed license key encoding: organization name, plan (monthly/annual), expiry date, and feature flags
 4. Customer receives key via email and applies it:
    ```bash
-   kubectl create secret generic kubeshield-license \
-     --from-literal=license-key="KUBESHIELD-PRO-xxxxxxxxxxxx" \
-     -n kubeshield-system
+   kubectl create secret generic varax-license \
+     --from-literal=license-key="VARAX-PRO-xxxxxxxxxxxx" \
+     -n varax-system
    ```
 5. Operator validates the signature and expiry on startup and on each report generation
 6. If the key is expired or missing, Pro features gracefully degrade to free tier (scanning continues, reports show upgrade prompt)
@@ -776,7 +776,7 @@ Built with Lipgloss and Bubble Tea, reusable across all commands:
 - **Monthly subscribers**: Stripe charges monthly. On each successful charge, a new key valid for 35 days (5-day grace) is emailed automatically. Customer applies the new key.
 - **Annual subscribers**: Stripe charges annually. Key is valid for 370 days (5-day grace). One renewal per year.
 - **Grace period**: The operator continues working for 5 days past expiry to avoid disruption from missed renewal emails or delayed key rotation. After grace period, Pro features degrade to free.
-- **Future improvement (v1.1)**: Add `kubeshield license refresh` CLI command that hits a single API endpoint to fetch the latest key for active subscriptions — still optional, not required.
+- **Future improvement (v1.1)**: Add `varax license refresh` CLI command that hits a single API endpoint to fetch the latest key for active subscriptions — still optional, not required.
 
 **Anti-piracy stance**: Minimal. At this price point and market (DevOps teams at funded startups), key sharing is not a meaningful concern. The license is per-organization, not per-cluster — a single key works across all of a customer's clusters. This is intentionally generous and reduces friction.
 
@@ -789,7 +789,7 @@ The free tier is fully functional for scanning and metrics — reports are the p
 **Output**: 15–30 page HTML/PDF document
 
 **Structure**:
-- **Cover page**: Organization name, cluster name, report date, KubeShield version
+- **Cover page**: Organization name, cluster name, report date, Varax version
 - **Executive summary**: Overall compliance score, critical findings count, recommendation
 - **Compliance score breakdown**: Visual gauge (0–100) with color coding
 - **Control-by-control analysis**: For each SOC2 control:
@@ -823,7 +823,7 @@ The free tier is fully functional for scanning and metrics — reports are the p
 
 Reports are delivered in four formats:
 
-1. **HTML**: Go's `html/template` package with embedded CSS for professional styling. Self-contained single-file output with inline styles and base64-encoded assets. These are the reports featured as interactive samples on kubeshield.io.
+1. **HTML**: Go's `html/template` package with embedded CSS for professional styling. Self-contained single-file output with inline styles and base64-encoded assets. These are the reports featured as interactive samples on varax.io.
 
 2. **PDF**: HTML → PDF conversion using one of:
    - **chromedp**: Headless Chrome (best quality, requires Chrome in container)
@@ -849,7 +849,7 @@ var reportAssets embed.FS
 
 ### SOC2 Trust Services Criteria
 
-| Control | Description | How KubeShield Validates | Evidence Generated |
+| Control | Description | How Varax Validates | Evidence Generated |
 |---------|-------------|------------------------|--------------------|
 | **CC6.1** | Logical and physical access controls | Scans RBAC: cluster-admin bindings, overly permissive roles, service account privileges | RBAC snapshot: all Roles, ClusterRoles, Bindings with permission analysis |
 | **CC6.2** | System credentials management | Detects shared service accounts, validates authentication configs, checks token auto-mounting | Service account inventory, token mount status, authentication config |
@@ -884,36 +884,36 @@ The operator exposes metrics at `:8080/metrics`:
 
 ```prometheus
 # Compliance score (0-100) per framework
-kubeshield_compliance_score{framework="soc2", cluster="prod"} 87.5
+varax_compliance_score{framework="soc2", cluster="prod"} 87.5
 
 # Violation counts by severity
-kubeshield_violations_total{severity="critical", framework="soc2"} 2
-kubeshield_violations_total{severity="high", framework="soc2"} 5
-kubeshield_violations_total{severity="medium", framework="soc2"} 3
-kubeshield_violations_total{severity="low", framework="soc2"} 2
+varax_violations_total{severity="critical", framework="soc2"} 2
+varax_violations_total{severity="high", framework="soc2"} 5
+varax_violations_total{severity="medium", framework="soc2"} 3
+varax_violations_total{severity="low", framework="soc2"} 2
 
 # Individual control status (1=pass, 0=fail)
-kubeshield_control_status{framework="soc2", control="CC6.1"} 1
-kubeshield_control_status{framework="soc2", control="CC7.1"} 0
+varax_control_status{framework="soc2", control="CC6.1"} 1
+varax_control_status{framework="soc2", control="CC7.1"} 0
 
 # Audit logging health
-kubeshield_audit_logging_enabled{provider="eks", cluster="prod"} 1
-kubeshield_audit_log_lag_seconds{cluster="prod"} 12
+varax_audit_logging_enabled{provider="eks", cluster="prod"} 1
+varax_audit_log_lag_seconds{cluster="prod"} 12
 
 # Scan status
-kubeshield_last_scan_timestamp{cluster="prod"} 1709125200
-kubeshield_scan_duration_seconds{cluster="prod"} 45.2
-kubeshield_checks_total{status="pass"} 95
-kubeshield_checks_total{status="fail"} 15
-kubeshield_checks_total{status="warning"} 10
+varax_last_scan_timestamp{cluster="prod"} 1709125200
+varax_scan_duration_seconds{cluster="prod"} 45.2
+varax_checks_total{status="pass"} 95
+varax_checks_total{status="fail"} 15
+varax_checks_total{status="warning"} 10
 
 # Report generation (Pro)
-kubeshield_reports_generated_total{framework="soc2", type="readiness"} 3
-kubeshield_last_report_timestamp{cluster="prod"} 1709125200
+varax_reports_generated_total{framework="soc2", type="readiness"} 3
+varax_last_report_timestamp{cluster="prod"} 1709125200
 
 # Remediation
-kubeshield_remediations_applied_total{action="addResourceLimits"} 15
-kubeshield_remediations_pending{cluster="prod"} 3
+varax_remediations_applied_total{action="addResourceLimits"} 15
+varax_remediations_pending{cluster="prod"} 3
 ```
 
 ---
@@ -924,7 +924,7 @@ kubeshield_remediations_pending{cluster="prod"} 3
 
 ```yaml
 image:
-  repository: ghcr.io/kubeshield/operator
+  repository: ghcr.io/varax/operator
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -940,17 +940,17 @@ config:
     enabled: false
     dryRun: true
 
-# Pro license key (purchase at kubeshield.io)
+# Pro license key (purchase at varax.io)
 # Per-organization — one key works across all clusters
 license:
   enabled: false                     # Set to true after purchasing Pro
   secretRef:
-    name: kubeshield-license
+    name: varax-license
     key: license-key
   # Apply with:
-  # kubectl create secret generic kubeshield-license \
-  #   --from-literal=license-key="KUBESHIELD-PRO-xxxx" \
-  #   -n kubeshield-system
+  # kubectl create secret generic varax-license \
+  #   --from-literal=license-key="VARAX-PRO-xxxx" \
+  #   -n varax-system
 
 # Cloud provider credentials (for audit log enablement)
 cloudProvider:
@@ -987,32 +987,32 @@ resources:
 
 serviceAccount:
   create: true
-  name: kubeshield-operator
+  name: varax-operator
 ```
 
 ### NOTES.txt
 
 ```
-🛡️  KubeShield is now running!
+🛡️  Varax is now running!
 
 Your cluster is being scanned for SOC2 compliance.
 
 📊 Quick start:
 
 1. Check compliance score:
-   kubectl exec -n {{ .Release.Namespace }} deploy/kubeshield -- kubeshield scan --output table
+   kubectl exec -n {{ .Release.Namespace }} deploy/varax -- varax scan --output table
 
 2. Generate a report (Pro):
-   kubectl exec -n {{ .Release.Namespace }} deploy/kubeshield -- \
-     kubeshield report --framework soc2 --format html --output /tmp/report.html
-   kubectl cp {{ .Release.Namespace }}/$(kubectl get pod -n {{ .Release.Namespace }} -l app=kubeshield -o name | head -1 | sed 's/pod\///'):/tmp/report.html ./soc2-report.html
+   kubectl exec -n {{ .Release.Namespace }} deploy/varax -- \
+     varax report --framework soc2 --format html --output /tmp/report.html
+   kubectl cp {{ .Release.Namespace }}/$(kubectl get pod -n {{ .Release.Namespace }} -l app=varax -o name | head -1 | sed 's/pod\///'):/tmp/report.html ./soc2-report.html
 
 3. View metrics:
-   kubectl port-forward -n {{ .Release.Namespace }} svc/kubeshield 8080:8080
-   curl http://localhost:8080/metrics | grep kubeshield
+   kubectl port-forward -n {{ .Release.Namespace }} svc/varax 8080:8080
+   curl http://localhost:8080/metrics | grep varax
 
-📖 Documentation: https://github.com/kubeshield/operator
-🔑 Get a Pro license: https://kubeshield.io/pricing
+📖 Documentation: https://github.com/varax/operator
+🔑 Get a Pro license: https://varax.io/pricing
 ```
 
 ---
@@ -1025,7 +1025,7 @@ Your cluster is being scanned for SOC2 compliance.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: kubeshield-operator
+  name: varax-operator
 rules:
   # Read cluster resources for scanning (read-only)
   - apiGroups: [""]
@@ -1058,7 +1058,7 @@ rules:
     verbs: ["create"]
 
   # Operator's own CRDs
-  - apiGroups: ["compliance.kubeshield.io"]
+  - apiGroups: ["compliance.varax.io"]
     resources: ["*"]
     verbs: ["*"]
 ```
@@ -1089,13 +1089,13 @@ Same as v2.0 PRD — IRSA (AWS), Workload Identity (GCP/Azure). No static creden
 
 ### v2 Adds Two New Repositories
 
-1. **kubeshield-api** (FastAPI, PostgreSQL + TimescaleDB, Redis)
+1. **varax-api** (FastAPI, PostgreSQL + TimescaleDB, Redis)
    - Multi-tenant API for compliance data aggregation
    - OAuth authentication (Google, GitHub)
    - Evidence storage and management
    - Report generation (server-side)
 
-2. **kubeshield-dashboard** (Next.js, React, TypeScript)
+2. **varax-dashboard** (Next.js, React, TypeScript)
    - Compliance score dashboard
    - Violation list, control matrix, evidence library
    - Report wizard UI
@@ -1119,11 +1119,11 @@ The compliance mapping infrastructure in v1 is designed for this extension — e
 ### v1 Pricing
 
 #### Free Tier (Open Source)
-- KubeShield operator (unlimited clusters, unlimited scans)
+- Varax operator (unlimited clusters, unlimited scans)
 - Prometheus metrics export
 - CIS Benchmark + NSA hardening scanning
 - SOC2 control mapping (score + violation list)
-- `kubeshield scan` CLI output (text/table format)
+- `varax scan` CLI output (text/table format)
 - Basic summary report (text/table — not formatted HTML/PDF)
 - Auto-enable audit logging
 - Community support (GitHub Issues)
@@ -1147,9 +1147,9 @@ The compliance mapping infrastructure in v1 is designed for this extension — e
 
 **License model**: Per-organization, not per-cluster. One license key works across all clusters in the customer's environment. This is intentionally generous — it reduces friction and matches how DevOps teams actually work.
 
-**License delivery**: Customer purchases on kubeshield.io via Stripe Checkout (supports both monthly and annual billing). Stripe webhook triggers automatic license key generation and email delivery. Customer applies key as a Kubernetes Secret. See [Licensing System](#licensing-system) for full technical details.
+**License delivery**: Customer purchases on varax.io via Stripe Checkout (supports both monthly and annual billing). Stripe webhook triggers automatic license key generation and email delivery. Customer applies key as a Kubernetes Secret. See [Licensing System](#licensing-system) for full technical details.
 
-**Why $149/month**: It's below the threshold where most startups require procurement approval (typically $500+/month). A senior DevOps engineer earns ~$75/hour — KubeShield saves 40–100 hours per audit cycle. At $149/month ($1,788/year), the ROI is 13–42x. The annual discount at $1,490 makes it even more compelling and locks in revenue for 12 months.
+**Why $149/month**: It's below the threshold where most startups require procurement approval (typically $500+/month). A senior DevOps engineer earns ~$75/hour — Varax saves 40–100 hours per audit cycle. At $149/month ($1,788/year), the ROI is 13–42x. The annual discount at $1,490 makes it even more compelling and locks in revenue for 12 months.
 
 **Annual subscription incentives**: Target 40–60% of customers on annual plans. Benefits for the business: reduced churn (12-month commitment), better cash flow (upfront payment), and simplified forecasting. Benefits for the customer: ~$298 savings per year and no monthly renewal hassle.
 
@@ -1179,7 +1179,7 @@ Assumes 40% of Pro subscribers choose annual plans by Month 12.
 2. **GitHub**: Operator repo with comprehensive README, demo reports in `/examples/`
 3. **Reddit**: r/kubernetes, r/devops, r/sysadmin
 4. **Hacker News**: "Show HN: Open-source K8s compliance scanning with SOC2 mapping"
-5. **Kubernetes Slack**: #kubeshield channel
+5. **Kubernetes Slack**: #varax channel
 
 **Early content ideas**:
 - "The 10 CIS Benchmark Checks That Fail Every SOC2 Audit"
@@ -1192,12 +1192,12 @@ Assumes 40% of Pro subscribers choose annual plans by Month 12.
 
 **Channels**:
 1. Email all open-source users: "Generate audit-ready SOC2 reports from your cluster"
-2. In-product: `kubeshield report` on free tier shows "Upgrade to Pro for full report"
+2. In-product: `varax report` on free tier shows "Upgrade to Pro for full report"
 3. LinkedIn: Target DevOps Engineers, SREs, CTOs at Series A–C startups
-4. Blog: Sample report walkthrough, "What my auditor said about KubeShield reports"
+4. Blog: Sample report walkthrough, "What my auditor said about Varax reports"
 
 **Conversion funnel**:
-- GitHub star → Email signup → Free install → Try `kubeshield report` → See upgrade prompt → Buy Pro ($149/mo or $1,490/yr)
+- GitHub star → Email signup → Free install → Try `varax report` → See upgrade prompt → Buy Pro ($149/mo or $1,490/yr)
 - Target: 5–8% conversion from free to Pro
 
 ### Phase 3: Expand & Validate v2 (Months 7–12)
@@ -1206,7 +1206,7 @@ Assumes 40% of Pro subscribers choose annual plans by Month 12.
 1. Survey Pro customers: "Would you pay $199/month for a web dashboard?"
 2. Consulting engagements (see below) to learn enterprise needs
 3. Conference presence: KubeCon, DevOps Days (attend, not exhibit)
-4. Partnerships: SOC2 audit firms (referral commission for recommending KubeShield)
+4. Partnerships: SOC2 audit firms (referral commission for recommending Varax)
 
 ---
 
@@ -1216,10 +1216,10 @@ While the product matures, offer **paid Kubernetes compliance audit engagements*
 
 ### Service Offering
 
-**"KubeShield SOC2 Readiness Assessment"** — $2,000–$5,000 per engagement
+**"Varax SOC2 Readiness Assessment"** — $2,000–$5,000 per engagement
 
 **What you deliver**:
-1. Install KubeShield operator on client's cluster(s)
+1. Install Varax operator on client's cluster(s)
 2. Run comprehensive scan + generate report
 3. Manual review of RBAC, network policies, audit logging
 4. Written recommendations with remediation priority
@@ -1250,7 +1250,7 @@ While the product matures, offer **paid Kubernetes compliance audit engagements*
 
 **Deliverables**:
 1. Kubebuilder scaffolding with ComplianceConfig CRD
-2. **Cobra CLI structure**: `kubeshield operator`, `kubeshield scan`, `kubeshield version` commands with shell completion generation
+2. **Cobra CLI structure**: `varax operator`, `varax scan`, `varax version` commands with shell completion generation
 3. **Lipgloss style foundation**: Define color palette, status badges (PASS/FAIL/PARTIAL), bordered summary box, adaptive light/dark theme
 4. Cloud provider auto-detection (EKS/AKS/GKE/self-hosted)
 5. Auto-enable audit logging via AWS SDK (EKS first)
@@ -1277,10 +1277,10 @@ While the product matures, offer **paid Kubernetes compliance audit engagements*
 5. Full SOC2 control mapping for all checks
 6. Compliance score calculation
 7. Evidence collector (RBAC snapshots, network policies, encryption status, audit log validation)
-8. `kubeshield scan` CLI command (one-shot mode) with **Bubble Tea animated scan progress** — real-time spinner showing current check, completion count, and ETA
+8. `varax scan` CLI command (one-shot mode) with **Bubble Tea animated scan progress** — real-time spinner showing current check, completion count, and ETA
 9. **Styled control table**: Full scan results rendered as aligned, colored table with status badges per control
 10. Azure AKS + GCP GKE audit log enablement
-11. `kubeshield status` command — lightweight styled summary without triggering a full scan
+11. `varax status` command — lightweight styled summary without triggering a full scan
 
 **Success criteria**: Full scan completes in <60 seconds, all 9 SOC2 controls have mapped checks, evidence snapshots stored locally. Scan output looks professional with animated progress and styled results.
 
@@ -1293,15 +1293,15 @@ While the product matures, offer **paid Kubernetes compliance audit engagements*
 2. Go html/template rendering engine
 3. PDF conversion (chromedp or wkhtmltopdf)
 4. Embedded CSS for professional styling
-5. `kubeshield report` CLI command with all format options (html, pdf, terminal, json)
+5. `varax report` CLI command with all format options (html, pdf, terminal, json)
 6. **Terminal report rendering**: `--format terminal` using Glamour for styled markdown output directly in the terminal
-7. `kubeshield evidence` CLI command
-8. **Interactive explorer TUI** (Pro): `kubeshield explore` — Bubble Tea full-screen interface to navigate controls, drill into findings, view evidence, and read remediation steps. Vim-style keybindings (j/k navigation, Enter to expand, q to quit)
+7. `varax evidence` CLI command
+8. **Interactive explorer TUI** (Pro): `varax explore` — Bubble Tea full-screen interface to navigate controls, drill into findings, view evidence, and read remediation steps. Vim-style keybindings (j/k navigation, Enter to expand, q to quit)
 9. Historical trend data in reports (from BoltDB scan history)
 10. License key validation system
 11. Free vs Pro feature gating
 
-**Success criteria**: `kubeshield report --format pdf` generates a professional 20-page SOC2 readiness report that an auditor would recognize as useful evidence. `kubeshield report --format terminal` renders a beautiful rich report directly in the terminal. `kubeshield explore` provides an interactive, navigable compliance dashboard in the terminal.
+**Success criteria**: `varax report --format pdf` generates a professional 20-page SOC2 readiness report that an auditor would recognize as useful evidence. `varax report --format terminal` renders a beautiful rich report directly in the terminal. `varax explore` provides an interactive, navigable compliance dashboard in the terminal.
 
 ### Phase 4: Polish & Launch (Weeks 13–14)
 
@@ -1315,7 +1315,7 @@ While the product matures, offer **paid Kubernetes compliance audit engagements*
 5. Container image published to GHCR (with Cosign signature)
 6. Helm chart published to GitHub Pages
 7. Sample reports in `/examples/` — both HTML files and **terminal output screenshots**
-8. Landing page (kubeshield.io) with Stripe integration and **interactive sample HTML reports** that prospects can click through (table of contents, expandable control sections, evidence previews)
+8. Landing page (varax.io) with Stripe integration and **interactive sample HTML reports** that prospects can click through (table of contents, expandable control sections, evidence previews)
 9. Cross-promotion for k8s-cronjob-monitor community
 
 **Success criteria**: Anyone can install, scan, and generate a report in under 5 minutes. The deployment validation output creates an immediate "aha moment". The website sample reports serve as the product demo. Pro purchase flow works end-to-end.
@@ -1348,7 +1348,7 @@ While the product matures, offer **paid Kubernetes compliance audit engagements*
 ### Community Management
 - GitHub Issues for bug reports and feature requests
 - GitHub Discussions for questions and ideas
-- Kubernetes Slack channel (#kubeshield)
+- Kubernetes Slack channel (#varax)
 - Clear CONTRIBUTING.md with development setup instructions
 
 ---
@@ -1418,14 +1418,14 @@ While the product matures, offer **paid Kubernetes compliance audit engagements*
 
 ## Relationship to k8s-cronjob-monitor
 
-KubeShield is part of a two-product strategy:
+Varax is part of a two-product strategy:
 
 ### Product 1: k8s-cronjob-monitor (Build First — Weeks 1–3)
 - **Purpose**: Free, open-source CronJob monitoring for Kubernetes
 - **Strategic role**: Brand building, community growth, operator development practice
 - **Revenue**: $0 (intentionally free forever)
 
-### Product 2: KubeShield Compliance Platform (Build Second — Weeks 4–17)
+### Product 2: Varax Compliance Platform (Build Second — Weeks 4–17)
 - **Purpose**: Revenue-generating compliance automation
 - **Strategic role**: Primary business
 - **Revenue**: Target $3K+ MRR
@@ -1436,14 +1436,14 @@ KubeShield is part of a two-product strategy:
 ```
 ## 🔒 Need SOC2 Compliance for Kubernetes?
 
-Check out KubeShield by the same team:
+Check out Varax by the same team:
 → Scan your cluster for compliance violations
 → Auto-enable audit logging on EKS/AKS/GKE
 → Generate audit-ready SOC2 reports from the CLI
-→ https://kubeshield.io
+→ https://varax.io
 ```
 
-**In KubeShield marketing:**
+**In Varax marketing:**
 ```
 From the creators of k8s-cronjob-monitor
 Trusted by 5,000+ Kubernetes users
@@ -1451,8 +1451,8 @@ Trusted by 5,000+ Kubernetes users
 
 ### Timeline
 1. **Weeks 1–3**: Build and launch k8s-cronjob-monitor
-2. **Weeks 4–17**: Build KubeShield v1 (operator + CLI reports)
-3. **Month 4–5**: Launch KubeShield Pro tier + first consulting engagements
+2. **Weeks 4–17**: Build Varax v1 (operator + CLI reports)
+3. **Month 4–5**: Launch Varax Pro tier + first consulting engagements
 4. **Month 6–8**: Grow Pro subscriber base, validate v2 demand
 5. **Month 10–12**: Target $3K MRR; begin v2 if signals are strong
 
@@ -1482,9 +1482,9 @@ Trusted by 5,000+ Kubernetes users
 - [ARMO Platform (commercial competitor)](https://www.armosec.io/)
 
 ### v2.0 PRD Reference
-The full three-repository SaaS architecture is documented in KubeShield Compliance PRD v2.0. That document remains the reference for v2 implementation when the time comes. Key sections preserved for v2:
-- Repository 2: kubeshield-api (FastAPI, PostgreSQL + TimescaleDB)
-- Repository 3: kubeshield-dashboard (Next.js, React)
+The full three-repository SaaS architecture is documented in Varax Compliance PRD v2.0. That document remains the reference for v2 implementation when the time comes. Key sections preserved for v2:
+- Repository 2: varax-api (FastAPI, PostgreSQL + TimescaleDB)
+- Repository 3: varax-dashboard (Next.js, React)
 - Database schema (organizations, users, clusters, compliance_events, evidence, reports)
 - API endpoints
 - SaaS security (OAuth, JWT, RLS, encryption)

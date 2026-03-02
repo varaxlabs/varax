@@ -1,0 +1,19 @@
+apiVersion: v2
+name: varax
+description: Kubernetes SOC2 compliance automation — scan, evidence, report
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+home: https://github.com/varax/operator
+sources:
+  - https://github.com/varax/operator
+keywords:
+  - kubernetes
+  - compliance
+  - soc2
+  - security
+  - cis-benchmark
+  - audit
+maintainers:
+  - name: Varax
+    url: https://varax.io

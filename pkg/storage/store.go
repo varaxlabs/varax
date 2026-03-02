@@ -1,6 +1,6 @@
 package storage
 
-import "github.com/kubeshield/operator/pkg/models"
+import "github.com/varax/operator/pkg/models"
 
 // Store is the interface for persisting scan results.
 type Store interface {

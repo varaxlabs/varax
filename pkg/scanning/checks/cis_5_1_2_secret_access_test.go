@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
 	"github.com/stretchr/testify/assert"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

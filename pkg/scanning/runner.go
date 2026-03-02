@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
 	"k8s.io/client-go/kubernetes"
 )
 
 // ProgressCallback is called after each check completes.
 type ProgressCallback func(completed, total int, current models.CheckResult)
+
+// checkTimeout is the maximum duration for a single check execution.
+const checkTimeout = 30 * time.Second
 
 // ScanRunner orchestrates execution of compliance checks.
 type ScanRunner struct {
@@ -34,6 +37,12 @@ func (sr *ScanRunner) RunAll(ctx context.Context, progress ProgressCallback) (*m
 	}
 
 	start := time.Now()
+
+	// Pre-fetch all resources with pagination to avoid redundant API calls
+	// and prevent OOM on large clusters. Failures are non-fatal.
+	cache := BuildCache(ctx, sr.client)
+	ctx = ContextWithCache(ctx, cache)
+
 	results := make([]models.CheckResult, 0, len(checks))
 
 	for i, check := range checks {
@@ -52,11 +61,13 @@ func (sr *ScanRunner) RunAll(ctx context.Context, progress ProgressCallback) (*m
 						Name:     check.Name(),
 						Severity: check.Severity(),
 						Status:   models.StatusSkip,
-						Message:  fmt.Sprintf("check panicked: %v", r),
+						Message:  "check encountered an internal error",
 					}
 				}
 			}()
-			result = check.Run(ctx, sr.client)
+			checkCtx, cancel := context.WithTimeout(ctx, checkTimeout)
+			defer cancel()
+			result = check.Run(checkCtx, sr.client)
 		}()
 
 		results = append(results, result)

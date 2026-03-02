@@ -51,6 +51,7 @@ type ControlsSpec struct {
 type ScanningSpec struct {
 	// Interval is the time between scans (e.g., "5m", "1h").
 	// +kubebuilder:default="5m"
+	// +kubebuilder:validation:Pattern=`^[0-9]+(s|m|h)$`
 	Interval string `json:"interval,omitempty"`
 
 	// ExcludeNamespaces lists namespaces to skip during scanning.
@@ -96,6 +97,7 @@ type AlertsSpec struct {
 	ScoreThreshold *int `json:"scoreThreshold,omitempty"`
 
 	// CriticalViolations triggers an alert when critical violation count exceeds this value.
+	// +kubebuilder:validation:Minimum=0
 	// +optional
 	CriticalViolations *int `json:"criticalViolations,omitempty"`
 }

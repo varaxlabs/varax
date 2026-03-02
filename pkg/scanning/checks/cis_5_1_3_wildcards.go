@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kubeshield/operator/pkg/models"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/scanning"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -34,14 +35,14 @@ func (c *WildcardRBACCheck) Run(ctx context.Context, client kubernetes.Interface
 	var evidence []models.Evidence
 
 	// Check ClusterRoles
-	clusterRoles, err := client.RbacV1().ClusterRoles().List(ctx, metav1.ListOptions{})
+	clusterRoles, err := scanning.ListClusterRoles(ctx, client)
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list ClusterRoles: %v", err)
+		result.Message = "failed to list ClusterRoles"
 		return result
 	}
 
-	for _, cr := range clusterRoles.Items {
+	for _, cr := range clusterRoles {
 		// Skip system ClusterRoles
 		if isSystemRole(cr.Name) {
 			continue
@@ -62,14 +63,14 @@ func (c *WildcardRBACCheck) Run(ctx context.Context, client kubernetes.Interface
 	}
 
 	// Check Roles
-	roles, err := client.RbacV1().Roles("").List(ctx, metav1.ListOptions{})
+	roles, err := scanning.ListRoles(ctx, client)
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list Roles: %v", err)
+		result.Message = "failed to list Roles"
 		return result
 	}
 
-	for _, role := range roles.Items {
+	for _, role := range roles {
 		if isSystemNamespace(role.Namespace) {
 			continue
 		}
@@ -116,4 +117,13 @@ func isSystemRole(name string) bool {
 
 func isSystemNamespace(ns string) bool {
 	return ns == "kube-system" || ns == "kube-public" || ns == "kube-node-lease"
+}
+
+// allContainers returns a new slice combining init and regular containers
+// without mutating the original slices (unlike append which can corrupt the backing array).
+func allContainers(pod corev1.Pod) []corev1.Container {
+	containers := make([]corev1.Container, 0, len(pod.Spec.InitContainers)+len(pod.Spec.Containers))
+	containers = append(containers, pod.Spec.InitContainers...)
+	containers = append(containers, pod.Spec.Containers...)
+	return containers
 }

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
 )
 
 var boxStyle = lipgloss.NewStyle().
@@ -17,7 +17,7 @@ var boxStyle = lipgloss.NewStyle().
 func SummaryBox(result *models.ComplianceResult, scanResult *models.ScanResult) string {
 	var b strings.Builder
 
-	title := TitleStyle.Render("KubeShield Compliance Summary")
+	title := TitleStyle.Render("Varax Compliance Summary")
 	b.WriteString(title + "\n\n")
 
 	b.WriteString(fmt.Sprintf("  Framework:  %s\n", result.Framework))
@@ -56,7 +56,7 @@ func SummaryBox(result *models.ComplianceResult, scanResult *models.ScanResult) 
 func SummaryBoxPlain(result *models.ComplianceResult, scanResult *models.ScanResult) string {
 	var b strings.Builder
 
-	b.WriteString("=== KubeShield Compliance Summary ===\n\n")
+	b.WriteString("=== Varax Compliance Summary ===\n\n")
 	b.WriteString(fmt.Sprintf("  Framework:  %s\n", result.Framework))
 	b.WriteString(fmt.Sprintf("  Score:      %s\n", ScoreGaugePlain(result.Score)))
 	b.WriteString(fmt.Sprintf("  Duration:   %s\n\n", scanResult.Duration.Round(1e6)))

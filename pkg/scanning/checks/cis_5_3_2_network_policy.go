@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kubeshield/operator/pkg/models"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/scanning"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -31,23 +31,23 @@ func (c *NetworkPolicyCheck) Run(ctx context.Context, client kubernetes.Interfac
 		Severity:    c.Severity(),
 	}
 
-	namespaces, err := client.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
+	namespaces, err := scanning.ListNamespaces(ctx, client)
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list Namespaces: %v", err)
+		result.Message = "failed to list Namespaces"
 		return result
 	}
 
 	var evidence []models.Evidence
-	for _, ns := range namespaces.Items {
+	for _, ns := range namespaces {
 		if isSystemNamespace(ns.Name) {
 			continue
 		}
 
-		policies, err := client.NetworkingV1().NetworkPolicies(ns.Name).List(ctx, metav1.ListOptions{})
+		policies, err := scanning.ListNetworkPolicies(ctx, client, ns.Name)
 		if err != nil {
 			evidence = append(evidence, models.Evidence{
-				Message: fmt.Sprintf("Failed to list NetworkPolicies in namespace '%s': %v", ns.Name, err),
+				Message: fmt.Sprintf("Failed to list NetworkPolicies in namespace '%s'", ns.Name),
 				Resource: models.Resource{
 					Kind: "Namespace",
 					Name: ns.Name,
@@ -56,7 +56,7 @@ func (c *NetworkPolicyCheck) Run(ctx context.Context, client kubernetes.Interfac
 			continue
 		}
 
-		if len(policies.Items) == 0 {
+		if len(policies) == 0 {
 			evidence = append(evidence, models.Evidence{
 				Message: fmt.Sprintf("Namespace '%s' has no NetworkPolicy", ns.Name),
 				Resource: models.Resource{

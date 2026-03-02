@@ -1,0 +1,155 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: complianceconfigs.compliance.varax.io
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.1
+spec:
+  group: compliance.varax.io
+  names:
+    kind: ComplianceConfig
+    listKind: ComplianceConfigList
+    plural: complianceconfigs
+    singular: complianceconfig
+    shortNames:
+      - cc
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Framework
+          type: string
+          jsonPath: .spec.framework
+        - name: Score
+          type: integer
+          jsonPath: .status.complianceScore
+        - name: Violations
+          type: integer
+          jsonPath: .status.violationCount
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          description: ComplianceConfig is the Schema for the complianceconfigs API.
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              required:
+                - framework
+              properties:
+                framework:
+                  type: string
+                  enum: ["SOC2"]
+                  default: SOC2
+                controls:
+                  type: object
+                  properties:
+                    enabled:
+                      type: array
+                      items:
+                        type: string
+                    disabled:
+                      type: array
+                      items:
+                        type: string
+                scanning:
+                  type: object
+                  properties:
+                    interval:
+                      type: string
+                      default: "5m"
+                      pattern: "^[0-9]+(s|m|h)$"
+                    excludeNamespaces:
+                      type: array
+                      items:
+                        type: string
+                auditLogging:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: false
+                remediation:
+                  type: object
+                  properties:
+                    autoRemediate:
+                      type: boolean
+                      default: false
+                    dryRun:
+                      type: boolean
+                      default: true
+                reports:
+                  type: object
+                  properties:
+                    formats:
+                      type: array
+                      items:
+                        type: string
+                    schedule:
+                      type: string
+                alerts:
+                  type: object
+                  properties:
+                    scoreThreshold:
+                      type: integer
+                      minimum: 0
+                      maximum: 100
+                    criticalViolations:
+                      type: integer
+                      minimum: 0
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                lastScanTime:
+                  type: string
+                  format: date-time
+                complianceScore:
+                  type: integer
+                violationCount:
+                  type: integer
+                frameworkStatus:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      score:
+                        type: integer
+                      passingControls:
+                        type: integer
+                      totalControls:
+                        type: integer
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                        format: date-time
+                      reason:
+                        type: string
+                      message:
+                        type: string

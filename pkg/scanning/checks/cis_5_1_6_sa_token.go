@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kubeshield/operator/pkg/models"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/scanning"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -31,15 +31,15 @@ func (c *SATokenAutoMountCheck) Run(ctx context.Context, client kubernetes.Inter
 		Severity:    c.Severity(),
 	}
 
-	serviceAccounts, err := client.CoreV1().ServiceAccounts("").List(ctx, metav1.ListOptions{})
+	serviceAccounts, err := scanning.ListServiceAccounts(ctx, client)
 	if err != nil {
 		result.Status = models.StatusSkip
-		result.Message = fmt.Sprintf("failed to list ServiceAccounts: %v", err)
+		result.Message = "failed to list ServiceAccounts"
 		return result
 	}
 
 	var evidence []models.Evidence
-	for _, sa := range serviceAccounts.Items {
+	for _, sa := range serviceAccounts {
 		if isSystemNamespace(sa.Namespace) {
 			continue
 		}

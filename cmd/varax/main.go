@@ -24,9 +24,9 @@ var (
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:   "kubeshield",
-		Short: "KubeShield — Kubernetes SOC2 compliance automation",
-		Long:  "KubeShield automates SOC2 compliance checking for Kubernetes clusters using CIS benchmarks.",
+		Use:   "varax",
+		Short: "Varax — Kubernetes SOC2 compliance automation",
+		Long:  "Varax automates SOC2 compliance checking for Kubernetes clusters using CIS benchmarks.",
 	}
 
 	rootCmd.PersistentFlags().StringVar(&kubeconfig, "kubeconfig", "", "path to kubeconfig file")
@@ -81,9 +81,9 @@ func buildRESTConfig() (*rest.Config, error) {
 func defaultDBPath() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return "kubeshield.db"
+		return "varax.db"
 	}
-	dir := filepath.Join(home, ".kubeshield")
+	dir := filepath.Join(home, ".varax")
 	os.MkdirAll(dir, 0755)
-	return filepath.Join(dir, "kubeshield.db")
+	return filepath.Join(dir, "varax.db")
 }

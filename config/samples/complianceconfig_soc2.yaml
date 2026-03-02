@@ -1,8 +1,8 @@
-apiVersion: compliance.kubeshield.io/v1alpha1
+apiVersion: compliance.varax.io/v1alpha1
 kind: ComplianceConfig
 metadata:
   name: soc2-compliance
-  namespace: kubeshield-system
+  namespace: varax-system
 spec:
   framework: SOC2
   controls:

@@ -1,15 +1,15 @@
-BINARY_NAME := kubeshield
+BINARY_NAME := varax
 BUILD_DIR := bin
-MODULE := github.com/kubeshield/operator
+MODULE := github.com/varax/operator
 
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 BUILD_TIME := $(shell date -u '+%Y-%m-%dT%H:%M:%SZ')
 
 LDFLAGS := -ldflags "\
-	-X $(MODULE)/cmd/kubeshield.Version=$(VERSION) \
-	-X $(MODULE)/cmd/kubeshield.Commit=$(COMMIT) \
-	-X $(MODULE)/cmd/kubeshield.BuildTime=$(BUILD_TIME) \
+	-X $(MODULE)/cmd/varax.Version=$(VERSION) \
+	-X $(MODULE)/cmd/varax.Commit=$(COMMIT) \
+	-X $(MODULE)/cmd/varax.BuildTime=$(BUILD_TIME) \
 	-s -w"
 
 CONTROLLER_GEN ?= $(shell which controller-gen 2>/dev/null)
@@ -20,7 +20,7 @@ all: fmt vet build
 
 build:
 	@mkdir -p $(BUILD_DIR)
-	go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/kubeshield/
+	go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/varax/
 
 test:
 	go test ./... -coverprofile=coverage.out -race
@@ -30,7 +30,7 @@ generate:
 	$(CONTROLLER_GEN) object paths="./api/..."
 
 manifests:
-	$(CONTROLLER_GEN) crd rbac:roleName=kubeshield-manager-role paths="./..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) crd rbac:roleName=varax-manager-role paths="./..." output:crd:artifacts:config=config/crd/bases
 
 fmt:
 	go fmt ./...
@@ -42,7 +42,7 @@ clean:
 	rm -rf $(BUILD_DIR) coverage.out coverage.html
 
 docker-build:
-	docker build -t kubeshield:$(VERSION) .
+	docker build -t varax:$(VERSION) .
 
 coverage-html: test
 	go tool cover -html=coverage.out -o coverage.html

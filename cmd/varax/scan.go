@@ -4,26 +4,37 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"github.com/kubeshield/operator/pkg/cli"
-	"github.com/kubeshield/operator/pkg/compliance"
-	"github.com/kubeshield/operator/pkg/models"
-	"github.com/kubeshield/operator/pkg/scanning"
-	"github.com/kubeshield/operator/pkg/scanning/checks"
-	"github.com/kubeshield/operator/pkg/storage"
+	"github.com/varax/operator/pkg/cli"
+	"github.com/varax/operator/pkg/compliance"
+	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/scanning"
+	"github.com/varax/operator/pkg/scanning/checks"
+	"github.com/varax/operator/pkg/storage"
 	"github.com/spf13/cobra"
 )
 
+var scanTimeout time.Duration
+
 func newScanCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "scan",
 		Short: "Run a one-shot compliance scan against the cluster",
 		RunE:  runScan,
 	}
+	cmd.Flags().DurationVar(&scanTimeout, "timeout", 5*time.Minute, "scan timeout (e.g. 5m, 30s)")
+	return cmd
 }
 
 func runScan(cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	ctx, cancel := context.WithTimeout(ctx, scanTimeout)
+	defer cancel()
 
 	client, err := buildK8sClient()
 	if err != nil {

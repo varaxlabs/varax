@@ -1,0 +1,17 @@
+Varax is now running!
+
+Your cluster is being scanned for SOC2 compliance.
+
+Quick start:
+
+1. Check compliance score:
+   kubectl exec -n {{ .Release.Namespace }} deploy/{{ include "varax.fullname" . }} -- varax scan --output styled
+
+2. View metrics:
+   kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "varax.fullname" . }} 8080:8080
+   curl http://localhost:8080/metrics | grep varax
+
+3. Check operator status:
+   kubectl get complianceconfigs -n {{ .Release.Namespace }}
+
+Documentation: https://github.com/varax/operator

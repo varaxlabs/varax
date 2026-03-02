@@ -1,0 +1,42 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "varax.fullname" . }}
+  labels:
+    {{- include "varax.labels" . | nindent 4 }}
+rules:
+  # Read cluster resources for scanning (read-only)
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "serviceaccounts", "namespaces", "nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "daemonsets", "statefulsets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["get", "list", "watch"]
+  # Self-hosted audit policy ConfigMap management
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create", "update", "patch"]
+    resourceNames: ["varax-audit-policy"]
+  # Metrics endpoint authentication/authorization
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  - apiGroups: ["authorization.k8s.io"]
+    resources: ["subjectaccessreviews"]
+    verbs: ["create"]
+  # Operator's own CRDs
+  - apiGroups: ["compliance.varax.io"]
+    resources: ["complianceconfigs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["compliance.varax.io"]
+    resources: ["complianceconfigs/status"]
+    verbs: ["get", "update", "patch"]
+  - apiGroups: ["compliance.varax.io"]
+    resources: ["complianceconfigs/finalizers"]
+    verbs: ["update"]

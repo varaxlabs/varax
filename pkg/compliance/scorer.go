@@ -1,6 +1,6 @@
 package compliance
 
-import "github.com/kubeshield/operator/pkg/models"
+import "github.com/varax/operator/pkg/models"
 
 // Scorer calculates compliance scores from control results.
 type Scorer struct{}

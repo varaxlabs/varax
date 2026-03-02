@@ -1,6 +1,6 @@
 // Package v1alpha1 contains API Schema definitions for the compliance v1alpha1 API group.
 // +kubebuilder:object:generate=true
-// +groupName=compliance.kubeshield.io
+// +groupName=compliance.varax.io
 package v1alpha1
 
 import (
@@ -10,7 +10,7 @@ import (
 
 var (
 	// GroupVersion is the API group and version for this package.
-	GroupVersion = schema.GroupVersion{Group: "compliance.kubeshield.io", Version: "v1alpha1"}
+	GroupVersion = schema.GroupVersion{Group: "compliance.varax.io", Version: "v1alpha1"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionResource scheme.
 	SchemeBuilder = &scheme.Builder{GroupVersion: GroupVersion}

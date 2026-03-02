@@ -36,3 +36,22 @@ dist/
 
 # Kubernetes
 kubeconfig
+*kubeconfig*
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*credentials*
+*secret*
+*.tfvars
+*.tfstate
+*.tfstate.backup
+
+# Helm secrets
+secrets.yaml
+secrets.*.yaml

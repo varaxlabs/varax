@@ -3,7 +3,7 @@ package scanning
 import (
 	"context"
 
-	"github.com/kubeshield/operator/pkg/models"
+	"github.com/varax/operator/pkg/models"
 	"k8s.io/client-go/kubernetes"
 )
 
