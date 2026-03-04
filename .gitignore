@@ -17,6 +17,10 @@ coverage.html
 go.work
 go.work.sum
 
+# Claude
+.claude/
+CLAUDE.md
+
 # IDE
 .idea/
 .vscode/
