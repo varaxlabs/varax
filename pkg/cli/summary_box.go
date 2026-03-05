@@ -20,33 +20,33 @@ func SummaryBox(result *models.ComplianceResult, scanResult *models.ScanResult) 
 	title := TitleStyle.Render("Varax Compliance Summary")
 	b.WriteString(title + "\n\n")
 
-	b.WriteString(fmt.Sprintf("  Framework:  %s\n", result.Framework))
-	b.WriteString(fmt.Sprintf("  Score:      %s\n", ScoreGauge(result.Score)))
-	b.WriteString(fmt.Sprintf("  Duration:   %s\n\n", scanResult.Duration.Round(1e6)))
+	fmt.Fprintf(&b, "  Framework:  %s\n", result.Framework)
+	fmt.Fprintf(&b, "  Score:      %s\n", ScoreGauge(result.Score))
+	fmt.Fprintf(&b, "  Duration:   %s\n\n", scanResult.Duration.Round(1e6))
 
 	// Control counts
 	pass, fail, partial, na := countControlStatuses(result)
-	b.WriteString(fmt.Sprintf("  Controls:   %s pass  %s fail  %s partial  %s n/a\n",
+	fmt.Fprintf(&b, "  Controls:   %s pass  %s fail  %s partial  %s n/a\n",
 		lipgloss.NewStyle().Foreground(ColorGreen).Render(fmt.Sprintf("%d", pass)),
 		lipgloss.NewStyle().Foreground(ColorRed).Render(fmt.Sprintf("%d", fail)),
 		lipgloss.NewStyle().Foreground(ColorYellow).Render(fmt.Sprintf("%d", partial)),
 		lipgloss.NewStyle().Foreground(ColorGray).Render(fmt.Sprintf("%d", na)),
-	))
+	)
 
 	// Check summary
-	b.WriteString(fmt.Sprintf("  Checks:     %d total, %d pass, %d fail\n",
+	fmt.Fprintf(&b, "  Checks:     %d total, %d pass, %d fail\n",
 		scanResult.Summary.TotalChecks,
 		scanResult.Summary.PassCount,
 		scanResult.Summary.FailCount,
-	))
+	)
 
 	// Critical findings
 	criticals := countCriticalFindings(scanResult)
 	if criticals > 0 {
-		b.WriteString(fmt.Sprintf("\n  %s %d critical finding(s) require attention\n",
+		fmt.Fprintf(&b, "\n  %s %d critical finding(s) require attention\n",
 			ErrorStyle.Render("!"),
 			criticals,
-		))
+		)
 	}
 
 	return boxStyle.Render(b.String())
@@ -57,21 +57,21 @@ func SummaryBoxPlain(result *models.ComplianceResult, scanResult *models.ScanRes
 	var b strings.Builder
 
 	b.WriteString("=== Varax Compliance Summary ===\n\n")
-	b.WriteString(fmt.Sprintf("  Framework:  %s\n", result.Framework))
-	b.WriteString(fmt.Sprintf("  Score:      %s\n", ScoreGaugePlain(result.Score)))
-	b.WriteString(fmt.Sprintf("  Duration:   %s\n\n", scanResult.Duration.Round(1e6)))
+	fmt.Fprintf(&b, "  Framework:  %s\n", result.Framework)
+	fmt.Fprintf(&b, "  Score:      %s\n", ScoreGaugePlain(result.Score))
+	fmt.Fprintf(&b, "  Duration:   %s\n\n", scanResult.Duration.Round(1e6))
 
 	pass, fail, partial, na := countControlStatuses(result)
-	b.WriteString(fmt.Sprintf("  Controls:   %d pass, %d fail, %d partial, %d n/a\n", pass, fail, partial, na))
-	b.WriteString(fmt.Sprintf("  Checks:     %d total, %d pass, %d fail\n",
+	fmt.Fprintf(&b, "  Controls:   %d pass, %d fail, %d partial, %d n/a\n", pass, fail, partial, na)
+	fmt.Fprintf(&b, "  Checks:     %d total, %d pass, %d fail\n",
 		scanResult.Summary.TotalChecks,
 		scanResult.Summary.PassCount,
 		scanResult.Summary.FailCount,
-	))
+	)
 
 	criticals := countCriticalFindings(scanResult)
 	if criticals > 0 {
-		b.WriteString(fmt.Sprintf("\n  ! %d critical finding(s) require attention\n", criticals))
+		fmt.Fprintf(&b, "\n  ! %d critical finding(s) require attention\n", criticals)
 	}
 
 	return b.String()

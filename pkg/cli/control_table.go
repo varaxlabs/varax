@@ -49,16 +49,16 @@ func ControlTable(results []models.ControlResult) string {
 func ControlTablePlain(results []models.ControlResult) string {
 	var b strings.Builder
 
-	b.WriteString(fmt.Sprintf("  %-10s %-50s %-12s %s\n", "ID", "Control", "Status", "Violations"))
-	b.WriteString(fmt.Sprintf("  %s\n", strings.Repeat("-", 84)))
+	fmt.Fprintf(&b, "  %-10s %-50s %-12s %s\n", "ID", "Control", "Status", "Violations")
+	fmt.Fprintf(&b, "  %s\n", strings.Repeat("-", 84))
 
 	for _, cr := range results {
-		b.WriteString(fmt.Sprintf("  %-10s %-50s %-12s %d\n",
+		fmt.Fprintf(&b, "  %-10s %-50s %-12s %d\n",
 			cr.Control.ID,
 			truncate(cr.Control.Name, 48),
 			string(cr.Status),
 			cr.ViolationCount,
-		))
+		)
 	}
 
 	return b.String()

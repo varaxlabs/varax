@@ -114,10 +114,10 @@ func (m scanModel) View() string {
 	}
 
 	if m.current != "" {
-		b.WriteString(fmt.Sprintf("  Current: %s\n\n", m.current))
+		fmt.Fprintf(&b, "  Current: %s\n\n", m.current)
 	}
 
-	b.WriteString(fmt.Sprintf("  pass: %d  fail: %d  skip: %d\n", m.passCount, m.failCount, m.skipCount))
+	fmt.Fprintf(&b, "  pass: %d  fail: %d  skip: %d\n", m.passCount, m.failCount, m.skipCount)
 
 	return b.String()
 }

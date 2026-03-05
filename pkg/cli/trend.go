@@ -31,8 +31,8 @@ func ScoreTrend(scores []float64) string {
 	}
 
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("Score: %.0f%%%s\n", current, change))
-	b.WriteString(fmt.Sprintf("Trend: %s", sparkline(scores)))
+	fmt.Fprintf(&b, "Score: %.0f%%%s\n", current, change)
+	fmt.Fprintf(&b, "Trend: %s", sparkline(scores))
 	return b.String()
 }
 
@@ -59,8 +59,8 @@ func ScoreTrendPlain(scores []float64) string {
 	}
 
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("Score: %.0f%%%s\n", current, change))
-	b.WriteString(fmt.Sprintf("Trend: [%s]", plainSparkline(scores)))
+	fmt.Fprintf(&b, "Score: %.0f%%%s\n", current, change)
+	fmt.Fprintf(&b, "Trend: [%s]", plainSparkline(scores))
 	return b.String()
 }
 
@@ -113,7 +113,7 @@ func plainSparkline(scores []float64) string {
 		if i > 0 {
 			b.WriteString(", ")
 		}
-		b.WriteString(fmt.Sprintf("%.0f", s))
+		fmt.Fprintf(&b, "%.0f", s)
 	}
 	return b.String()
 }
