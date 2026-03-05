@@ -122,11 +122,14 @@ func (r *ComplianceConfigReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	// Requeue based on scanning interval (minimum 1 minute to prevent DoS)
 	interval := 5 * time.Minute
 	if config.Spec.Scanning.Interval != "" {
-		if parsed, err := time.ParseDuration(config.Spec.Scanning.Interval); err == nil {
+		if parsed, parseErr := time.ParseDuration(config.Spec.Scanning.Interval); parseErr == nil {
 			interval = parsed
+		} else {
+			logger.Info("Invalid scan interval, using default", "interval", config.Spec.Scanning.Interval, "default", interval, "error", parseErr)
 		}
 	}
 	if interval < time.Minute {
+		logger.Info("Scan interval below minimum, using 1m", "requested", interval)
 		interval = time.Minute
 	}
 
@@ -208,6 +211,12 @@ func reconcileAuditLogging(ctx context.Context, clientset kubernetes.Interface) 
 	case providers.ProviderSelfHosted:
 		clusterName = "self-hosted"
 		auditProvider = selfhosted.NewSelfHostedProvider(clientset)
+	default:
+		return fmt.Errorf("unsupported cloud provider: %s", providerType)
+	}
+
+	if auditProvider == nil {
+		return fmt.Errorf("audit provider not initialized for %s", providerType)
 	}
 
 	enabled, err := auditProvider.IsAuditLoggingEnabled(ctx)

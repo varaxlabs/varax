@@ -29,24 +29,26 @@ func newOperatorCmd() *cobra.Command {
 	var metricsAddr string
 	var probeAddr string
 	var secureMetrics bool
+	var devMode bool
 
 	cmd := &cobra.Command{
 		Use:   "operator",
 		Short: "Start the Varax controller-runtime operator",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runOperator(metricsAddr, probeAddr, secureMetrics)
+			return runOperator(metricsAddr, probeAddr, secureMetrics, devMode)
 		},
 	}
 
 	cmd.Flags().StringVar(&metricsAddr, "metrics-bind-address", ":8443", "The address the metric endpoint binds to")
 	cmd.Flags().StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to")
 	cmd.Flags().BoolVar(&secureMetrics, "metrics-secure", true, "Serve metrics over HTTPS with authn/authz")
+	cmd.Flags().BoolVar(&devMode, "dev-mode", false, "Enable development-mode logging (human-readable, debug level)")
 
 	return cmd
 }
 
-func runOperator(metricsAddr, probeAddr string, secureMetrics bool) error {
-	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
+func runOperator(metricsAddr, probeAddr string, secureMetrics, devMode bool) error {
+	ctrl.SetLogger(zap.New(zap.UseDevMode(devMode)))
 	log := ctrl.Log.WithName("setup")
 
 	config, err := buildRESTConfig()
