@@ -5,11 +5,15 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
 	bolt "go.etcd.io/bbolt"
 )
 
-var scanBucket = []byte("scans")
+var (
+	scanBucket     = []byte("scans")
+	evidenceBucket = []byte("evidence")
+)
 
 // BoltStore implements Store using BoltDB.
 type BoltStore struct {
@@ -24,7 +28,10 @@ func NewBoltStore(path string) (*BoltStore, error) {
 	}
 
 	err = db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists(scanBucket)
+		if _, err := tx.CreateBucketIfNotExists(scanBucket); err != nil {
+			return err
+		}
+		_, err := tx.CreateBucketIfNotExists(evidenceBucket)
 		return err
 	})
 	if err != nil {
@@ -96,6 +103,42 @@ func (s *BoltStore) ListScanResults(limit int) ([]models.ScanResult, error) {
 		return nil, err
 	}
 	return results, nil
+}
+
+func (s *BoltStore) SaveEvidenceBundle(bundle *evidence.EvidenceBundle) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(evidenceBucket)
+
+		data, err := json.Marshal(bundle)
+		if err != nil {
+			return fmt.Errorf("failed to marshal evidence bundle: %w", err)
+		}
+
+		key := []byte(bundle.CollectedAt.UTC().Format(time.RFC3339Nano))
+		return b.Put(key, data)
+	})
+}
+
+func (s *BoltStore) GetLatestEvidenceBundle() (*evidence.EvidenceBundle, error) {
+	var bundle *evidence.EvidenceBundle
+
+	err := s.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(evidenceBucket)
+		c := b.Cursor()
+
+		k, v := c.Last()
+		if k == nil {
+			return nil
+		}
+
+		bundle = &evidence.EvidenceBundle{}
+		return json.Unmarshal(v, bundle)
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return bundle, nil
 }
 
 func (s *BoltStore) Close() error {

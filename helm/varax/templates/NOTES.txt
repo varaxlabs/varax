@@ -14,4 +14,4 @@ Quick start:
 3. Check operator status:
    kubectl get complianceconfigs -n {{ .Release.Namespace }}
 
-Documentation: https://github.com/varax/operator
+Documentation: https://varax.io

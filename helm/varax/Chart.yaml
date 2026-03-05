@@ -4,9 +4,9 @@ description: Kubernetes SOC2 compliance automation — scan, evidence, report
 type: application
 version: 0.1.0
 appVersion: "0.1.0"
-home: https://github.com/varax/operator
+home: https://varax.io
 sources:
-  - https://github.com/varax/operator
+  - https://github.com/varaxlabs/varax
 keywords:
   - kubernetes
   - compliance

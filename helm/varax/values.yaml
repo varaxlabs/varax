@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/varax/operator
+  repository: ghcr.io/varaxlabs/varax
   tag: ""
   pullPolicy: IfNotPresent
 

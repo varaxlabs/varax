@@ -44,3 +44,27 @@ func TestRegisteredChecks_ByBenchmark(t *testing.T) {
 	cisChecks := registry.ByBenchmark("CIS")
 	assert.GreaterOrEqual(t, len(cisChecks), 20, "expected at least 20 CIS checks")
 }
+
+func TestRegisterNSACISA_RegistersExpectedCount(t *testing.T) {
+	registry := scanning.NewRegistry()
+	RegisterNSACISA(registry)
+
+	checks := registry.All()
+	assert.Equal(t, 21, len(checks), "RegisterNSACISA should register 21 checks")
+}
+
+func TestRegisterPSS_RegistersExpectedCount(t *testing.T) {
+	registry := scanning.NewRegistry()
+	RegisterPSS(registry)
+
+	checks := registry.All()
+	assert.Equal(t, 5, len(checks), "RegisterPSS should register 5 checks")
+}
+
+func TestRegisterRBAC_RegistersExpectedCount(t *testing.T) {
+	registry := scanning.NewRegistry()
+	RegisterRBAC(registry)
+
+	checks := registry.All()
+	assert.Equal(t, 4, len(checks), "RegisterRBAC should register 4 checks")
+}

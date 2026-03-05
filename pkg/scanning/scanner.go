@@ -61,3 +61,14 @@ func (r *Registry) ByBenchmark(benchmark string) []Check {
 	}
 	return result
 }
+
+// BySection returns checks whose section starts with the given prefix.
+func (r *Registry) BySection(prefix string) []Check {
+	var result []Check
+	for _, c := range r.checks {
+		if len(c.Section()) >= len(prefix) && c.Section()[:len(prefix)] == prefix {
+			result = append(result, c)
+		}
+	}
+	return result
+}

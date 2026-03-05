@@ -5,18 +5,24 @@ Installs the Varax compliance operator into a Kubernetes cluster.
 ## Prerequisites
 
 - Kubernetes 1.26+
-- Helm 3.x
+- Helm 3.8+
 
 ## Installation
 
 ```bash
-# Install with defaults
-helm install varax ./helm/varax \
+# Install from OCI registry (recommended)
+helm install varax oci://ghcr.io/varaxlabs/charts/varax \
+  --namespace varax-system \
+  --create-namespace
+
+# Install a specific version
+helm install varax oci://ghcr.io/varaxlabs/charts/varax \
+  --version 1.0.0 \
   --namespace varax-system \
   --create-namespace
 
 # Install with audit logging enabled (EKS)
-helm install varax ./helm/varax \
+helm install varax oci://ghcr.io/varaxlabs/charts/varax \
   --namespace varax-system \
   --create-namespace \
   --set config.auditLogging.autoEnable=true \
@@ -24,16 +30,24 @@ helm install varax ./helm/varax \
   --set cloudProvider.aws.serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::ACCOUNT:role/varax"
 
 # Install with custom scan interval
-helm install varax ./helm/varax \
+helm install varax oci://ghcr.io/varaxlabs/charts/varax \
   --namespace varax-system \
   --create-namespace \
   --set config.scanInterval=30m
 ```
 
+### Install from source
+
+```bash
+helm install varax ./helm/varax \
+  --namespace varax-system \
+  --create-namespace
+```
+
 ## Upgrade
 
 ```bash
-helm upgrade varax ./helm/varax \
+helm upgrade varax oci://ghcr.io/varaxlabs/charts/varax \
   --namespace varax-system
 ```
 
@@ -55,7 +69,7 @@ kubectl delete crd complianceconfigs.compliance.varax.io
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `image.repository` | `ghcr.io/varax/operator` | Container image repository |
+| `image.repository` | `ghcr.io/varaxlabs/varax` | Container image repository |
 | `image.tag` | `latest` | Image tag |
 | `image.pullPolicy` | `IfNotPresent` | Image pull policy |
 

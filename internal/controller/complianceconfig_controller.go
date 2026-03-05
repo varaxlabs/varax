@@ -17,6 +17,8 @@ import (
 	"github.com/varax/operator/pkg/models"
 	"github.com/varax/operator/pkg/providers"
 	awsprovider "github.com/varax/operator/pkg/providers/aws"
+	azureprovider "github.com/varax/operator/pkg/providers/azure"
+	gkeprovider "github.com/varax/operator/pkg/providers/gke"
 	"github.com/varax/operator/pkg/providers/selfhosted"
 	"github.com/varax/operator/pkg/scanning"
 	"github.com/varax/operator/pkg/scanning/checks"
@@ -182,13 +184,30 @@ func reconcileAuditLogging(ctx context.Context, clientset kubernetes.Interface) 
 			return fmt.Errorf("failed to create EKS provider: %w", err)
 		}
 		auditProvider = eksProvider
+	case providers.ProviderAKS:
+		info, err := detectAKSClusterInfo(ctx, clientset)
+		if err != nil {
+			return fmt.Errorf("failed to detect AKS cluster info: %w", err)
+		}
+		clusterName = info.ClusterName
+		auditProvider = azureprovider.NewAKSProviderWithClient(nil, info.SubscriptionID, info.ResourceGroup, info.ClusterName)
+		// Note: real Azure client requires azidentity credentials; using nil client here
+		// will fail at runtime. Production use requires NewAKSProvider with proper Azure SDK setup.
+		logger.Info("AKS audit log provider not yet fully wired (Azure SDK credentials required)", "cluster", clusterName)
+		return nil
+	case providers.ProviderGKE:
+		info, err := detectGKEClusterInfo(ctx, clientset)
+		if err != nil {
+			return fmt.Errorf("failed to detect GKE cluster info: %w", err)
+		}
+		clusterName = info.ClusterName
+		_ = gkeprovider.NewGKEProviderWithClient(nil, info.Project, info.Location, info.ClusterName)
+		// Note: real GKE client requires GCP credentials; not yet wired.
+		logger.Info("GKE audit log provider not yet fully wired (GCP credentials required)", "cluster", clusterName)
+		return nil
 	case providers.ProviderSelfHosted:
 		clusterName = "self-hosted"
 		auditProvider = selfhosted.NewSelfHostedProvider(clientset)
-	default:
-		// AKS and GKE support will be added in Phase 2
-		logger.Info("Audit log enablement not yet supported for provider", "provider", providerType)
-		return nil
 	}
 
 	enabled, err := auditProvider.IsAuditLoggingEnabled(ctx)
@@ -235,6 +254,22 @@ func detectEKSClusterName(ctx context.Context, clientset kubernetes.Interface) (
 
 	// Fallback: try node name patterns or ConfigMap
 	return "", fmt.Errorf("could not determine EKS cluster name from node labels; set CLUSTER_NAME env var")
+}
+
+func detectAKSClusterInfo(ctx context.Context, clientset kubernetes.Interface) (*azureprovider.AKSClusterInfo, error) {
+	nodes, err := clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{Limit: 5})
+	if err != nil {
+		return nil, err
+	}
+	return azureprovider.DetectAKSClusterInfo(nodes.Items)
+}
+
+func detectGKEClusterInfo(ctx context.Context, clientset kubernetes.Interface) (*gkeprovider.GKEClusterInfo, error) {
+	nodes, err := clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{Limit: 5})
+	if err != nil {
+		return nil, err
+	}
+	return gkeprovider.DetectGKEClusterInfo(nodes.Items)
 }
 
 func recordMetrics(complianceResult *models.ComplianceResult, scanResult *models.ScanResult) {

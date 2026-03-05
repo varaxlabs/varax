@@ -22,6 +22,8 @@ type ResourceCache struct {
 	ClusterRoles        []rbacv1.ClusterRole
 	ClusterRoleBindings []rbacv1.ClusterRoleBinding
 	Roles               []rbacv1.Role
+	RoleBindings        []rbacv1.RoleBinding
+	Nodes               []corev1.Node
 	NetworkPolicies     []networkingv1.NetworkPolicy
 }
 
@@ -50,6 +52,8 @@ func BuildCache(ctx context.Context, client kubernetes.Interface) *ResourceCache
 	cache.ClusterRoles, _ = paginatedListClusterRoles(ctx, client)
 	cache.ClusterRoleBindings, _ = paginatedListClusterRoleBindings(ctx, client)
 	cache.Roles, _ = paginatedListRoles(ctx, client)
+	cache.RoleBindings, _ = paginatedListRoleBindings(ctx, client)
+	cache.Nodes, _ = paginatedListNodes(ctx, client)
 	cache.NetworkPolicies, _ = paginatedListNetworkPolicies(ctx, client, "")
 	return cache
 }
@@ -109,6 +113,22 @@ func ListRoles(ctx context.Context, client kubernetes.Interface) ([]rbacv1.Role,
 		return cache.Roles, nil
 	}
 	return paginatedListRoles(ctx, client)
+}
+
+// ListRoleBindings returns role bindings from cache or fetches with pagination.
+func ListRoleBindings(ctx context.Context, client kubernetes.Interface) ([]rbacv1.RoleBinding, error) {
+	if cache := CacheFromContext(ctx); cache != nil && cache.RoleBindings != nil {
+		return cache.RoleBindings, nil
+	}
+	return paginatedListRoleBindings(ctx, client)
+}
+
+// ListNodes returns nodes from cache or fetches with pagination.
+func ListNodes(ctx context.Context, client kubernetes.Interface) ([]corev1.Node, error) {
+	if cache := CacheFromContext(ctx); cache != nil && cache.Nodes != nil {
+		return cache.Nodes, nil
+	}
+	return paginatedListNodes(ctx, client)
 }
 
 // ListNetworkPolicies returns network policies from cache or fetches with pagination.
@@ -215,6 +235,38 @@ func paginatedListRoles(ctx context.Context, client kubernetes.Interface) ([]rba
 	opts := metav1.ListOptions{Limit: listPageSize}
 	for {
 		list, err := client.RbacV1().Roles("").List(ctx, opts)
+		if err != nil {
+			return nil, err
+		}
+		all = append(all, list.Items...)
+		if list.Continue == "" {
+			return all, nil
+		}
+		opts.Continue = list.Continue
+	}
+}
+
+func paginatedListRoleBindings(ctx context.Context, client kubernetes.Interface) ([]rbacv1.RoleBinding, error) {
+	var all []rbacv1.RoleBinding
+	opts := metav1.ListOptions{Limit: listPageSize}
+	for {
+		list, err := client.RbacV1().RoleBindings("").List(ctx, opts)
+		if err != nil {
+			return nil, err
+		}
+		all = append(all, list.Items...)
+		if list.Continue == "" {
+			return all, nil
+		}
+		opts.Continue = list.Continue
+	}
+}
+
+func paginatedListNodes(ctx context.Context, client kubernetes.Interface) ([]corev1.Node, error) {
+	var all []corev1.Node
+	opts := metav1.ListOptions{Limit: listPageSize}
+	for {
+		list, err := client.CoreV1().Nodes().List(ctx, opts)
 		if err != nil {
 			return nil, err
 		}

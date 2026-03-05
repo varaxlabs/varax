@@ -201,14 +201,17 @@ func TestReconcileAuditLogging_SelfHosted_AlreadyExists(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestReconcileAuditLogging_UnsupportedProvider(t *testing.T) {
-	// AKS node -> currently unsupported
+func TestReconcileAuditLogging_AKSProvider(t *testing.T) {
+	// AKS node -> detected but returns early (credentials not wired)
 	node := &corev1.Node{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "node-1",
 			Labels: map[string]string{
 				"kubernetes.azure.com/cluster": "aks-cluster",
 			},
+		},
+		Spec: corev1.NodeSpec{
+			ProviderID: "azure:///subscriptions/sub-1/resourceGroups/rg-1/providers/Microsoft.Compute/virtualMachineScaleSets/vmss/virtualMachines/0",
 		},
 	}
 	client := fake.NewSimpleClientset(node)
@@ -218,7 +221,7 @@ func TestReconcileAuditLogging_UnsupportedProvider(t *testing.T) {
 	ctx = log.IntoContext(ctx, logger)
 
 	err := reconcileAuditLogging(ctx, client)
-	require.NoError(t, err) // Should return nil for unsupported providers
+	require.NoError(t, err) // Returns nil (not yet fully wired)
 }
 
 func TestReconcileAuditLogging_NoNodes(t *testing.T) {
@@ -231,4 +234,50 @@ func TestReconcileAuditLogging_NoNodes(t *testing.T) {
 	// No nodes -> SelfHosted fallback, then creates ConfigMap
 	err := reconcileAuditLogging(ctx, client)
 	require.NoError(t, err)
+}
+
+func TestReconcileAuditLogging_GKEProvider(t *testing.T) {
+	// GKE node -> detected but returns early (GCP credentials not wired)
+	node := &corev1.Node{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "node-1",
+			Labels: map[string]string{
+				"cloud.google.com/gke-cluster-name": "my-cluster",
+			},
+		},
+		Spec: corev1.NodeSpec{
+			ProviderID: "gce://my-project/us-central1-a/gke-cluster-default-pool-abc-wxyz",
+		},
+	}
+	client := fake.NewSimpleClientset(node)
+
+	ctx := context.Background()
+	logger := ctrl.Log.WithName("test")
+	ctx = log.IntoContext(ctx, logger)
+
+	err := reconcileAuditLogging(ctx, client)
+	require.NoError(t, err) // Returns nil (not yet fully wired)
+}
+
+func TestReconcileAuditLogging_EKSProvider(t *testing.T) {
+	// EKS node -> detected, attempts to create real AWS provider which fails without credentials
+	node := &corev1.Node{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "node-1",
+			Labels: map[string]string{
+				"eks.amazonaws.com/cluster": "my-eks-cluster",
+			},
+		},
+		Spec: corev1.NodeSpec{
+			ProviderID: "aws:///us-east-1a/i-1234567890abcdef0",
+		},
+	}
+	client := fake.NewSimpleClientset(node)
+
+	ctx := context.Background()
+	logger := ctrl.Log.WithName("test")
+	ctx = log.IntoContext(ctx, logger)
+
+	err := reconcileAuditLogging(ctx, client)
+	assert.Error(t, err) // EKS provider creation fails without real AWS credentials
 }

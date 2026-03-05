@@ -52,6 +52,14 @@ make build
 ### Install as operator (Helm)
 
 ```bash
+helm install varax oci://ghcr.io/varaxlabs/charts/varax \
+  --namespace varax-system \
+  --create-namespace
+```
+
+Or install from source:
+
+```bash
 helm install varax ./helm/varax \
   --namespace varax-system \
   --create-namespace
