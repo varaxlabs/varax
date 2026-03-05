@@ -148,148 +148,111 @@ func ListNetworkPolicies(ctx context.Context, client kubernetes.Interface, names
 	return paginatedListNetworkPolicies(ctx, client, namespace)
 }
 
-// Paginated list implementations
-
-func paginatedListPods(ctx context.Context, client kubernetes.Interface, namespace string) ([]corev1.Pod, error) {
-	var all []corev1.Pod
+// paginatedList is a generic helper that handles the pagination loop for any
+// Kubernetes list call. The listFn receives ListOptions and returns the page's
+// items, the continue token, and any error.
+func paginatedList[T any](ctx context.Context, listFn func(ctx context.Context, opts metav1.ListOptions) ([]T, string, error)) ([]T, error) {
+	var all []T
 	opts := metav1.ListOptions{Limit: listPageSize}
 	for {
-		list, err := client.CoreV1().Pods(namespace).List(ctx, opts)
+		items, continueToken, err := listFn(ctx, opts)
 		if err != nil {
 			return nil, err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
+		all = append(all, items...)
+		if continueToken == "" {
 			return all, nil
 		}
-		opts.Continue = list.Continue
+		opts.Continue = continueToken
 	}
+}
+
+func paginatedListPods(ctx context.Context, client kubernetes.Interface, namespace string) ([]corev1.Pod, error) {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]corev1.Pod, string, error) {
+		list, err := client.CoreV1().Pods(namespace).List(ctx, opts)
+		if err != nil {
+			return nil, "", err
+		}
+		return list.Items, list.Continue, nil
+	})
 }
 
 func paginatedListNamespaces(ctx context.Context, client kubernetes.Interface) ([]corev1.Namespace, error) {
-	var all []corev1.Namespace
-	opts := metav1.ListOptions{Limit: listPageSize}
-	for {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]corev1.Namespace, string, error) {
 		list, err := client.CoreV1().Namespaces().List(ctx, opts)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
-			return all, nil
-		}
-		opts.Continue = list.Continue
-	}
+		return list.Items, list.Continue, nil
+	})
 }
 
 func paginatedListServiceAccounts(ctx context.Context, client kubernetes.Interface) ([]corev1.ServiceAccount, error) {
-	var all []corev1.ServiceAccount
-	opts := metav1.ListOptions{Limit: listPageSize}
-	for {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]corev1.ServiceAccount, string, error) {
 		list, err := client.CoreV1().ServiceAccounts("").List(ctx, opts)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
-			return all, nil
-		}
-		opts.Continue = list.Continue
-	}
+		return list.Items, list.Continue, nil
+	})
 }
 
 func paginatedListClusterRoles(ctx context.Context, client kubernetes.Interface) ([]rbacv1.ClusterRole, error) {
-	var all []rbacv1.ClusterRole
-	opts := metav1.ListOptions{Limit: listPageSize}
-	for {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]rbacv1.ClusterRole, string, error) {
 		list, err := client.RbacV1().ClusterRoles().List(ctx, opts)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
-			return all, nil
-		}
-		opts.Continue = list.Continue
-	}
+		return list.Items, list.Continue, nil
+	})
 }
 
 func paginatedListClusterRoleBindings(ctx context.Context, client kubernetes.Interface) ([]rbacv1.ClusterRoleBinding, error) {
-	var all []rbacv1.ClusterRoleBinding
-	opts := metav1.ListOptions{Limit: listPageSize}
-	for {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]rbacv1.ClusterRoleBinding, string, error) {
 		list, err := client.RbacV1().ClusterRoleBindings().List(ctx, opts)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
-			return all, nil
-		}
-		opts.Continue = list.Continue
-	}
+		return list.Items, list.Continue, nil
+	})
 }
 
 func paginatedListRoles(ctx context.Context, client kubernetes.Interface) ([]rbacv1.Role, error) {
-	var all []rbacv1.Role
-	opts := metav1.ListOptions{Limit: listPageSize}
-	for {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]rbacv1.Role, string, error) {
 		list, err := client.RbacV1().Roles("").List(ctx, opts)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
-			return all, nil
-		}
-		opts.Continue = list.Continue
-	}
+		return list.Items, list.Continue, nil
+	})
 }
 
 func paginatedListRoleBindings(ctx context.Context, client kubernetes.Interface) ([]rbacv1.RoleBinding, error) {
-	var all []rbacv1.RoleBinding
-	opts := metav1.ListOptions{Limit: listPageSize}
-	for {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]rbacv1.RoleBinding, string, error) {
 		list, err := client.RbacV1().RoleBindings("").List(ctx, opts)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
-			return all, nil
-		}
-		opts.Continue = list.Continue
-	}
+		return list.Items, list.Continue, nil
+	})
 }
 
 func paginatedListNodes(ctx context.Context, client kubernetes.Interface) ([]corev1.Node, error) {
-	var all []corev1.Node
-	opts := metav1.ListOptions{Limit: listPageSize}
-	for {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]corev1.Node, string, error) {
 		list, err := client.CoreV1().Nodes().List(ctx, opts)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
-			return all, nil
-		}
-		opts.Continue = list.Continue
-	}
+		return list.Items, list.Continue, nil
+	})
 }
 
 func paginatedListNetworkPolicies(ctx context.Context, client kubernetes.Interface, namespace string) ([]networkingv1.NetworkPolicy, error) {
-	var all []networkingv1.NetworkPolicy
-	opts := metav1.ListOptions{Limit: listPageSize}
-	for {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]networkingv1.NetworkPolicy, string, error) {
 		list, err := client.NetworkingV1().NetworkPolicies(namespace).List(ctx, opts)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		all = append(all, list.Items...)
-		if list.Continue == "" {
-			return all, nil
-		}
-		opts.Continue = list.Continue
-	}
+		return list.Items, list.Continue, nil
+	})
 }
