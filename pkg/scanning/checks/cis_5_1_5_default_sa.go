@@ -22,14 +22,7 @@ func (c *DefaultServiceAccountCheck) Benchmark() string         { return "CIS" }
 func (c *DefaultServiceAccountCheck) Section() string            { return "5.1.5" }
 
 func (c *DefaultServiceAccountCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	pods, err := scanning.ListPods(ctx, client, "")
 	if err != nil {
@@ -70,3 +63,5 @@ func (c *DefaultServiceAccountCheck) Run(ctx context.Context, client kubernetes.
 
 	return result
 }
+
+var _ scanning.Check = &DefaultServiceAccountCheck{}

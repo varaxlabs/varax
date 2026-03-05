@@ -22,14 +22,7 @@ func (c *SeccompCheck) Benchmark() string         { return "CIS" }
 func (c *SeccompCheck) Section() string            { return "5.7.2" }
 
 func (c *SeccompCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	pods, err := scanning.ListPods(ctx, client, "")
 	if err != nil {
@@ -75,3 +68,5 @@ func (c *SeccompCheck) Run(ctx context.Context, client kubernetes.Interface) mod
 
 	return result
 }
+
+var _ scanning.Check = &SeccompCheck{}

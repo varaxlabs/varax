@@ -2,6 +2,7 @@ package checks
 
 import (
 	"context"
+	"strings"
 
 	"github.com/varax/operator/pkg/models"
 	"github.com/varax/operator/pkg/scanning"
@@ -147,7 +148,7 @@ func (c *CMBindAddressCheck) Run(ctx context.Context, client kubernetes.Interfac
 func containsFeatureGate(featureGates, gate, expectedValue string) bool {
 	// Feature gates format: "Gate1=true,Gate2=false"
 	target := gate + "=" + expectedValue
-	for _, fg := range splitComma(featureGates) {
+	for _, fg := range strings.Split(featureGates, ",") {
 		if fg == target {
 			return true
 		}
@@ -155,20 +156,6 @@ func containsFeatureGate(featureGates, gate, expectedValue string) bool {
 	return false
 }
 
-func splitComma(s string) []string {
-	if s == "" {
-		return nil
-	}
-	var result []string
-	start := 0
-	for i := 0; i <= len(s); i++ {
-		if i == len(s) || s[i] == ',' {
-			result = append(result, s[start:i])
-			start = i + 1
-		}
-	}
-	return result
-}
 
 var (
 	_ scanning.Check = &CMTerminatedPodGCCheck{}

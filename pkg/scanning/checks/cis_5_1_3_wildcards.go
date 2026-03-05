@@ -6,7 +6,6 @@ import (
 
 	"github.com/varax/operator/pkg/models"
 	"github.com/varax/operator/pkg/scanning"
-	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -23,14 +22,7 @@ func (c *WildcardRBACCheck) Benchmark() string         { return "CIS" }
 func (c *WildcardRBACCheck) Section() string            { return "5.1.3" }
 
 func (c *WildcardRBACCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	var evidence []models.Evidence
 
@@ -111,19 +103,5 @@ func containsWildcard(items []string) bool {
 	return false
 }
 
-func isSystemRole(name string) bool {
-	return len(name) > 7 && name[:7] == "system:"
-}
+var _ scanning.Check = &WildcardRBACCheck{}
 
-func isSystemNamespace(ns string) bool {
-	return ns == "kube-system" || ns == "kube-public" || ns == "kube-node-lease"
-}
-
-// allContainers returns a new slice combining init and regular containers
-// without mutating the original slices (unlike append which can corrupt the backing array).
-func allContainers(pod corev1.Pod) []corev1.Container {
-	containers := make([]corev1.Container, 0, len(pod.Spec.InitContainers)+len(pod.Spec.Containers))
-	containers = append(containers, pod.Spec.InitContainers...)
-	containers = append(containers, pod.Spec.Containers...)
-	return containers
-}

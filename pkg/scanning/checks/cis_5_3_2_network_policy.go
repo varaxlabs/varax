@@ -22,14 +22,7 @@ func (c *NetworkPolicyCheck) Benchmark() string         { return "CIS" }
 func (c *NetworkPolicyCheck) Section() string            { return "5.3.2" }
 
 func (c *NetworkPolicyCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	namespaces, err := scanning.ListNamespaces(ctx, client)
 	if err != nil {
@@ -80,3 +73,5 @@ func (c *NetworkPolicyCheck) Run(ctx context.Context, client kubernetes.Interfac
 
 	return result
 }
+
+var _ scanning.Check = &NetworkPolicyCheck{}

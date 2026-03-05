@@ -22,14 +22,7 @@ func (c *EscalatePermsCheck) Benchmark() string         { return "CIS" }
 func (c *EscalatePermsCheck) Section() string            { return "5.1.8" }
 
 func (c *EscalatePermsCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	var evidence []models.Evidence
 
@@ -108,3 +101,5 @@ func hasEscalationVerbs(verbs []string) bool {
 	}
 	return false
 }
+
+var _ scanning.Check = &EscalatePermsCheck{}

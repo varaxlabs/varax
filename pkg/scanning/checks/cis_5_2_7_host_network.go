@@ -6,6 +6,7 @@ import (
 
 	"github.com/varax/operator/pkg/models"
 	"github.com/varax/operator/pkg/scanning"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -22,51 +23,17 @@ func (c *HostNetworkCheck) Benchmark() string         { return "CIS" }
 func (c *HostNetworkCheck) Section() string            { return "5.2.7" }
 
 func (c *HostNetworkCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
-
-	pods, err := scanning.ListPods(ctx, client, "")
-	if err != nil {
-		result.Status = models.StatusSkip
-		result.Message = "failed to list Pods"
-		return result
-	}
-
-	var evidence []models.Evidence
-	for _, pod := range pods {
-		if isSystemNamespace(pod.Namespace) {
-			continue
-		}
-
+	return runPodSpecCheck(ctx, client, c, func(pod corev1.Pod) *models.Evidence {
 		if pod.Spec.HostNetwork {
-			evidence = append(evidence, models.Evidence{
-				Message: fmt.Sprintf("Pod '%s/%s' uses the host network",
-					pod.Namespace, pod.Name),
-				Resource: models.Resource{
-					Kind:      "Pod",
-					Name:      pod.Name,
-					Namespace: pod.Namespace,
-				},
-				Field: "spec.hostNetwork",
-				Value: "true",
-			})
+			return &models.Evidence{
+				Message:  fmt.Sprintf("Pod '%s/%s' uses the host network", pod.Namespace, pod.Name),
+				Resource: models.Resource{Kind: "Pod", Name: pod.Name, Namespace: pod.Namespace},
+				Field:    "spec.hostNetwork",
+				Value:    "true",
+			}
 		}
-	}
-
-	if len(evidence) == 0 {
-		result.Status = models.StatusPass
-		result.Message = "No pods use the host network in non-system namespaces"
-	} else {
-		result.Status = models.StatusFail
-		result.Message = fmt.Sprintf("Found %d pod(s) using host network", len(evidence))
-		result.Evidence = evidence
-	}
-
-	return result
+		return nil
+	})
 }
+
+var _ scanning.Check = &HostNetworkCheck{}

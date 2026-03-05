@@ -8,7 +8,6 @@ import (
 	"github.com/varax/operator/pkg/models"
 	"github.com/varax/operator/pkg/scanning"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -141,8 +140,91 @@ func getAPIServerPod(ctx context.Context, client kubernetes.Interface) (*corev1.
 	return getControlPlanePod(ctx, client, "kube-apiserver")
 }
 
-// getNodeKubeletConfig retrieves kubelet configuration from a node's proxy endpoint.
-// Returns nil if not accessible.
-func getNodeKubeletConfig(ctx context.Context, client kubernetes.Interface, nodeName string) (*corev1.Node, error) {
-	return client.CoreV1().Nodes().Get(ctx, nodeName, metav1.GetOptions{})
+// runPodSpecCheck is a common pattern for checks that inspect a PodSpec-level
+// boolean field (e.g., hostPID, hostIPC, hostNetwork). The checkFn receives each
+// non-system-namespace pod and returns evidence if the pod violates the check.
+func runPodSpecCheck(ctx context.Context, client kubernetes.Interface, c scanning.Check, checkFn func(pod corev1.Pod) *models.Evidence) models.CheckResult {
+	result := baseResult(c)
+
+	pods, err := scanning.ListPods(ctx, client, "")
+	if err != nil {
+		result.Status = models.StatusSkip
+		result.Message = "failed to list pods"
+		return result
+	}
+
+	var evidence []models.Evidence
+	for _, pod := range pods {
+		if isSystemNamespace(pod.Namespace) {
+			continue
+		}
+		if ev := checkFn(pod); ev != nil {
+			evidence = append(evidence, *ev)
+		}
+	}
+
+	if len(evidence) == 0 {
+		result.Status = models.StatusPass
+		result.Message = fmt.Sprintf("No violations found in non-system namespaces")
+	} else {
+		result.Status = models.StatusFail
+		result.Message = fmt.Sprintf("Found %d violation(s)", len(evidence))
+		result.Evidence = evidence
+	}
+	return result
+}
+
+// runContainerCheck is a common pattern for checks that inspect each container
+// in each pod. The checkFn is called for every container in non-system-namespace
+// pods and should return evidence if the container violates the check.
+func runContainerCheck(ctx context.Context, client kubernetes.Interface, c scanning.Check, checkFn func(container corev1.Container, pod corev1.Pod) *models.Evidence) models.CheckResult {
+	result := baseResult(c)
+
+	pods, err := scanning.ListPods(ctx, client, "")
+	if err != nil {
+		result.Status = models.StatusSkip
+		result.Message = "failed to list pods"
+		return result
+	}
+
+	var evidence []models.Evidence
+	for _, pod := range pods {
+		if isSystemNamespace(pod.Namespace) {
+			continue
+		}
+		for _, container := range allContainers(pod) {
+			if ev := checkFn(container, pod); ev != nil {
+				evidence = append(evidence, *ev)
+			}
+		}
+	}
+
+	if len(evidence) == 0 {
+		result.Status = models.StatusPass
+		result.Message = "No violations found in non-system namespaces"
+	} else {
+		result.Status = models.StatusFail
+		result.Message = fmt.Sprintf("Found %d violation(s)", len(evidence))
+		result.Evidence = evidence
+	}
+	return result
+}
+
+// isSystemNamespace returns true for kube-system, kube-public, kube-node-lease.
+func isSystemNamespace(ns string) bool {
+	return ns == "kube-system" || ns == "kube-public" || ns == "kube-node-lease"
+}
+
+// isSystemRole returns true for roles prefixed with "system:".
+func isSystemRole(name string) bool {
+	return strings.HasPrefix(name, "system:")
+}
+
+// allContainers returns a new slice combining init and regular containers
+// without mutating the original slices.
+func allContainers(pod corev1.Pod) []corev1.Container {
+	containers := make([]corev1.Container, 0, len(pod.Spec.InitContainers)+len(pod.Spec.Containers))
+	containers = append(containers, pod.Spec.InitContainers...)
+	containers = append(containers, pod.Spec.Containers...)
+	return containers
 }

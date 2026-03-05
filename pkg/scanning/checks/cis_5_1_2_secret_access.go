@@ -117,3 +117,5 @@ func hasSecretVerbs(verbs []string) bool {
 	}
 	return false
 }
+
+var _ scanning.Check = &SecretAccessCheck{}

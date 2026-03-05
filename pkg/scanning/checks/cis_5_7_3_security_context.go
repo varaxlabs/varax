@@ -22,14 +22,7 @@ func (c *SecurityContextCheck) Benchmark() string         { return "CIS" }
 func (c *SecurityContextCheck) Section() string            { return "5.7.3" }
 
 func (c *SecurityContextCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	pods, err := scanning.ListPods(ctx, client, "")
 	if err != nil {
@@ -73,3 +66,5 @@ func (c *SecurityContextCheck) Run(ctx context.Context, client kubernetes.Interf
 
 	return result
 }
+
+var _ scanning.Check = &SecurityContextCheck{}

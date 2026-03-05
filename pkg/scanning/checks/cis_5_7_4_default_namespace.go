@@ -22,14 +22,7 @@ func (c *DefaultNamespaceCheck) Benchmark() string         { return "CIS" }
 func (c *DefaultNamespaceCheck) Section() string            { return "5.7.4" }
 
 func (c *DefaultNamespaceCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	pods, err := scanning.ListPods(ctx, client, "default")
 	if err != nil {
@@ -63,3 +56,5 @@ func (c *DefaultNamespaceCheck) Run(ctx context.Context, client kubernetes.Inter
 
 	return result
 }
+
+var _ scanning.Check = &DefaultNamespaceCheck{}

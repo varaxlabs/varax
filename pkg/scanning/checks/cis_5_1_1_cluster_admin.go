@@ -22,14 +22,7 @@ func (c *ClusterAdminCheck) Benchmark() string         { return "CIS" }
 func (c *ClusterAdminCheck) Section() string            { return "5.1.1" }
 
 func (c *ClusterAdminCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	bindings, err := scanning.ListClusterRoleBindings(ctx, client)
 	if err != nil {
@@ -78,3 +71,5 @@ func (c *ClusterAdminCheck) Run(ctx context.Context, client kubernetes.Interface
 
 	return result
 }
+
+var _ scanning.Check = &ClusterAdminCheck{}

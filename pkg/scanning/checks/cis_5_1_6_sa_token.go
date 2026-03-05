@@ -22,14 +22,7 @@ func (c *SATokenAutoMountCheck) Benchmark() string         { return "CIS" }
 func (c *SATokenAutoMountCheck) Section() string            { return "5.1.6" }
 
 func (c *SATokenAutoMountCheck) Run(ctx context.Context, client kubernetes.Interface) models.CheckResult {
-	result := models.CheckResult{
-		ID:          c.ID(),
-		Name:        c.Name(),
-		Description: c.Description(),
-		Benchmark:   c.Benchmark(),
-		Section:     c.Section(),
-		Severity:    c.Severity(),
-	}
+	result := baseResult(c)
 
 	serviceAccounts, err := scanning.ListServiceAccounts(ctx, client)
 	if err != nil {
@@ -71,3 +64,5 @@ func (c *SATokenAutoMountCheck) Run(ctx context.Context, client kubernetes.Inter
 
 	return result
 }
+
+var _ scanning.Check = &SATokenAutoMountCheck{}

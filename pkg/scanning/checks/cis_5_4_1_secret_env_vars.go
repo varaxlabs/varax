@@ -90,3 +90,5 @@ func (c *SecretEnvVarCheck) Run(ctx context.Context, client kubernetes.Interface
 
 	return result
 }
+
+var _ scanning.Check = &SecretEnvVarCheck{}
