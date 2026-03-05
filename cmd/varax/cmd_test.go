@@ -62,9 +62,7 @@ func TestDefaultDBPath_ContainsVaraxDir(t *testing.T) {
 
 func TestBuildRESTConfig_NoKubeconfig(t *testing.T) {
 	// Save and clear env
-	origKC := os.Getenv("KUBECONFIG")
-	os.Unsetenv("KUBECONFIG")
-	defer os.Setenv("KUBECONFIG", origKC)
+	t.Setenv("KUBECONFIG", "")
 
 	origKubeconfig := kubeconfig
 	kubeconfig = "/nonexistent/path/kubeconfig"
@@ -150,9 +148,7 @@ func TestBuildRESTConfig_DefaultPath(t *testing.T) {
 	kubeconfig = ""
 	defer func() { kubeconfig = origKubeconfig }()
 
-	origEnv := os.Getenv("KUBECONFIG")
-	os.Unsetenv("KUBECONFIG")
-	defer os.Setenv("KUBECONFIG", origEnv)
+	t.Setenv("KUBECONFIG", "")
 
 	// This will either find a real kubeconfig or fall through to in-cluster
 	// Either way, it exercises the default path code
@@ -196,9 +192,7 @@ users:
     token: fake-token
 `), 0600))
 
-	origEnv := os.Getenv("KUBECONFIG")
-	os.Setenv("KUBECONFIG", fakeKubeconfig)
-	defer os.Setenv("KUBECONFIG", origEnv)
+	t.Setenv("KUBECONFIG", fakeKubeconfig)
 
 	cfg, err := buildRESTConfig()
 	require.NoError(t, err)

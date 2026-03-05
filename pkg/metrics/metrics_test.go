@@ -11,7 +11,7 @@ import (
 
 func getGaugeValue(gauge prometheus.Gauge) float64 {
 	var m dto.Metric
-	gauge.Write(&m)
+	_ = gauge.Write(&m)
 	return *m.Gauge.Value
 }
 

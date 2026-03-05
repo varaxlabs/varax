@@ -12,11 +12,9 @@ import (
 
 // apiServerCheckTest defines a table-driven test case for API server checks.
 type apiServerCheckTest struct {
-	name           string
-	check          scanning.Check
-	passArgs       []string
-	failArgs       []string
-	expectPassMsg  string
+	check    scanning.Check
+	passArgs []string
+	failArgs []string
 }
 
 func TestAPIServerChecks_PassFailSkip(t *testing.T) {

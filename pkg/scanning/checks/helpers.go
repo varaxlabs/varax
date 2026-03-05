@@ -135,11 +135,6 @@ func runControlPlaneArgCheck(ctx context.Context, client kubernetes.Interface, c
 	return result
 }
 
-// getAPIServerPod is a convenience wrapper for getting the kube-apiserver pod.
-func getAPIServerPod(ctx context.Context, client kubernetes.Interface) (*corev1.Pod, error) {
-	return getControlPlanePod(ctx, client, "kube-apiserver")
-}
-
 // runPodSpecCheck is a common pattern for checks that inspect a PodSpec-level
 // boolean field (e.g., hostPID, hostIPC, hostNetwork). The checkFn receives each
 // non-system-namespace pod and returns evidence if the pod violates the check.
@@ -165,7 +160,7 @@ func runPodSpecCheck(ctx context.Context, client kubernetes.Interface, c scannin
 
 	if len(evidence) == 0 {
 		result.Status = models.StatusPass
-		result.Message = fmt.Sprintf("No violations found in non-system namespaces")
+		result.Message = "No violations found in non-system namespaces"
 	} else {
 		result.Status = models.StatusFail
 		result.Message = fmt.Sprintf("Found %d violation(s)", len(evidence))

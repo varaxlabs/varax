@@ -35,7 +35,7 @@ func NewBoltStore(path string) (*BoltStore, error) {
 		return err
 	})
 	if err != nil {
-		db.Close()
+		_ = db.Close()
 		return nil, fmt.Errorf("failed to create bucket: %w", err)
 	}
 

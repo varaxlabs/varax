@@ -22,24 +22,24 @@ func ControlTable(results []models.ControlResult) string {
 	var b strings.Builder
 
 	// Header
-	b.WriteString(fmt.Sprintf("  %s%s%s%s\n",
+	fmt.Fprintf(&b, "  %s%s%s%s\n",
 		headerStyle.Width(10).Render("ID"),
 		headerStyle.Width(50).Render("Control"),
 		headerStyle.Width(12).Render("Status"),
 		headerStyle.Width(12).Render("Violations"),
-	))
+	)
 
-	b.WriteString(fmt.Sprintf("  %s\n", strings.Repeat("─", 84)))
+	fmt.Fprintf(&b, "  %s\n", strings.Repeat("─", 84))
 
 	for _, cr := range results {
 		badge := StatusBadge(string(cr.Status))
 
-		b.WriteString(fmt.Sprintf("  %s%s%s%s\n",
+		fmt.Fprintf(&b, "  %s%s%s%s\n",
 			cellStyle.Width(10).Render(cr.Control.ID),
 			cellStyle.Width(50).Render(truncate(cr.Control.Name, 48)),
 			cellStyle.Width(12).Render(badge),
 			cellStyle.Width(12).Render(fmt.Sprintf("%d", cr.ViolationCount)),
-		))
+		)
 	}
 
 	return b.String()

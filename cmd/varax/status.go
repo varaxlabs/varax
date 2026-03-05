@@ -94,7 +94,7 @@ func runStatus(cmd *cobra.Command, args []string) error {
 	if statusEvidence {
 		bundle, evErr := store.GetLatestEvidenceBundle()
 		if evErr != nil {
-			fmt.Fprintf(cmd.ErrOrStderr(), "Warning: could not read evidence: %v\n", evErr)
+			_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Warning: could not read evidence: %v\n", evErr)
 		} else if bundle != nil {
 			fmt.Printf("\n  Evidence: %d items collected at %s\n", len(bundle.Items), bundle.CollectedAt.Format(time.RFC3339))
 		} else {

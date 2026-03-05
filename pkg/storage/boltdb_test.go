@@ -21,7 +21,7 @@ func tempDBPath(t *testing.T) string {
 func TestBoltStore_SaveAndGetLatest(t *testing.T) {
 	store, err := NewBoltStore(tempDBPath(t))
 	require.NoError(t, err)
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	result := &models.ScanResult{
 		ID:        "scan-1",
@@ -48,7 +48,7 @@ func TestBoltStore_SaveAndGetLatest(t *testing.T) {
 func TestBoltStore_GetLatestEmpty(t *testing.T) {
 	store, err := NewBoltStore(tempDBPath(t))
 	require.NoError(t, err)
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	latest, err := store.GetLatestScanResult()
 	require.NoError(t, err)
@@ -58,7 +58,7 @@ func TestBoltStore_GetLatestEmpty(t *testing.T) {
 func TestBoltStore_ListScanResults(t *testing.T) {
 	store, err := NewBoltStore(tempDBPath(t))
 	require.NoError(t, err)
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	now := time.Now().UTC()
 	for i := 0; i < 5; i++ {
@@ -88,7 +88,7 @@ func TestBoltStore_InvalidPath(t *testing.T) {
 func TestBoltStore_SaveAndGetLatestEvidenceBundle(t *testing.T) {
 	store, err := NewBoltStore(tempDBPath(t))
 	require.NoError(t, err)
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	bundle := &evidence.EvidenceBundle{
 		CollectedAt: time.Now().UTC().Truncate(time.Millisecond),
@@ -120,7 +120,7 @@ func TestBoltStore_SaveAndGetLatestEvidenceBundle(t *testing.T) {
 func TestBoltStore_GetLatestEvidenceBundleEmpty(t *testing.T) {
 	store, err := NewBoltStore(tempDBPath(t))
 	require.NoError(t, err)
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	latest, err := store.GetLatestEvidenceBundle()
 	require.NoError(t, err)
@@ -130,7 +130,7 @@ func TestBoltStore_GetLatestEvidenceBundleEmpty(t *testing.T) {
 func TestBoltStore_GetLatestEvidenceBundleMultiple(t *testing.T) {
 	store, err := NewBoltStore(tempDBPath(t))
 	require.NoError(t, err)
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	now := time.Now().UTC().Truncate(time.Millisecond)
 
@@ -167,7 +167,7 @@ func TestBoltStore_GetLatestEvidenceBundleMultiple(t *testing.T) {
 func TestBoltStore_PruneOlderThan(t *testing.T) {
 	store, err := NewBoltStore(tempDBPath(t))
 	require.NoError(t, err)
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	now := time.Now().UTC()
 
@@ -203,7 +203,7 @@ func TestBoltStore_PruneOlderThan(t *testing.T) {
 func TestBoltStore_PruneNothingToRemove(t *testing.T) {
 	store, err := NewBoltStore(tempDBPath(t))
 	require.NoError(t, err)
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	pruned, err := store.PruneOlderThan(24 * time.Hour)
 	require.NoError(t, err)

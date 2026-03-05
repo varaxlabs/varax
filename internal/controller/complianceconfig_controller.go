@@ -172,7 +172,7 @@ func reconcileAuditLogging(ctx context.Context, clientset kubernetes.Interface) 
 	}
 
 	var auditProvider providers.AuditLogProvider
-	clusterName := "unknown"
+	var clusterName string
 
 	switch providerType {
 	case providers.ProviderEKS:
