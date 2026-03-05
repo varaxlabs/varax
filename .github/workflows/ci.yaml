@@ -21,11 +21,24 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Verify dependencies
+        run: go mod verify
+
       - name: Vet
         run: make vet
 
       - name: Test
         run: make test
+
+      - name: Security scan (gosec)
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          gosec -severity medium -exclude-generated ./...
+
+      - name: Vulnerability check
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          govulncheck ./...
 
       - name: Check coverage threshold
         run: |
