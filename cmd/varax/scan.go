@@ -106,7 +106,7 @@ func runScan(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Warning: could not open storage: %v\n", err)
 	} else {
-		defer store.Close()
+		defer func() { _ = store.Close() }()
 		if saveErr := store.SaveScanResult(scanResult); saveErr != nil {
 			fmt.Fprintf(os.Stderr, "Warning: could not save scan result: %v\n", saveErr)
 		}

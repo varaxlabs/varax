@@ -25,7 +25,7 @@ func runPrune(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open storage: %w", err)
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	pruned, err := store.PruneOlderThan(pruneMaxAge)
 	if err != nil {

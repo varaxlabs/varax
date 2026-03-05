@@ -101,14 +101,14 @@ func (m scanModel) View() string {
 
 	var b strings.Builder
 
-	b.WriteString(fmt.Sprintf("\n  Scanning cluster...  %s\n\n", m.spinner.View()))
+	fmt.Fprintf(&b, "\n  Scanning cluster...  %s\n\n", m.spinner.View())
 
 	// Progress bar
 	if m.total > 0 {
-		b.WriteString(fmt.Sprintf("  %s %d/%d checks", progressBar(m.completed, m.total, 30), m.completed, m.total))
+		fmt.Fprintf(&b, "  %s %d/%d checks", progressBar(m.completed, m.total, 30), m.completed, m.total)
 		if m.completed > 0 {
 			eta := estimateETA(m.startTime, m.completed, m.total)
-			b.WriteString(fmt.Sprintf("  ETA: %s", formatDuration(eta)))
+			fmt.Fprintf(&b, "  ETA: %s", formatDuration(eta))
 		}
 		b.WriteString("\n\n")
 	}
