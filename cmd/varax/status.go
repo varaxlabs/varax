@@ -40,8 +40,11 @@ func runStatus(cmd *cobra.Command, args []string) error {
 
 	format := cli.ResolveFormat(outputFormat)
 
-	// History mode: show score trend
+	// History mode: show score trend (cap at 100 to prevent excessive memory use)
 	if statusHistory > 0 {
+		if statusHistory > 100 {
+			statusHistory = 100
+		}
 		return showHistory(store, format)
 	}
 

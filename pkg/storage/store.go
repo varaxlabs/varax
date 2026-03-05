@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"time"
+
 	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
 )
@@ -21,6 +23,9 @@ type Store interface {
 
 	// GetLatestEvidenceBundle returns the most recent evidence bundle.
 	GetLatestEvidenceBundle() (*evidence.EvidenceBundle, error)
+
+	// PruneOlderThan removes scan results and evidence bundles older than the given duration.
+	PruneOlderThan(maxAge time.Duration) (int, error)
 
 	// Close releases any resources held by the store.
 	Close() error

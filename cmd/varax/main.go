@@ -36,6 +36,7 @@ func main() {
 	rootCmd.AddCommand(newScanCmd())
 	rootCmd.AddCommand(newStatusCmd())
 	rootCmd.AddCommand(newOperatorCmd())
+	rootCmd.AddCommand(newPruneCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
@@ -84,6 +85,9 @@ func defaultDBPath() string {
 		return "varax.db"
 	}
 	dir := filepath.Join(home, ".varax")
-	os.MkdirAll(dir, 0755)
+	if err := os.MkdirAll(dir, 0700); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: could not create %s: %v\n", dir, err)
+		return "varax.db"
+	}
 	return filepath.Join(dir, "varax.db")
 }

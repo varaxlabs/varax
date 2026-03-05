@@ -164,6 +164,52 @@ func TestBoltStore_GetLatestEvidenceBundleMultiple(t *testing.T) {
 	assert.Equal(t, "New evidence", latest.Items[0].Description)
 }
 
+func TestBoltStore_PruneOlderThan(t *testing.T) {
+	store, err := NewBoltStore(tempDBPath(t))
+	require.NoError(t, err)
+	defer store.Close()
+
+	now := time.Now().UTC()
+
+	// Insert old and new scan results
+	old := &models.ScanResult{ID: "old", Timestamp: now.Add(-48 * time.Hour), Summary: models.ScanSummary{TotalChecks: 1}}
+	recent := &models.ScanResult{ID: "recent", Timestamp: now.Add(-1 * time.Hour), Summary: models.ScanSummary{TotalChecks: 2}}
+	require.NoError(t, store.SaveScanResult(old))
+	require.NoError(t, store.SaveScanResult(recent))
+
+	// Insert old and new evidence bundles
+	oldBundle := &evidence.EvidenceBundle{CollectedAt: now.Add(-48 * time.Hour), ClusterName: "old"}
+	recentBundle := &evidence.EvidenceBundle{CollectedAt: now.Add(-1 * time.Hour), ClusterName: "recent"}
+	require.NoError(t, store.SaveEvidenceBundle(oldBundle))
+	require.NoError(t, store.SaveEvidenceBundle(recentBundle))
+
+	// Prune anything older than 24 hours
+	pruned, err := store.PruneOlderThan(24 * time.Hour)
+	require.NoError(t, err)
+	assert.Equal(t, 2, pruned) // 1 scan + 1 evidence
+
+	// Only recent records should remain
+	results, err := store.ListScanResults(10)
+	require.NoError(t, err)
+	assert.Len(t, results, 1)
+	assert.Equal(t, "recent", results[0].ID)
+
+	latest, err := store.GetLatestEvidenceBundle()
+	require.NoError(t, err)
+	require.NotNil(t, latest)
+	assert.Equal(t, "recent", latest.ClusterName)
+}
+
+func TestBoltStore_PruneNothingToRemove(t *testing.T) {
+	store, err := NewBoltStore(tempDBPath(t))
+	require.NoError(t, err)
+	defer store.Close()
+
+	pruned, err := store.PruneOlderThan(24 * time.Hour)
+	require.NoError(t, err)
+	assert.Equal(t, 0, pruned)
+}
+
 func TestBoltStore_Close(t *testing.T) {
 	path := tempDBPath(t)
 	store, err := NewBoltStore(path)

@@ -141,6 +141,31 @@ func (s *BoltStore) GetLatestEvidenceBundle() (*evidence.EvidenceBundle, error) 
 	return bundle, nil
 }
 
+func (s *BoltStore) PruneOlderThan(maxAge time.Duration) (int, error) {
+	cutoff := time.Now().UTC().Add(-maxAge).Format(time.RFC3339Nano)
+	pruned := 0
+
+	err := s.db.Update(func(tx *bolt.Tx) error {
+		for _, bucketName := range [][]byte{scanBucket, evidenceBucket} {
+			b := tx.Bucket(bucketName)
+			c := b.Cursor()
+			for k, _ := c.First(); k != nil; k, _ = c.Next() {
+				if string(k) < cutoff {
+					if err := b.Delete(k); err != nil {
+						return err
+					}
+					pruned++
+				} else {
+					break // keys are ordered chronologically
+				}
+			}
+		}
+		return nil
+	})
+
+	return pruned, err
+}
+
 func (s *BoltStore) Close() error {
 	return s.db.Close()
 }

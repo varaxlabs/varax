@@ -159,6 +159,16 @@ func TestBuildRESTConfig_DefaultPath(t *testing.T) {
 	_, _ = buildRESTConfig()
 }
 
+func TestNewPruneCmd(t *testing.T) {
+	cmd := newPruneCmd()
+	assert.Equal(t, "prune", cmd.Use)
+	assert.NotEmpty(t, cmd.Short)
+
+	f := cmd.Flags().Lookup("max-age")
+	assert.NotNil(t, f)
+	assert.Equal(t, "720h0m0s", f.DefValue)
+}
+
 func TestBuildRESTConfig_FromEnv(t *testing.T) {
 	origKubeconfig := kubeconfig
 	kubeconfig = ""

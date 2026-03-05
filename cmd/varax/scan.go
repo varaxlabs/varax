@@ -110,6 +110,12 @@ func runScan(cmd *cobra.Command, args []string) error {
 		if saveErr := store.SaveScanResult(scanResult); saveErr != nil {
 			fmt.Fprintf(os.Stderr, "Warning: could not save scan result: %v\n", saveErr)
 		}
+		// Auto-prune records older than 90 days
+		if pruned, pruneErr := store.PruneOlderThan(90 * 24 * time.Hour); pruneErr != nil {
+			fmt.Fprintf(os.Stderr, "Warning: auto-prune failed: %v\n", pruneErr)
+		} else if pruned > 0 {
+			fmt.Fprintf(os.Stderr, "Auto-pruned %d old record(s).\n", pruned)
+		}
 	}
 
 	// Collect evidence if requested
