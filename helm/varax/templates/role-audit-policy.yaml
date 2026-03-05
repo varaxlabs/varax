@@ -1,0 +1,30 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "varax.fullname" . }}-audit-policy
+  namespace: kube-system
+  labels:
+    {{- include "varax.labels" . | nindent 4 }}
+rules:
+  # Scoped to kube-system for creating the audit policy ConfigMap.
+  # resourceNames cannot restrict the create verb, so we use a
+  # namespace-scoped Role instead.
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "varax.fullname" . }}-audit-policy
+  namespace: kube-system
+  labels:
+    {{- include "varax.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "varax.fullname" . }}-audit-policy
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "varax.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}

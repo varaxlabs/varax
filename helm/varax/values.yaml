@@ -49,7 +49,7 @@ serviceAccount:
   annotations: {}
 
 networkPolicy:
-  enabled: false
+  enabled: true
   # Restrict metrics scraping to specific sources (e.g., Prometheus namespace)
   # metricsFrom:
   #   - namespaceSelector:

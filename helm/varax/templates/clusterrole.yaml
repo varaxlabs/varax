@@ -18,10 +18,12 @@ rules:
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["get", "list", "watch"]
-  # Self-hosted audit policy ConfigMap management
+  # Self-hosted audit policy ConfigMap management (update/patch only;
+  # create is handled by a namespace-scoped Role since resourceNames
+  # does not apply to the create verb in Kubernetes RBAC)
   - apiGroups: [""]
     resources: ["configmaps"]
-    verbs: ["create", "update", "patch"]
+    verbs: ["update", "patch"]
     resourceNames: ["varax-audit-policy"]
   # Metrics endpoint authentication/authorization
   - apiGroups: ["authentication.k8s.io"]
