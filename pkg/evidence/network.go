@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"time"
 
+	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
 type networkSnapshot struct {
-	TotalPolicies       int                       `json:"totalPolicies"`
-	NamespaceSummaries  []namespacePolicySummary   `json:"namespaceSummaries"`
+	TotalPolicies      int                      `json:"totalPolicies"`
+	NamespaceSummaries []namespacePolicySummary  `json:"namespaceSummaries"`
 }
 
 type namespacePolicySummary struct {
@@ -24,15 +25,25 @@ type namespacePolicySummary struct {
 func collectNetwork(ctx context.Context, client kubernetes.Interface) ([]EvidenceItem, error) {
 	now := time.Now().UTC()
 
-	policies, err := client.NetworkingV1().NetworkPolicies("").List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
+	// Paginated fetch of all NetworkPolicies
+	var allPolicies []networkingv1.NetworkPolicy
+	opts := metav1.ListOptions{Limit: evidencePageSize}
+	for {
+		policies, err := client.NetworkingV1().NetworkPolicies("").List(ctx, opts)
+		if err != nil {
+			return nil, err
+		}
+		allPolicies = append(allPolicies, policies.Items...)
+		if policies.Continue == "" {
+			break
+		}
+		opts.Continue = policies.Continue
 	}
 
-	snap := networkSnapshot{TotalPolicies: len(policies.Items)}
+	snap := networkSnapshot{TotalPolicies: len(allPolicies)}
 
 	nsSummary := make(map[string]*namespacePolicySummary)
-	for _, pol := range policies.Items {
+	for _, pol := range allPolicies {
 		s, ok := nsSummary[pol.Namespace]
 		if !ok {
 			s = &namespacePolicySummary{Namespace: pol.Namespace}

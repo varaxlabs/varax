@@ -16,8 +16,8 @@ var (
 
 	ViolationsTotal = promauto.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "varax_violations_total",
-			Help: "Total number of compliance violations",
+			Name: "varax_violations",
+			Help: "Current number of compliance violations by severity",
 		},
 		[]string{"severity", "framework"},
 	)
@@ -46,8 +46,8 @@ var (
 
 	ChecksTotal = promauto.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "varax_checks_total",
-			Help: "Total number of compliance checks by status",
+			Name: "varax_checks",
+			Help: "Current number of compliance checks by status",
 		},
 		[]string{"status"},
 	)

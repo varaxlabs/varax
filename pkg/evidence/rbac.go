@@ -8,6 +8,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
+const evidencePageSize int64 = 500
+
 type rbacSnapshot struct {
 	ClusterRoleCount        int      `json:"clusterRoleCount"`
 	ClusterRoleBindingCount int      `json:"clusterRoleBindingCount"`
@@ -21,41 +23,80 @@ func collectRBAC(ctx context.Context, client kubernetes.Interface) ([]EvidenceIt
 	now := time.Now().UTC()
 	snap := rbacSnapshot{}
 
-	crs, err := client.RbacV1().ClusterRoles().List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
-	snap.ClusterRoleCount = len(crs.Items)
-
-	crbs, err := client.RbacV1().ClusterRoleBindings().List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
-	snap.ClusterRoleBindingCount = len(crbs.Items)
-
-	for _, crb := range crbs.Items {
-		if crb.RoleRef.Name == "cluster-admin" {
-			snap.ClusterAdminBindings = append(snap.ClusterAdminBindings, crb.Name)
+	// ClusterRoles (paginated)
+	opts := metav1.ListOptions{Limit: evidencePageSize}
+	for {
+		crs, err := client.RbacV1().ClusterRoles().List(ctx, opts)
+		if err != nil {
+			return nil, err
 		}
+		snap.ClusterRoleCount += len(crs.Items)
+		if crs.Continue == "" {
+			break
+		}
+		opts.Continue = crs.Continue
 	}
 
-	roles, err := client.RbacV1().Roles("").List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
+	// ClusterRoleBindings (paginated)
+	opts = metav1.ListOptions{Limit: evidencePageSize}
+	for {
+		crbs, err := client.RbacV1().ClusterRoleBindings().List(ctx, opts)
+		if err != nil {
+			return nil, err
+		}
+		snap.ClusterRoleBindingCount += len(crbs.Items)
+		for _, crb := range crbs.Items {
+			if crb.RoleRef.Name == "cluster-admin" {
+				snap.ClusterAdminBindings = append(snap.ClusterAdminBindings, crb.Name)
+			}
+		}
+		if crbs.Continue == "" {
+			break
+		}
+		opts.Continue = crbs.Continue
 	}
-	snap.RoleCount = len(roles.Items)
 
-	rbs, err := client.RbacV1().RoleBindings("").List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
+	// Roles (paginated)
+	opts = metav1.ListOptions{Limit: evidencePageSize}
+	for {
+		roles, err := client.RbacV1().Roles("").List(ctx, opts)
+		if err != nil {
+			return nil, err
+		}
+		snap.RoleCount += len(roles.Items)
+		if roles.Continue == "" {
+			break
+		}
+		opts.Continue = roles.Continue
 	}
-	snap.RoleBindingCount = len(rbs.Items)
 
-	sas, err := client.CoreV1().ServiceAccounts("").List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
+	// RoleBindings (paginated)
+	opts = metav1.ListOptions{Limit: evidencePageSize}
+	for {
+		rbs, err := client.RbacV1().RoleBindings("").List(ctx, opts)
+		if err != nil {
+			return nil, err
+		}
+		snap.RoleBindingCount += len(rbs.Items)
+		if rbs.Continue == "" {
+			break
+		}
+		opts.Continue = rbs.Continue
 	}
-	snap.ServiceAccountCount = len(sas.Items)
+
+	// ServiceAccounts (paginated)
+	opts = metav1.ListOptions{Limit: evidencePageSize}
+	for {
+		sas, err := client.CoreV1().ServiceAccounts("").List(ctx, opts)
+		if err != nil {
+			return nil, err
+		}
+		snap.ServiceAccountCount += len(sas.Items)
+		if sas.Continue == "" {
+			break
+		}
+		opts.Continue = sas.Continue
+	}
 
 	return []EvidenceItem{{
 		Category:    "RBAC",
