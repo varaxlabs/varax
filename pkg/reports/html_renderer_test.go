@@ -203,7 +203,7 @@ func TestRenderReadinessHTML_Stdout(t *testing.T) {
 	old := os.Stdout
 	f, err := os.CreateTemp("", "stdout")
 	require.NoError(t, err)
-	defer os.Remove(f.Name())
+	defer func() { _ = os.Remove(f.Name()) }()
 	os.Stdout = f
 	defer func() { os.Stdout = old }()
 
