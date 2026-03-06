@@ -60,3 +60,6 @@ kubeconfig
 secrets.yaml
 secrets.*.yaml
 /varax
+
+# PRD docs
+varax-prd.md
