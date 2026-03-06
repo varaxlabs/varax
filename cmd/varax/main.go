@@ -81,6 +81,17 @@ func buildRESTConfig() (*rest.Config, error) {
 	return config, nil
 }
 
+func clusterName() string {
+	cfg, err := buildRESTConfig()
+	if err != nil {
+		return "unknown"
+	}
+	if cfg.Host != "" {
+		return cfg.Host
+	}
+	return "unknown"
+}
+
 func defaultDBPath() string {
 	home, err := os.UserHomeDir()
 	if err != nil {

@@ -32,16 +32,16 @@ func newEvidenceCmd() *cobra.Command {
 }
 
 func runEvidence(cmd *cobra.Command, args []string) error {
-	if evidenceControl == "" && !evidenceAll {
-		return fmt.Errorf("specify --control <ID> or --all")
-	}
-	if evidenceControl != "" && evidenceAll {
-		return fmt.Errorf("specify either --control or --all, not both")
+	switch {
+	case evidenceControl == "" && !evidenceAll:
+		return fmt.Errorf("must specify either --control or --all")
+	case evidenceControl != "" && evidenceAll:
+		return fmt.Errorf("cannot specify both --control and --all")
 	}
 
-	rf := reports.ReportFormat(evidenceFormat)
-	if rf != reports.FormatHTML && rf != reports.FormatJSON {
-		return fmt.Errorf("unsupported format: %s (use html or json)", evidenceFormat)
+	rf, err := reports.ParseReportFormat(evidenceFormat)
+	if err != nil {
+		return err
 	}
 
 	store, err := storage.NewBoltStore(defaultDBPath())
@@ -76,15 +76,16 @@ func runEvidence(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("failed to create output directory: %w", err)
 		}
 
+		ext := ".html"
+		if rf == reports.FormatJSON {
+			ext = ".json"
+		}
+
 		for _, cr := range complianceResult.ControlResults {
 			evidenceItems := reports.FilterEvidenceForControl(evidenceBundle, cr.Control.ID)
-			ext := ".html"
-			if rf == reports.FormatJSON {
-				ext = ".json"
-			}
 			outPath := filepath.Join(evidenceOutput, cr.Control.ID+ext)
 
-			if err := gen.GenerateControlDetail(outPath, rf, cr, evidenceItems, Version); err != nil {
+			if err := gen.GenerateControlDetail(outPath, rf, cr, evidenceItems); err != nil {
 				return fmt.Errorf("failed to generate %s: %w", cr.Control.ID, err)
 			}
 		}
@@ -94,25 +95,19 @@ func runEvidence(cmd *cobra.Command, args []string) error {
 	}
 
 	// Single control
-	var found bool
 	for _, cr := range complianceResult.ControlResults {
-		if cr.Control.ID == evidenceControl {
-			evidenceItems := reports.FilterEvidenceForControl(evidenceBundle, cr.Control.ID)
-			if err := gen.GenerateControlDetail(evidenceOutput, rf, cr, evidenceItems, Version); err != nil {
-				return fmt.Errorf("failed to generate control detail: %w", err)
-			}
-			found = true
-			break
+		if cr.Control.ID != evidenceControl {
+			continue
 		}
+		evidenceItems := reports.FilterEvidenceForControl(evidenceBundle, cr.Control.ID)
+		if err := gen.GenerateControlDetail(evidenceOutput, rf, cr, evidenceItems); err != nil {
+			return fmt.Errorf("failed to generate control detail: %w", err)
+		}
+		if evidenceOutput != "" && evidenceOutput != "-" {
+			fmt.Fprintf(os.Stderr, "Evidence written to %s\n", evidenceOutput)
+		}
+		return nil
 	}
 
-	if !found {
-		return fmt.Errorf("control %s not found in compliance results", evidenceControl)
-	}
-
-	if evidenceOutput != "" && evidenceOutput != "-" {
-		fmt.Fprintf(os.Stderr, "Evidence written to %s\n", evidenceOutput)
-	}
-
-	return nil
+	return fmt.Errorf("control %s not found in compliance results", evidenceControl)
 }

@@ -32,14 +32,13 @@ func newReportCmd() *cobra.Command {
 }
 
 func runReport(cmd *cobra.Command, args []string) error {
-	// Validate flags
-	rt := reports.ReportType(reportType)
-	if rt != reports.ReportTypeReadiness && rt != reports.ReportTypeExecutive {
-		return fmt.Errorf("unsupported report type: %s (use readiness or executive)", reportType)
+	rt, err := reports.ParseReportType(reportType)
+	if err != nil {
+		return err
 	}
-	rf := reports.ReportFormat(reportFormat)
-	if rf != reports.FormatHTML && rf != reports.FormatJSON {
-		return fmt.Errorf("unsupported format: %s (use html or json)", reportFormat)
+	rf, err := reports.ParseReportFormat(reportFormat)
+	if err != nil {
+		return err
 	}
 
 	store, err := storage.NewBoltStore(defaultDBPath())
@@ -79,7 +78,7 @@ func runReport(cmd *cobra.Command, args []string) error {
 
 	data := &reports.ReportData{
 		GeneratedAt:      time.Now().UTC(),
-		ClusterName:      "default",
+		ClusterName:      clusterName(),
 		Compliance:       complianceResult,
 		Scan:             scanResult,
 		Evidence:         evidenceBundle,

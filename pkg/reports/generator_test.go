@@ -194,7 +194,7 @@ func TestGenerateControlDetail_JSON(t *testing.T) {
 	err := g.GenerateControlDetail(outPath, FormatJSON, models.ControlResult{
 		Control: models.Control{ID: "CC6.1"},
 		Status:  models.ControlStatusPass,
-	}, nil, "1.0.0")
+	}, nil)
 	require.NoError(t, err)
 
 	content, err := os.ReadFile(outPath)
@@ -204,7 +204,7 @@ func TestGenerateControlDetail_JSON(t *testing.T) {
 
 func TestGenerateControlDetail_UnsupportedFormat(t *testing.T) {
 	g := NewGenerator("1.0.0")
-	err := g.GenerateControlDetail("", "pdf", models.ControlResult{}, nil, "1.0.0")
+	err := g.GenerateControlDetail("", "pdf", models.ControlResult{}, nil)
 	assert.Error(t, err)
 }
 
@@ -223,4 +223,30 @@ func TestTopFindingsCappedAt10(t *testing.T) {
 	}
 	g.populateComputedFields(data)
 	assert.Len(t, data.TopFindings, 10)
+}
+
+func TestParseReportType(t *testing.T) {
+	rt, err := ParseReportType("readiness")
+	require.NoError(t, err)
+	assert.Equal(t, ReportTypeReadiness, rt)
+
+	rt, err = ParseReportType("executive")
+	require.NoError(t, err)
+	assert.Equal(t, ReportTypeExecutive, rt)
+
+	_, err = ParseReportType("invalid")
+	assert.Error(t, err)
+}
+
+func TestParseReportFormat(t *testing.T) {
+	rf, err := ParseReportFormat("html")
+	require.NoError(t, err)
+	assert.Equal(t, FormatHTML, rf)
+
+	rf, err = ParseReportFormat("json")
+	require.NoError(t, err)
+	assert.Equal(t, FormatJSON, rf)
+
+	_, err = ParseReportFormat("pdf")
+	assert.Error(t, err)
 }

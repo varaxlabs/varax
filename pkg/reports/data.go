@@ -1,6 +1,7 @@
 package reports
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/varax/operator/pkg/evidence"
@@ -56,6 +57,30 @@ type ReportData struct {
 	CriticalCount   int
 	HighCount       int
 	TopFindings     []models.CheckResult
+}
+
+// ParseReportType validates and converts a string to ReportType.
+func ParseReportType(s string) (ReportType, error) {
+	switch ReportType(s) {
+	case ReportTypeReadiness:
+		return ReportTypeReadiness, nil
+	case ReportTypeExecutive:
+		return ReportTypeExecutive, nil
+	default:
+		return "", fmt.Errorf("unsupported report type: %s (use readiness or executive)", s)
+	}
+}
+
+// ParseReportFormat validates and converts a string to ReportFormat.
+func ParseReportFormat(s string) (ReportFormat, error) {
+	switch ReportFormat(s) {
+	case FormatHTML:
+		return FormatHTML, nil
+	case FormatJSON:
+		return FormatJSON, nil
+	default:
+		return "", fmt.Errorf("unsupported format: %s (use html or json)", s)
+	}
 }
 
 // ControlDetail is the template context for per-control evidence pages.

@@ -11,32 +11,38 @@ import (
 //go:embed templates/*.html
 var templateFS embed.FS
 
+var (
+	readinessTmpl    *template.Template
+	executiveTmpl    *template.Template
+	controlDetailTmpl *template.Template
+)
+
+func init() {
+	funcs := templateFuncs()
+	readinessTmpl = template.Must(
+		template.New("base.html").Funcs(funcs).ParseFS(templateFS, "templates/base.html", "templates/readiness.html"),
+	)
+	executiveTmpl = template.Must(
+		template.New("base.html").Funcs(funcs).ParseFS(templateFS, "templates/base.html", "templates/executive.html"),
+	)
+	controlDetailTmpl = template.Must(
+		template.New("control_detail.html").Funcs(funcs).ParseFS(templateFS, "templates/control_detail.html"),
+	)
+}
+
 func renderReadinessHTML(outputPath string, data *ReportData) error {
-	tmpl, err := template.New("base.html").Funcs(templateFuncs()).ParseFS(templateFS, "templates/base.html", "templates/readiness.html")
-	if err != nil {
-		return fmt.Errorf("parse readiness templates: %w", err)
-	}
 	return writeToFileOrStdout(outputPath, func(w io.Writer) error {
-		return tmpl.Execute(w, data)
+		return readinessTmpl.Execute(w, data)
 	})
 }
 
 func renderExecutiveHTML(outputPath string, data *ReportData) error {
-	tmpl, err := template.New("base.html").Funcs(templateFuncs()).ParseFS(templateFS, "templates/base.html", "templates/executive.html")
-	if err != nil {
-		return fmt.Errorf("parse executive templates: %w", err)
-	}
 	return writeToFileOrStdout(outputPath, func(w io.Writer) error {
-		return tmpl.Execute(w, data)
+		return executiveTmpl.Execute(w, data)
 	})
 }
 
 func renderControlDetailHTML(outputPath string, detail *ControlDetail, version string) error {
-	tmpl, err := template.New("control_detail.html").Funcs(templateFuncs()).ParseFS(templateFS, "templates/control_detail.html")
-	if err != nil {
-		return fmt.Errorf("parse control detail template: %w", err)
-	}
-
 	templateData := struct {
 		*ControlDetail
 		Version string
@@ -46,7 +52,7 @@ func renderControlDetailHTML(outputPath string, detail *ControlDetail, version s
 	}
 
 	return writeToFileOrStdout(outputPath, func(w io.Writer) error {
-		return tmpl.Execute(w, templateData)
+		return controlDetailTmpl.Execute(w, templateData)
 	})
 }
 

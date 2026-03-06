@@ -50,7 +50,6 @@ func (g *Generator) GenerateControlDetail(
 	format ReportFormat,
 	control models.ControlResult,
 	evidenceItems []evidence.EvidenceItem,
-	version string,
 ) error {
 	detail := &ControlDetail{
 		Control:  control,
@@ -61,7 +60,7 @@ func (g *Generator) GenerateControlDetail(
 	case FormatJSON:
 		return g.writeJSON(outputPath, detail)
 	case FormatHTML:
-		return renderControlDetailHTML(outputPath, detail, version)
+		return renderControlDetailHTML(outputPath, detail, g.version)
 	default:
 		return fmt.Errorf("unsupported format: %s", format)
 	}
@@ -86,6 +85,7 @@ func (g *Generator) populateComputedFields(data *ReportData) {
 	}
 
 	if data.Scan != nil {
+		var failed []models.CheckResult
 		for _, r := range data.Scan.Results {
 			if r.Status != models.StatusFail {
 				continue
@@ -96,14 +96,7 @@ func (g *Generator) populateComputedFields(data *ReportData) {
 			case models.SeverityHigh:
 				data.HighCount++
 			}
-		}
-
-		// Top findings: failed checks sorted by severity
-		var failed []models.CheckResult
-		for _, r := range data.Scan.Results {
-			if r.Status == models.StatusFail {
-				failed = append(failed, r)
-			}
+			failed = append(failed, r)
 		}
 		sort.Slice(failed, func(i, j int) bool {
 			return severityRank(failed[i].Severity) > severityRank(failed[j].Severity)
