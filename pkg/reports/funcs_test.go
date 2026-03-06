@@ -105,20 +105,15 @@ func TestTruncate(t *testing.T) {
 
 func TestTemplateFuncs(t *testing.T) {
 	funcs := templateFuncs()
-	assert.NotNil(t, funcs["statusClass"])
-	assert.NotNil(t, funcs["severityClass"])
-	assert.NotNil(t, funcs["formatTime"])
-	assert.NotNil(t, funcs["formatDate"])
-	assert.NotNil(t, funcs["formatScore"])
-	assert.NotNil(t, funcs["scoreClass"])
-	assert.NotNil(t, funcs["jsonPretty"])
-	assert.NotNil(t, funcs["add"])
-	assert.NotNil(t, funcs["sub"])
-	assert.NotNil(t, funcs["seq"])
-	assert.NotNil(t, funcs["upper"])
-	assert.NotNil(t, funcs["css"])
-	assert.NotNil(t, funcs["controlStatusClass"])
-	assert.NotNil(t, funcs["truncate"])
+	expected := []string{
+		"statusClass", "severityClass", "formatTime", "formatDate",
+		"formatScore", "scoreClass", "jsonPretty", "add", "sub",
+		"seq", "upper", "css", "controlStatusClass", "truncate",
+		"remediation", "hasRemediation", "controlEvidence",
+	}
+	for _, name := range expected {
+		assert.NotNil(t, funcs[name], "missing template func: %s", name)
+	}
 
 	// Test add/sub via FuncMap
 	addFn := funcs["add"].(func(int, int) int)

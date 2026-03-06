@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
 )
 
@@ -25,7 +26,17 @@ func templateFuncs() template.FuncMap {
 		"upper":         strings.ToUpper,
 		"css":           func() template.CSS { return template.CSS(reportCSS) },
 		"controlStatusClass": controlStatusClass,
-		"truncate":      truncate,
+		"truncate":           truncate,
+		"remediation":        Remediation,
+		"hasRemediation": func(id string) bool {
+			return Remediation(id) != ""
+		},
+		"controlEvidence": func(m map[string][]evidence.EvidenceItem, id string) []evidence.EvidenceItem {
+			if m == nil {
+				return nil
+			}
+			return m[id]
+		},
 	}
 }
 
