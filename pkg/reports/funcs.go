@@ -24,7 +24,7 @@ func templateFuncs() template.FuncMap {
 		"sub":           func(a, b int) int { return a - b },
 		"seq":           seq,
 		"upper":         strings.ToUpper,
-		"css":           func() template.CSS { return template.CSS(reportCSS) },
+		"css": func() template.CSS { return template.CSS(reportCSS) }, // #nosec G203 -- reportCSS is a hardcoded constant, not user input
 		"controlStatusClass": controlStatusClass,
 		"truncate":           truncate,
 		"remediation":        Remediation,
