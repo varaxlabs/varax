@@ -165,6 +165,36 @@ func TestNewPruneCmd(t *testing.T) {
 	assert.Equal(t, "720h0m0s", f.DefValue)
 }
 
+func TestNewReportCmd(t *testing.T) {
+	cmd := newReportCmd()
+	assert.Equal(t, "report", cmd.Use)
+	assert.NotEmpty(t, cmd.Short)
+
+	f := cmd.Flags()
+	assert.NotNil(t, f.Lookup("framework"))
+	assert.NotNil(t, f.Lookup("format"))
+	assert.NotNil(t, f.Lookup("type"))
+	assert.NotNil(t, f.Lookup("output"))
+
+	assert.Equal(t, "soc2", f.Lookup("framework").DefValue)
+	assert.Equal(t, "html", f.Lookup("format").DefValue)
+	assert.Equal(t, "readiness", f.Lookup("type").DefValue)
+}
+
+func TestNewEvidenceCmd(t *testing.T) {
+	cmd := newEvidenceCmd()
+	assert.Equal(t, "evidence", cmd.Use)
+	assert.NotEmpty(t, cmd.Short)
+
+	f := cmd.Flags()
+	assert.NotNil(t, f.Lookup("control"))
+	assert.NotNil(t, f.Lookup("all"))
+	assert.NotNil(t, f.Lookup("format"))
+	assert.NotNil(t, f.Lookup("output"))
+
+	assert.Equal(t, "html", f.Lookup("format").DefValue)
+}
+
 func TestBuildRESTConfig_FromEnv(t *testing.T) {
 	origKubeconfig := kubeconfig
 	kubeconfig = ""

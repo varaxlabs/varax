@@ -37,6 +37,8 @@ func main() {
 	rootCmd.AddCommand(newStatusCmd())
 	rootCmd.AddCommand(newOperatorCmd())
 	rootCmd.AddCommand(newPruneCmd())
+	rootCmd.AddCommand(newReportCmd())
+	rootCmd.AddCommand(newEvidenceCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
