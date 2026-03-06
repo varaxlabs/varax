@@ -49,6 +49,17 @@ type ReportData struct {
 	// History (optional, for trend analysis)
 	HistoricalScores []float64
 
+	// Scan metadata
+	ScanDuration string
+	TotalChecks  int
+	PassCount    int
+	FailCount    int
+	WarnCount    int
+	SkipCount    int
+
+	// Per-control evidence (populated by generator)
+	ControlEvidence map[string][]evidence.EvidenceItem
+
 	// Computed fields populated by the generator
 	PassControls    int
 	FailControls    int

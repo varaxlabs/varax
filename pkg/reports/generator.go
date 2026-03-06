@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"time"
 
 	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
@@ -67,8 +68,29 @@ func (g *Generator) GenerateControlDetail(
 }
 
 func (g *Generator) populateComputedFields(data *ReportData) {
+	// Populate scan metadata
+	if data.Scan != nil {
+		data.ScanDuration = data.Scan.Duration.Round(time.Millisecond).String()
+		data.TotalChecks = data.Scan.Summary.TotalChecks
+		data.PassCount = data.Scan.Summary.PassCount
+		data.FailCount = data.Scan.Summary.FailCount
+		data.WarnCount = data.Scan.Summary.WarnCount
+		data.SkipCount = data.Scan.Summary.SkipCount
+	}
+
 	if data.Compliance == nil {
 		return
+	}
+
+	// Build per-control evidence map
+	if data.Evidence != nil {
+		data.ControlEvidence = make(map[string][]evidence.EvidenceItem, len(data.Compliance.ControlResults))
+		for _, cr := range data.Compliance.ControlResults {
+			items := FilterEvidenceForControl(data.Evidence, cr.Control.ID)
+			if len(items) > 0 {
+				data.ControlEvidence[cr.Control.ID] = items
+			}
+		}
 	}
 
 	for _, cr := range data.Compliance.ControlResults {
