@@ -83,7 +83,7 @@ func runEvidence(cmd *cobra.Command, args []string) error {
 
 		for _, cr := range complianceResult.ControlResults {
 			evidenceItems := reports.FilterEvidenceForControl(evidenceBundle, cr.Control.ID)
-			outPath := filepath.Join(evidenceOutput, cr.Control.ID+ext)
+			outPath := filepath.Join(evidenceOutput, filepath.Base(cr.Control.ID)+ext)
 
 			if err := gen.GenerateControlDetail(outPath, rf, cr, evidenceItems); err != nil {
 				return fmt.Errorf("failed to generate %s: %w", cr.Control.ID, err)

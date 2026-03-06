@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 //go:embed templates/*.html
@@ -61,7 +62,7 @@ func writeToFileOrStdout(path string, fn func(w io.Writer) error) error {
 		return fn(os.Stdout)
 	}
 
-	f, err := os.Create(path)
+	f, err := os.OpenFile(filepath.Clean(path), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		return fmt.Errorf("create output file: %w", err)
 	}
