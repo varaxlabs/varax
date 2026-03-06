@@ -1,0 +1,84 @@
+{{define "content"}}
+<div class="cover">
+    <h1>SOC2 Executive Summary</h1>
+    <div class="subtitle">{{.ClusterName}} &mdash; {{formatDate .GeneratedAt}}</div>
+</div>
+
+<div class="section">
+    <h2 class="section-title">Compliance Score</h2>
+    <div class="score-gauge {{scoreClass .Compliance.Score}}">
+        <div class="score-value">{{formatScore .Compliance.Score}}</div>
+        <div class="score-bar-container">
+            <div class="score-bar" style="width: {{formatScore .Compliance.Score}}"></div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2 class="section-title">Control Summary</h2>
+    <div class="summary-grid">
+        <div class="summary-card card-pass">
+            <div class="count">{{.PassControls}}</div>
+            <div class="label">Passing</div>
+        </div>
+        <div class="summary-card card-fail">
+            <div class="count">{{.FailControls}}</div>
+            <div class="label">Failing</div>
+        </div>
+        <div class="summary-card card-partial">
+            <div class="count">{{.PartialControls}}</div>
+            <div class="label">Partial</div>
+        </div>
+        <div class="summary-card card-na">
+            <div class="count">{{.NAControls}}</div>
+            <div class="label">Not Assessed</div>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Control</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Violations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Compliance.ControlResults}}
+            <tr>
+                <td>{{.Control.ID}}</td>
+                <td>{{.Control.Name}}</td>
+                <td><span class="badge {{controlStatusClass .Status}}">{{.Status}}</span></td>
+                <td>{{.ViolationCount}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+
+{{if .TopFindings}}
+<div class="section">
+    <h2 class="section-title">Top Findings</h2>
+    {{$findings := .TopFindings}}
+    {{range $i, $f := $findings}}{{if lt $i 5}}
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge {{severityClass $f.Severity}}">{{$f.Severity}}</span>
+            <span class="finding-id">{{$f.ID}}</span>
+            <span>{{$f.Name}}</span>
+        </div>
+        <div class="finding-message">{{$f.Message}}</div>
+    </div>
+    {{end}}{{end}}
+</div>
+{{end}}
+
+{{if ge (len .HistoricalScores) 2}}
+<div class="section">
+    <h2 class="section-title">Trend</h2>
+    {{$prev := index .HistoricalScores (sub (len .HistoricalScores) 2)}}
+    {{$curr := index .HistoricalScores (sub (len .HistoricalScores) 1)}}
+    <p>Previous scan score: {{formatScore $prev}} &rarr; Current: {{formatScore $curr}}</p>
+</div>
+{{end}}
+{{end}}

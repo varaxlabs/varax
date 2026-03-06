@@ -1,0 +1,133 @@
+{{define "content"}}
+<div class="cover">
+    <h1>SOC2 Readiness Assessment</h1>
+    <div class="subtitle">{{.ClusterName}} &mdash; {{formatDate .GeneratedAt}} &mdash; {{.Compliance.Framework}}</div>
+</div>
+
+<div class="section">
+    <h2 class="section-title">Executive Summary</h2>
+    <div class="score-gauge {{scoreClass .Compliance.Score}}">
+        <div class="score-value">{{formatScore .Compliance.Score}}</div>
+        <div class="score-bar-container">
+            <div class="score-bar" style="width: {{formatScore .Compliance.Score}}"></div>
+        </div>
+    </div>
+    <div class="summary-grid">
+        <div class="summary-card card-pass">
+            <div class="count">{{.PassControls}}</div>
+            <div class="label">Passing</div>
+        </div>
+        <div class="summary-card card-fail">
+            <div class="count">{{.FailControls}}</div>
+            <div class="label">Failing</div>
+        </div>
+        <div class="summary-card card-partial">
+            <div class="count">{{.PartialControls}}</div>
+            <div class="label">Partial</div>
+        </div>
+        <div class="summary-card card-na">
+            <div class="count">{{.NAControls}}</div>
+            <div class="label">Not Assessed</div>
+        </div>
+    </div>
+    {{if or (gt .CriticalCount 0) (gt .HighCount 0)}}
+    <p><strong>Attention:</strong> {{.CriticalCount}} critical and {{.HighCount}} high severity findings require immediate remediation.</p>
+    {{end}}
+</div>
+
+<div class="section">
+    <h2 class="section-title">Control Assessment</h2>
+    {{range .Compliance.ControlResults}}
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>{{.Control.ID}} &mdash; {{.Control.Name}}</h3>
+            <span class="badge {{controlStatusClass .Status}}">{{.Status}}</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">{{.Control.Description}}</div>
+            {{if .CheckResults}}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .CheckResults}}
+                    <tr>
+                        <td>{{.ID}}</td>
+                        <td>{{.Name}}</td>
+                        <td><span class="badge {{severityClass .Severity}}">{{.Severity}}</span></td>
+                        <td><span class="badge {{statusClass .Status}}">{{.Status}}</span></td>
+                        <td>{{truncate .Message 120}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+            {{end}}
+        </div>
+    </div>
+    {{end}}
+</div>
+
+{{if .HistoricalScores}}
+<div class="section">
+    <h2 class="section-title">Score Trend</h2>
+    <div class="history-chart">
+        {{range $i, $score := .HistoricalScores}}
+        <div class="history-bar {{scoreClass $score}}" style="height: {{formatScore $score}}; background: {{if ge $score 80.0}}#38a169{{else if ge $score 50.0}}#d69e2e{{else}}#e53e3e{{end}}">
+            <span class="history-bar-label">{{formatScore $score}}</span>
+        </div>
+        {{end}}
+    </div>
+</div>
+{{end}}
+
+{{if .TopFindings}}
+<div class="section">
+    <h2 class="section-title">Top Findings</h2>
+    {{range .TopFindings}}
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge {{severityClass .Severity}}">{{.Severity}}</span>
+            <span class="finding-id">{{.ID}}</span>
+            <span>{{.Name}}</span>
+        </div>
+        <div class="finding-message">{{.Message}}</div>
+    </div>
+    {{end}}
+</div>
+{{end}}
+
+{{if .Scan}}
+<div class="section">
+    <h2 class="section-title">Appendix: Full Check Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Benchmark</th>
+                <th>Severity</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Scan.Results}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.Benchmark}}</td>
+                <td><span class="badge {{severityClass .Severity}}">{{.Severity}}</span></td>
+                <td><span class="badge {{statusClass .Status}}">{{.Status}}</span></td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}
+{{end}}
