@@ -12,6 +12,14 @@
             <div class="score-bar" style="width: {{formatScore .Compliance.Score}}"></div>
         </div>
     </div>
+    {{if gt .TotalChecks 0}}
+    <div class="scan-meta">
+        <span><strong>{{.TotalChecks}}</strong> checks executed</span>
+        &mdash; <span><strong>{{.PassCount}}</strong> pass</span>,
+        <span><strong>{{.FailCount}}</strong> fail</span>
+        {{if .ScanDuration}}&mdash; <span>completed in {{.ScanDuration}}</span>{{end}}
+    </div>
+    {{end}}
 </div>
 
 <div class="section">
