@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
 )
 
@@ -249,4 +250,122 @@ func TestParseReportFormat(t *testing.T) {
 
 	_, err = ParseReportFormat("pdf")
 	assert.Error(t, err)
+}
+
+func TestPopulateComputedFields_ScanMetadata(t *testing.T) {
+	g := NewGenerator("test")
+	data := &ReportData{
+		Compliance: &models.ComplianceResult{},
+		Scan: &models.ScanResult{
+			Duration: 2500 * time.Millisecond,
+			Summary: models.ScanSummary{
+				TotalChecks: 20,
+				PassCount:   15,
+				FailCount:   3,
+				WarnCount:   1,
+				SkipCount:   1,
+			},
+		},
+	}
+	g.populateComputedFields(data)
+
+	assert.Equal(t, "2.5s", data.ScanDuration)
+	assert.Equal(t, 20, data.TotalChecks)
+	assert.Equal(t, 15, data.PassCount)
+	assert.Equal(t, 3, data.FailCount)
+	assert.Equal(t, 1, data.WarnCount)
+	assert.Equal(t, 1, data.SkipCount)
+}
+
+func TestPopulateComputedFields_ControlEvidence(t *testing.T) {
+	g := NewGenerator("test")
+	data := &ReportData{
+		Compliance: &models.ComplianceResult{
+			ControlResults: []models.ControlResult{
+				{Control: models.Control{ID: "CC6.1"}},
+				{Control: models.Control{ID: "CC7.1"}},
+			},
+		},
+		Evidence: &evidence.EvidenceBundle{
+			Items: []evidence.EvidenceItem{
+				{Category: "RBAC", Description: "RBAC check"},
+				{Category: "Audit", Description: "Audit logs"},
+				{Category: "Network", Description: "Network policy"},
+			},
+		},
+	}
+	g.populateComputedFields(data)
+
+	require.NotNil(t, data.ControlEvidence)
+	// CC6.1 maps to RBAC
+	assert.Len(t, data.ControlEvidence["CC6.1"], 1)
+	assert.Equal(t, "RBAC", data.ControlEvidence["CC6.1"][0].Category)
+	// CC7.1 maps to Audit
+	assert.Len(t, data.ControlEvidence["CC7.1"], 1)
+	assert.Equal(t, "Audit", data.ControlEvidence["CC7.1"][0].Category)
+}
+
+func TestPopulateComputedFields_NilEvidence(t *testing.T) {
+	g := NewGenerator("test")
+	data := &ReportData{
+		Compliance: &models.ComplianceResult{
+			ControlResults: []models.ControlResult{
+				{Control: models.Control{ID: "CC6.1"}},
+			},
+		},
+	}
+	g.populateComputedFields(data)
+	assert.Nil(t, data.ControlEvidence)
+}
+
+func TestGenerate_ReadinessHTML_WithEvidence(t *testing.T) {
+	tmpDir := t.TempDir()
+	outPath := filepath.Join(tmpDir, "report.html")
+
+	g := NewGenerator("1.0.0")
+	data := &ReportData{
+		GeneratedAt: time.Now(),
+		ClusterName: "test",
+		Compliance: &models.ComplianceResult{
+			Framework: "SOC2",
+			Score:     70.0,
+			ControlResults: []models.ControlResult{
+				{
+					Control: models.Control{ID: "CC6.1", Name: "Access Control"},
+					Status:  models.ControlStatusFail,
+					CheckResults: []models.CheckResult{
+						{ID: "CIS-5.1.1", Name: "Cluster Admin", Status: models.StatusFail, Severity: models.SeverityHigh},
+					},
+				},
+			},
+		},
+		Scan: &models.ScanResult{
+			Duration: 3 * time.Second,
+			Summary:  models.ScanSummary{TotalChecks: 20, PassCount: 18, FailCount: 2},
+			Results: []models.CheckResult{
+				{ID: "CIS-5.1.1", Status: models.StatusFail, Severity: models.SeverityHigh},
+			},
+		},
+		Evidence: &evidence.EvidenceBundle{
+			Items: []evidence.EvidenceItem{
+				{Category: "RBAC", Description: "ClusterRoleBindings audit"},
+			},
+		},
+	}
+
+	err := g.Generate(ReportRequest{
+		Type:       ReportTypeReadiness,
+		Format:     FormatHTML,
+		OutputPath: outPath,
+	}, data)
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(outPath)
+	require.NoError(t, err)
+	html := string(content)
+
+	assert.Contains(t, html, "ClusterRoleBindings audit")
+	assert.Contains(t, html, "Remediation")
+	assert.Contains(t, html, "Scan Overview")
+	assert.Contains(t, html, "20")
 }
