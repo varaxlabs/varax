@@ -234,7 +234,32 @@ tbody tr:hover {
     margin-bottom: 12px;
 }
 
+/* Scan Metadata */
+.scan-meta {
+    color: #4a5568;
+    font-size: 14px;
+    margin: 12px 0;
+    line-height: 1.8;
+}
+
+.scan-meta-item {
+    margin-bottom: 2px;
+}
+
 /* Evidence Section */
+.evidence-section {
+    margin: 12px 0;
+}
+
+.evidence-section h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a365d;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .evidence-item {
     background: #f7fafc;
     border: 1px solid #e2e8f0;
@@ -284,6 +309,39 @@ tbody tr:hover {
     transform: translateX(-50%);
     font-size: 10px;
     color: #718096;
+}
+
+/* Remediation */
+.remediation-box {
+    background: #fffff0;
+    border: 1px solid #fefcbf;
+    border-left: 4px solid #d69e2e;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-size: 13px;
+}
+
+.remediation-label {
+    font-weight: 600;
+    color: #975a16;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.remediation-text {
+    color: #744210;
+}
+
+.finding-remediation {
+    color: #975a16;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 4px;
+    padding-left: 12px;
+    border-left: 2px solid #d69e2e;
 }
 
 /* Findings List */
@@ -369,6 +427,25 @@ tbody tr:hover {
     tbody tr:nth-child(even) {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+    }
+
+    .remediation-box {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        page-break-inside: avoid;
+    }
+
+    .finding {
+        page-break-inside: avoid;
+    }
+
+    p, li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2, h3 {
+        page-break-after: avoid;
     }
 }
 `
