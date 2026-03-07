@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -45,7 +46,7 @@ func runGenerateKeypair(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to write private.key: %w", err)
 	}
 
-	if err := os.WriteFile("public.key", pub, 0644); err != nil {
+	if err := os.WriteFile("public.key", pub, 0600); err != nil {
 		return fmt.Errorf("failed to write public.key: %w", err)
 	}
 
@@ -92,7 +93,7 @@ func newSignCmd() *cobra.Command {
 }
 
 func runSign(cmd *cobra.Command, args []string) error {
-	privBytes, err := os.ReadFile(signPrivateKey)
+	privBytes, err := os.ReadFile(filepath.Clean(signPrivateKey))
 	if err != nil {
 		return fmt.Errorf("failed to read private key: %w", err)
 	}
