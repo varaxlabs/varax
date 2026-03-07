@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 
@@ -17,6 +18,7 @@ func newLicenseCmd() *cobra.Command {
 	}
 	cmd.AddCommand(newLicenseStatusCmd())
 	cmd.AddCommand(newLicenseActivateCmd())
+	cmd.AddCommand(newLicenseRefreshCmd())
 	return cmd
 }
 
@@ -115,6 +117,68 @@ func printLicenseJSON(l *license.License) error {
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")
 	return enc.Encode(out)
+}
+
+func newLicenseRefreshCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "refresh",
+		Short: "Refresh license key from Varax licensing server",
+		RunE:  runLicenseRefresh,
+	}
+}
+
+func runLicenseRefresh(cmd *cobra.Command, args []string) error {
+	store, err := storage.NewBoltStore(defaultDBPath())
+	if err != nil {
+		return fmt.Errorf("failed to open storage: %w", err)
+	}
+	defer func() { _ = store.Close() }()
+
+	key := os.Getenv("VARAX_LICENSE")
+	if key == "" {
+		key, _ = store.GetLicense()
+	}
+	if key == "" {
+		return fmt.Errorf("no license to refresh. Activate one first with: varax license activate <KEY>")
+	}
+
+	client := license.NewClient(os.Getenv("VARAX_API_URL"), nil)
+	newKey, err := client.RefreshLicense(cmd.Context(), key)
+	if err != nil {
+		switch {
+		case errors.Is(err, license.ErrSubscriptionInactive):
+			return fmt.Errorf("subscription is no longer active. Renew at: https://varax.io/pricing")
+		case errors.Is(err, license.ErrLicenseNotFound):
+			return fmt.Errorf("license not recognized by server. Contact support at: https://varax.io/support")
+		case errors.Is(err, license.ErrRateLimited):
+			return fmt.Errorf("rate limited — please try again later")
+		case errors.Is(err, license.ErrServerError):
+			return fmt.Errorf("licensing server error — please try again later")
+		default:
+			return fmt.Errorf("failed to refresh license: %w", err)
+		}
+	}
+
+	l, err := license.ParseAndValidate(newKey)
+	if err != nil {
+		return fmt.Errorf("server returned invalid license key: %w", err)
+	}
+
+	if err := store.SaveLicense(newKey); err != nil {
+		return fmt.Errorf("failed to save refreshed license: %w", err)
+	}
+
+	format := resolveOutputFormat()
+	if format == "json" {
+		return printLicenseJSON(l)
+	}
+
+	fmt.Printf("License refreshed successfully.\n")
+	fmt.Printf("Organization: %s\n", l.Org)
+	fmt.Printf("Plan:         %s\n", l.Plan)
+	fmt.Printf("Expires:      %s\n", l.Expires.Format("2006-01-02"))
+	fmt.Printf("Days left:    %d\n", l.DaysUntilExpiry())
+	return nil
 }
 
 func resolveOutputFormat() string {
