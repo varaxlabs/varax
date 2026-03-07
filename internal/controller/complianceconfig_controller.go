@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -13,9 +14,12 @@ import (
 
 	compliancev1alpha1 "github.com/varax/operator/api/v1alpha1"
 	"github.com/varax/operator/pkg/compliance"
+	"github.com/varax/operator/pkg/license"
 	"github.com/varax/operator/pkg/metrics"
 	"github.com/varax/operator/pkg/models"
 	"github.com/varax/operator/pkg/providers"
+	"github.com/varax/operator/pkg/remediation"
+	"github.com/varax/operator/pkg/remediation/remediators"
 	awsprovider "github.com/varax/operator/pkg/providers/aws"
 	azureprovider "github.com/varax/operator/pkg/providers/azure"
 	gkeprovider "github.com/varax/operator/pkg/providers/gke"
@@ -37,7 +41,10 @@ type ComplianceConfigReconciler struct {
 // +kubebuilder:rbac:groups=compliance.varax.io,resources=complianceconfigs/finalizers,verbs=update
 // +kubebuilder:rbac:groups="",resources=pods;namespaces;serviceaccounts,verbs=get;list;watch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles;clusterrolebindings;roles;rolebindings,verbs=get;list;watch
-// +kubebuilder:rbac:groups=networking.k8s.io,resources=networkpolicies,verbs=get;list;watch
+// +kubebuilder:rbac:groups=networking.k8s.io,resources=networkpolicies,verbs=get;list;watch;create
+// +kubebuilder:rbac:groups=apps,resources=deployments;statefulsets;daemonsets;replicasets,verbs=get;list;watch;patch
+// +kubebuilder:rbac:groups="",resources=pods;serviceaccounts,verbs=patch
+// +kubebuilder:rbac:groups="",resources=limitranges,verbs=create
 
 func (r *ComplianceConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
@@ -118,6 +125,36 @@ func (r *ComplianceConfigReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 	// Record Prometheus metrics
 	recordMetrics(complianceResult, scanResult)
+
+	// Auto-remediation (gated by CRD spec + license)
+	if config.Spec.Remediation.AutoRemediate {
+		if hasRemediationLicense() {
+			reg := remediation.NewRemediatorRegistry()
+			remediators.RegisterAll(reg)
+			engine := remediation.NewEngine(reg, clientset, config.Spec.Remediation.DryRun)
+
+			plan, planErr := engine.PlanFromScanResult(ctx, scanResult)
+			if planErr != nil {
+				logger.Error(planErr, "failed to plan remediation")
+			} else if len(plan.Actions) > 0 {
+				report, execErr := engine.Execute(ctx, plan, nil)
+				if execErr != nil {
+					logger.Error(execErr, "remediation execution failed")
+				} else {
+					logger.Info("Remediation complete",
+						"dryRun", report.DryRun,
+						"applied", report.Summary.AppliedCount,
+						"dryRunCount", report.Summary.DryRunCount,
+						"skipped", report.Summary.SkippedCount,
+						"failed", report.Summary.FailedCount,
+					)
+					recordRemediationMetrics(report)
+				}
+			}
+		} else {
+			logger.Info("Remediation requires a Pro license — skipping")
+		}
+	}
 
 	// Requeue based on scanning interval (minimum 1 minute to prevent DoS)
 	interval := 5 * time.Minute
@@ -279,6 +316,26 @@ func detectGKEClusterInfo(ctx context.Context, clientset kubernetes.Interface) (
 		return nil, err
 	}
 	return gkeprovider.DetectGKEClusterInfo(nodes.Items)
+}
+
+func hasRemediationLicense() bool {
+	key := os.Getenv("VARAX_LICENSE")
+	if key == "" {
+		return false
+	}
+	l, err := license.ParseAndValidate(key)
+	if err != nil {
+		return false
+	}
+	return l.HasFeature(license.FeatureRemediation)
+}
+
+func recordRemediationMetrics(report *remediation.RemediationReport) {
+	metrics.RemediationActions.WithLabelValues("applied").Set(float64(report.Summary.AppliedCount))
+	metrics.RemediationActions.WithLabelValues("dry_run").Set(float64(report.Summary.DryRunCount))
+	metrics.RemediationActions.WithLabelValues("skipped").Set(float64(report.Summary.SkippedCount))
+	metrics.RemediationActions.WithLabelValues("failed").Set(float64(report.Summary.FailedCount))
+	metrics.RemediationLastTimestamp.Set(float64(report.Timestamp.Unix()))
 }
 
 func recordMetrics(complianceResult *models.ComplianceResult, scanResult *models.ScanResult) {
