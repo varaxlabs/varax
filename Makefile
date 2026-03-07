@@ -14,7 +14,7 @@ LDFLAGS := -ldflags "\
 
 CONTROLLER_GEN ?= $(shell which controller-gen 2>/dev/null)
 
-.PHONY: all build test generate manifests fmt vet clean docker-build
+.PHONY: all build test generate manifests fmt vet clean docker-build examples
 
 all: fmt vet build
 
@@ -49,3 +49,6 @@ coverage-html: test
 
 lint:
 	golangci-lint run ./...
+
+examples:
+	go run examples/generate.go
