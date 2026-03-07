@@ -34,9 +34,8 @@ func (c *kubeletCheck) Run(ctx context.Context, client kubernetes.Interface) mod
 	result := baseResult(c)
 
 	if isManagedCluster(ctx, client) {
-		// Managed clusters handle kubelet config
-		result.Status = models.StatusPass
-		result.Message = "Kubelet configuration is managed by cloud provider"
+		result.Status = models.StatusProviderManaged
+		result.Message = "Kubelet configuration managed by cloud provider — inherited control"
 		return result
 	}
 

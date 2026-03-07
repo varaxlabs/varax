@@ -189,6 +189,8 @@ func filterByBenchmark(result *models.ScanResult, benchmark string) *models.Scan
 			filtered.Summary.WarnCount++
 		case models.StatusSkip:
 			filtered.Summary.SkipCount++
+		case models.StatusProviderManaged:
+			filtered.Summary.ProviderManagedCount++
 		}
 	}
 	return filtered

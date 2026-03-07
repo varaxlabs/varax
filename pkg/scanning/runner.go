@@ -102,6 +102,8 @@ func computeSummary(results []models.CheckResult) models.ScanSummary {
 			s.WarnCount++
 		case models.StatusSkip:
 			s.SkipCount++
+		case models.StatusProviderManaged:
+			s.ProviderManagedCount++
 		}
 	}
 	return s

@@ -17,10 +17,11 @@ const (
 type CheckStatus string
 
 const (
-	StatusPass CheckStatus = "PASS"
-	StatusFail CheckStatus = "FAIL"
-	StatusWarn CheckStatus = "WARN"
-	StatusSkip CheckStatus = "SKIP"
+	StatusPass            CheckStatus = "PASS"
+	StatusFail            CheckStatus = "FAIL"
+	StatusWarn            CheckStatus = "WARN"
+	StatusSkip            CheckStatus = "SKIP"
+	StatusProviderManaged CheckStatus = "PROVIDER_MANAGED"
 )
 
 // Resource identifies a Kubernetes resource involved in a check result.
@@ -53,11 +54,12 @@ type CheckResult struct {
 
 // ScanSummary aggregates counts from a scan run.
 type ScanSummary struct {
-	TotalChecks int `json:"totalChecks"`
-	PassCount   int `json:"passCount"`
-	FailCount   int `json:"failCount"`
-	WarnCount   int `json:"warnCount"`
-	SkipCount   int `json:"skipCount"`
+	TotalChecks          int `json:"totalChecks"`
+	PassCount            int `json:"passCount"`
+	FailCount            int `json:"failCount"`
+	WarnCount            int `json:"warnCount"`
+	SkipCount            int `json:"skipCount"`
+	ProviderManagedCount int `json:"providerManagedCount"`
 }
 
 // ScanResult contains all results from a single scan run.

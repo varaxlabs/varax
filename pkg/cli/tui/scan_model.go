@@ -65,7 +65,7 @@ func (m scanModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.total = msg.Total
 		m.current = msg.Current.Name
 		switch msg.Current.Status {
-		case models.StatusPass:
+		case models.StatusPass, models.StatusProviderManaged:
 			m.passCount++
 		case models.StatusFail:
 			m.failCount++

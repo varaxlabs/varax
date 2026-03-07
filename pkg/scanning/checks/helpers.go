@@ -88,12 +88,12 @@ func baseResult(c scanning.Check) models.CheckResult {
 	}
 }
 
-// controlPlaneCheckSkip returns a skip result for managed clusters where
-// control plane components are not accessible.
-func controlPlaneCheckSkip(c scanning.Check) models.CheckResult {
+// controlPlaneProviderManaged returns a provider-managed result for managed
+// clusters where control plane components are operated by the cloud provider.
+func controlPlaneProviderManaged(c scanning.Check) models.CheckResult {
 	result := baseResult(c)
-	result.Status = models.StatusSkip
-	result.Message = "Control plane not accessible on managed cluster"
+	result.Status = models.StatusProviderManaged
+	result.Message = "Managed by cloud provider — inherited control"
 	return result
 }
 
@@ -103,7 +103,7 @@ func runControlPlaneArgCheck(ctx context.Context, client kubernetes.Interface, c
 	result := baseResult(c)
 
 	if isManagedCluster(ctx, client) {
-		return controlPlaneCheckSkip(c)
+		return controlPlaneProviderManaged(c)
 	}
 
 	pod, err := getControlPlanePod(ctx, client, component)

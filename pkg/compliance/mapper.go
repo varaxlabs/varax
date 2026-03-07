@@ -82,7 +82,7 @@ func deriveControlStatus(checks []models.CheckResult) models.ControlStatus {
 
 	for _, c := range checks {
 		switch c.Status {
-		case models.StatusPass:
+		case models.StatusPass, models.StatusProviderManaged:
 			hasPass = true
 		case models.StatusFail:
 			hasFail = true
