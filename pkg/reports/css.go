@@ -160,6 +160,7 @@ body {
 .status-fail { background: #fed7d7; color: #9b2c2c; }
 .status-warn { background: #fefcbf; color: #975a16; }
 .status-skip { background: #e2e8f0; color: #4a5568; }
+.status-provider-managed { background: #bee3f8; color: #2a4365; }
 .status-partial { background: #fefcbf; color: #975a16; }
 .status-na { background: #e2e8f0; color: #718096; }
 
@@ -342,6 +343,18 @@ tbody tr:hover {
     margin-top: 4px;
     padding-left: 12px;
     border-left: 2px solid #d69e2e;
+}
+
+/* Provider Managed */
+.provider-managed-note {
+    background: #ebf8ff;
+    border: 1px solid #bee3f8;
+    border-left: 4px solid #3182ce;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: #2a4365;
 }
 
 /* Findings List */

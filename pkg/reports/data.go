@@ -50,12 +50,16 @@ type ReportData struct {
 	HistoricalScores []float64
 
 	// Scan metadata
-	ScanDuration string
-	TotalChecks  int
-	PassCount    int
-	FailCount    int
-	WarnCount    int
-	SkipCount    int
+	ScanDuration         string
+	TotalChecks          int
+	PassCount            int
+	FailCount            int
+	WarnCount            int
+	SkipCount            int
+	ProviderManagedCount int
+
+	// Provider-managed checks for shared responsibility section
+	ProviderManagedChecks []models.CheckResult
 
 	// Per-control evidence (populated by generator)
 	ControlEvidence map[string][]evidence.EvidenceItem

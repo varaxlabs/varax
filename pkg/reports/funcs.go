@@ -27,6 +27,7 @@ func templateFuncs() template.FuncMap {
 		"css": func() template.CSS { return template.CSS(reportCSS) }, // #nosec G203 -- reportCSS is a hardcoded constant, not user input
 		"controlStatusClass": controlStatusClass,
 		"truncate":           truncate,
+		"isProviderManaged":  func(s models.CheckStatus) bool { return s == models.StatusProviderManaged },
 		"remediation":        Remediation,
 		"hasRemediation": func(id string) bool {
 			return Remediation(id) != ""
@@ -50,6 +51,8 @@ func statusClass(s models.CheckStatus) string {
 		return "status-warn"
 	case models.StatusSkip:
 		return "status-skip"
+	case models.StatusProviderManaged:
+		return "status-provider-managed"
 	default:
 		return "status-unknown"
 	}

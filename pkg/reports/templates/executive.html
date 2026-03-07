@@ -42,6 +42,9 @@
             <div class="label">Not Assessed</div>
         </div>
     </div>
+    {{if gt .ProviderManagedCount 0}}
+    <p><strong>{{.ProviderManagedCount}}</strong> check(s) are managed by your cloud provider as inherited controls.</p>
+    {{end}}
     <table>
         <thead>
             <tr>

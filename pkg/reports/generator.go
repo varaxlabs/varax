@@ -76,6 +76,14 @@ func (g *Generator) populateComputedFields(data *ReportData) {
 		data.FailCount = data.Scan.Summary.FailCount
 		data.WarnCount = data.Scan.Summary.WarnCount
 		data.SkipCount = data.Scan.Summary.SkipCount
+		data.ProviderManagedCount = data.Scan.Summary.ProviderManagedCount
+
+		// Collect provider-managed checks for the shared responsibility section
+		for _, r := range data.Scan.Results {
+			if r.Status == models.StatusProviderManaged {
+				data.ProviderManagedChecks = append(data.ProviderManagedChecks, r)
+			}
+		}
 	}
 
 	if data.Compliance == nil {
