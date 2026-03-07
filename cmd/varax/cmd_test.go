@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/varax/operator/pkg/models"
 )
 
 func TestNewVersionCmd(t *testing.T) {
@@ -193,6 +194,144 @@ func TestNewEvidenceCmd(t *testing.T) {
 	assert.NotNil(t, f.Lookup("output"))
 
 	assert.Equal(t, "html", f.Lookup("format").DefValue)
+}
+
+func TestFilterByBenchmark(t *testing.T) {
+	result := &models.ScanResult{
+		ID: "test-scan",
+		Results: []models.CheckResult{
+			{ID: "CIS-1", Benchmark: "CIS", Status: models.StatusPass, Severity: models.SeverityHigh},
+			{ID: "NSA-1", Benchmark: "NSA-CISA", Status: models.StatusFail, Severity: models.SeverityMedium},
+			{ID: "CIS-2", Benchmark: "CIS", Status: models.StatusFail, Severity: models.SeverityCritical},
+			{ID: "PSS-1", Benchmark: "PSS", Status: models.StatusPass, Severity: models.SeverityLow},
+		},
+	}
+
+	filtered := filterByBenchmark(result, "CIS")
+	assert.Len(t, filtered.Results, 2)
+	assert.Equal(t, "test-scan", filtered.ID)
+	assert.Equal(t, 2, filtered.Summary.TotalChecks)
+	assert.Equal(t, 1, filtered.Summary.PassCount)
+	assert.Equal(t, 1, filtered.Summary.FailCount)
+}
+
+func TestFilterByBenchmark_NoMatches(t *testing.T) {
+	result := &models.ScanResult{
+		Results: []models.CheckResult{
+			{Benchmark: "CIS", Status: models.StatusPass},
+		},
+	}
+	filtered := filterByBenchmark(result, "RBAC")
+	assert.Empty(t, filtered.Results)
+	assert.Equal(t, 0, filtered.Summary.TotalChecks)
+}
+
+func TestFilterByBenchmark_AllStatuses(t *testing.T) {
+	result := &models.ScanResult{
+		Results: []models.CheckResult{
+			{Benchmark: "CIS", Status: models.StatusPass},
+			{Benchmark: "CIS", Status: models.StatusFail},
+			{Benchmark: "CIS", Status: models.StatusWarn},
+			{Benchmark: "CIS", Status: models.StatusSkip},
+		},
+	}
+	filtered := filterByBenchmark(result, "CIS")
+	assert.Equal(t, 4, filtered.Summary.TotalChecks)
+	assert.Equal(t, 1, filtered.Summary.PassCount)
+	assert.Equal(t, 1, filtered.Summary.FailCount)
+	assert.Equal(t, 1, filtered.Summary.WarnCount)
+	assert.Equal(t, 1, filtered.Summary.SkipCount)
+}
+
+func TestClusterName_NoConfig(t *testing.T) {
+	origKubeconfig := kubeconfig
+	kubeconfig = "/nonexistent/path"
+	defer func() { kubeconfig = origKubeconfig }()
+	t.Setenv("KUBECONFIG", "")
+
+	name := clusterName()
+	assert.Equal(t, "unknown", name)
+}
+
+func TestClusterName_WithConfig(t *testing.T) {
+	tmpDir := t.TempDir()
+	fakeKubeconfig := filepath.Join(tmpDir, "config")
+	require.NoError(t, os.WriteFile(fakeKubeconfig, []byte(`
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    server: https://my-cluster:6443
+  name: test
+contexts:
+- context:
+    cluster: test
+    user: test
+  name: test
+current-context: test
+users:
+- name: test
+  user:
+    token: fake-token
+`), 0600))
+
+	origKubeconfig := kubeconfig
+	kubeconfig = fakeKubeconfig
+	defer func() { kubeconfig = origKubeconfig }()
+
+	name := clusterName()
+	assert.Equal(t, "https://my-cluster:6443", name)
+}
+
+func TestRunEvidence_MutualExclusion(t *testing.T) {
+	// Neither --control nor --all
+	evidenceControl = ""
+	evidenceAll = false
+	err := runEvidence(nil, nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "must specify either --control or --all")
+
+	// Both --control and --all
+	evidenceControl = "CC6.1"
+	evidenceAll = true
+	err = runEvidence(nil, nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "cannot specify both --control and --all")
+
+	// Reset
+	evidenceControl = ""
+	evidenceAll = false
+}
+
+func TestRunEvidence_InvalidFormat(t *testing.T) {
+	evidenceControl = "CC6.1"
+	evidenceAll = false
+	evidenceFormat = "pdf"
+	defer func() { evidenceFormat = "html" }()
+
+	err := runEvidence(nil, nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "unsupported format")
+}
+
+func TestRunReport_InvalidFormat(t *testing.T) {
+	reportType = "readiness"
+	reportFormat = "pdf"
+	defer func() { reportFormat = "html" }()
+
+	err := runReport(nil, nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "unsupported format")
+}
+
+func TestRunReport_InvalidType(t *testing.T) {
+	reportFormat = "html"
+	reportType = "detailed"
+	defer func() { reportType = "readiness" }()
+
+	err := runReport(nil, nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "unsupported report type")
 }
 
 func TestBuildRESTConfig_FromEnv(t *testing.T) {
