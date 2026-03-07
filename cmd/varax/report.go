@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/varax/operator/pkg/compliance"
+	"github.com/varax/operator/pkg/license"
 	"github.com/varax/operator/pkg/reports"
 	"github.com/varax/operator/pkg/storage"
 )
@@ -32,6 +33,10 @@ func newReportCmd() *cobra.Command {
 }
 
 func runReport(cmd *cobra.Command, args []string) error {
+	if err := requireProFeature(license.FeatureReports); err != nil {
+		return err
+	}
+
 	rt, err := reports.ParseReportType(reportType)
 	if err != nil {
 		return err

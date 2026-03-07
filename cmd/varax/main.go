@@ -39,6 +39,7 @@ func main() {
 	rootCmd.AddCommand(newPruneCmd())
 	rootCmd.AddCommand(newReportCmd())
 	rootCmd.AddCommand(newEvidenceCmd())
+	rootCmd.AddCommand(newLicenseCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

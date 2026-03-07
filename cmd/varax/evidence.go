@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/varax/operator/pkg/compliance"
+	"github.com/varax/operator/pkg/license"
 	"github.com/varax/operator/pkg/reports"
 	"github.com/varax/operator/pkg/storage"
 )
@@ -37,6 +38,10 @@ func runEvidence(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("must specify either --control or --all")
 	case evidenceControl != "" && evidenceAll:
 		return fmt.Errorf("cannot specify both --control and --all")
+	}
+
+	if err := requireProFeature(license.FeatureEvidence); err != nil {
+		return err
 	}
 
 	rf, err := reports.ParseReportFormat(evidenceFormat)
