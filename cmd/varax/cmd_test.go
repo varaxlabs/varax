@@ -306,6 +306,8 @@ func TestRunEvidence_MutualExclusion(t *testing.T) {
 }
 
 func TestRunEvidence_InvalidFormat(t *testing.T) {
+	t.Setenv("VARAX_LICENSE", "")
+	t.Setenv("HOME", t.TempDir())
 	evidenceControl = "CC6.1"
 	evidenceAll = false
 	evidenceFormat = "pdf"
@@ -318,6 +320,8 @@ func TestRunEvidence_InvalidFormat(t *testing.T) {
 }
 
 func TestRunReport_InvalidFormat(t *testing.T) {
+	t.Setenv("VARAX_LICENSE", "")
+	t.Setenv("HOME", t.TempDir())
 	reportType = "readiness"
 	reportFormat = "pdf"
 	defer func() { reportFormat = "html" }()
@@ -329,6 +333,8 @@ func TestRunReport_InvalidFormat(t *testing.T) {
 }
 
 func TestRunReport_InvalidType(t *testing.T) {
+	t.Setenv("VARAX_LICENSE", "")
+	t.Setenv("HOME", t.TempDir())
 	reportFormat = "html"
 	reportType = "detailed"
 	defer func() { reportType = "readiness" }()
@@ -356,6 +362,7 @@ func TestNewLicenseCmd(t *testing.T) {
 
 func TestRunLicenseStatus_NoLicense(t *testing.T) {
 	t.Setenv("VARAX_LICENSE", "")
+	t.Setenv("HOME", t.TempDir())
 	// Should not error — prints free tier message
 	err := runLicenseStatus(nil, nil)
 	assert.NoError(t, err)
@@ -369,6 +376,7 @@ func TestRunLicenseActivate_InvalidKey(t *testing.T) {
 
 func TestRequireProFeature_NoLicense(t *testing.T) {
 	t.Setenv("VARAX_LICENSE", "")
+	t.Setenv("HOME", t.TempDir())
 	err := requireProFeature("reports")
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "Varax Pro license")
