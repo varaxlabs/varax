@@ -5,6 +5,7 @@ const (
 	FeatureEvidence         = "evidence"
 	FeatureRemediation      = "remediation"
 	FeatureScheduledReports = "scheduled-reports"
+	FeatureExplore          = "explore"
 )
 
 var proFeatures = map[string]bool{
@@ -12,6 +13,7 @@ var proFeatures = map[string]bool{
 	FeatureEvidence:         true,
 	FeatureRemediation:      true,
 	FeatureScheduledReports: true,
+	FeatureExplore:          true,
 }
 
 func IsProFeature(feature string) bool {

@@ -20,8 +20,9 @@ const (
 type ReportFormat string
 
 const (
-	FormatHTML ReportFormat = "html"
-	FormatJSON ReportFormat = "json"
+	FormatHTML     ReportFormat = "html"
+	FormatJSON     ReportFormat = "json"
+	FormatTerminal ReportFormat = "terminal"
 )
 
 // ReportRequest describes what report to generate.
@@ -93,8 +94,10 @@ func ParseReportFormat(s string) (ReportFormat, error) {
 		return FormatHTML, nil
 	case FormatJSON:
 		return FormatJSON, nil
+	case FormatTerminal:
+		return FormatTerminal, nil
 	default:
-		return "", fmt.Errorf("unsupported format: %s (use html or json)", s)
+		return "", fmt.Errorf("unsupported format: %s (use html, json, or terminal)", s)
 	}
 }
 

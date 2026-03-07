@@ -40,6 +40,8 @@ func (g *Generator) Generate(req ReportRequest, data *ReportData) error {
 		return g.writeJSON(req.OutputPath, data)
 	case FormatHTML:
 		return g.writeHTML(req, data)
+	case FormatTerminal:
+		return g.writeTerminal(req.OutputPath, data)
 	default:
 		return fmt.Errorf("unsupported format: %s", req.Format)
 	}

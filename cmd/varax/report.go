@@ -26,7 +26,7 @@ func newReportCmd() *cobra.Command {
 		RunE:  runReport,
 	}
 	cmd.Flags().StringVar(&reportFramework, "framework", "soc2", "compliance framework (soc2)")
-	cmd.Flags().StringVar(&reportFormat, "format", "html", "output format (html, json)")
+	cmd.Flags().StringVar(&reportFormat, "format", "html", "output format (html, json, terminal)")
 	cmd.Flags().StringVar(&reportType, "type", "readiness", "report type (readiness, executive)")
 	cmd.Flags().StringVar(&reportOutput, "output", "", "output file path (default: stdout)")
 	return cmd
