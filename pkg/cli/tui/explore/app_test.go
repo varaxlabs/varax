@@ -115,6 +115,29 @@ func TestAppModelViewRendering(t *testing.T) {
 	assert.Contains(t, view, "CIS-5.1.1")
 }
 
+func TestAppModelInit(t *testing.T) {
+	data := testData()
+	m := newAppModel(data)
+	assert.Nil(t, m.Init())
+}
+
+func TestAppModelDelegateToCheckDetail(t *testing.T) {
+	data := testData()
+	m := newAppModel(data)
+	updated, _ := m.Update(tea.WindowSizeMsg{Width: 100, Height: 40})
+	m = updated.(appModel)
+
+	// Navigate to control detail, then check detail
+	updated, _ = m.Update(navigationMsg{target: viewControlDetail, controlIdx: 0})
+	m = updated.(appModel)
+	updated, _ = m.Update(navigationMsg{target: viewCheckDetail, checkIdx: 0})
+	m = updated.(appModel)
+
+	// Delegate key to check detail view
+	updated, _ = m.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	_ = updated.(appModel)
+}
+
 func TestWindowSizePropagation(t *testing.T) {
 	data := testData()
 	m := newAppModel(data)

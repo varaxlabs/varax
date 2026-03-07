@@ -93,6 +93,14 @@ func TestRenderTerminalReportNilOptionalFields(t *testing.T) {
 	assert.NotContains(t, output, "Provider-Managed")
 }
 
+func TestTerminalReportStdout(t *testing.T) {
+	err := writeTerminalOutput("", "test output")
+	assert.NoError(t, err)
+
+	err = writeTerminalOutput("-", "test output")
+	assert.NoError(t, err)
+}
+
 func TestTerminalReportFileOutput(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "report.txt")
@@ -104,6 +112,41 @@ func TestTerminalReportFileOutput(t *testing.T) {
 	data, err := os.ReadFile(path)
 	require.NoError(t, err)
 	assert.Equal(t, content, string(data))
+}
+
+func TestRenderSeverityBadge(t *testing.T) {
+	assert.Contains(t, renderSeverityBadge("CRITICAL"), "CRIT")
+	assert.Contains(t, renderSeverityBadge("HIGH"), "HIGH")
+	assert.Contains(t, renderSeverityBadge("MEDIUM"), "MED")
+	assert.Contains(t, renderSeverityBadge("LOW"), "LOW")
+	assert.Contains(t, renderSeverityBadge("INFO"), "INFO")
+}
+
+func TestWriteTerminalViaGenerator(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "report.txt")
+
+	gen := NewGenerator("1.0.0")
+	data := &ReportData{
+		GeneratedAt: time.Now(),
+		ClusterName: "test",
+		Compliance:  &models.ComplianceResult{Score: 80},
+		TotalChecks: 5,
+		PassCount:   4,
+		FailCount:   1,
+	}
+	req := ReportRequest{
+		Type:       ReportTypeReadiness,
+		Format:     FormatTerminal,
+		OutputPath: path,
+	}
+
+	err := gen.Generate(req, data)
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(path)
+	require.NoError(t, err)
+	assert.Contains(t, string(content), "SOC2 Readiness Assessment")
 }
 
 func TestTerminalReportProviderManaged(t *testing.T) {

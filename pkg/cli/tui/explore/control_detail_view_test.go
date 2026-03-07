@@ -5,6 +5,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/stretchr/testify/assert"
+	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
 )
 
@@ -64,6 +65,91 @@ func TestControlDetailCursorMovement(t *testing.T) {
 
 	// Don't go below 0
 	m, _ = m.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'k'}})
+	assert.Equal(t, 0, m.checkCursor)
+}
+
+func TestControlDetailInit(t *testing.T) {
+	m := newControlDetailModel()
+	assert.Nil(t, m.Init())
+}
+
+func TestControlDetailEnterNavigation(t *testing.T) {
+	m := newControlDetailModel()
+	m.SetSize(100, 40)
+	m.SetControl(models.ControlResult{
+		Control: models.Control{ID: "CC6.1"},
+		CheckResults: []models.CheckResult{
+			{ID: "CIS-5.1.1", Status: models.StatusFail},
+		},
+	}, nil)
+
+	_, cmd := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	assert.NotNil(t, cmd)
+	msg := cmd()
+	nav := msg.(navigationMsg)
+	assert.Equal(t, viewCheckDetail, nav.target)
+	assert.Equal(t, 0, nav.checkIdx)
+}
+
+func TestControlDetailWithEvidence(t *testing.T) {
+	m := newControlDetailModel()
+	m.SetSize(100, 40)
+
+	ev := []evidence.EvidenceItem{
+		{Category: "RBAC", Description: "RBAC snapshot"},
+	}
+	m.SetControl(models.ControlResult{
+		Control: models.Control{ID: "CC6.1", Name: "Test"},
+		CheckResults: []models.CheckResult{
+			{ID: "CIS-5.1.1", Status: models.StatusFail, Evidence: []models.Evidence{
+				{Message: "test evidence"},
+			}},
+		},
+	}, ev)
+
+	view := m.View()
+	assert.Contains(t, view, "RBAC")
+	assert.Contains(t, view, "test evidence")
+}
+
+func TestControlDetailQuit(t *testing.T) {
+	m := newControlDetailModel()
+	m.SetSize(100, 40)
+	m.SetControl(models.ControlResult{Control: models.Control{ID: "CC6.1"}}, nil)
+
+	_, cmd := m.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'q'}})
+	assert.NotNil(t, cmd)
+}
+
+func TestControlDetailViewNotReady(t *testing.T) {
+	m := newControlDetailModel()
+	// Before SetSize, view should show loading
+	assert.Contains(t, m.View(), "Loading...")
+}
+
+func TestControlDetailResizeAfterReady(t *testing.T) {
+	m := newControlDetailModel()
+	m.SetSize(100, 40)
+	assert.True(t, m.ready)
+	// Resize again
+	m.SetSize(120, 50)
+	assert.Equal(t, 120, m.width)
+}
+
+func TestControlDetailArrowKeys(t *testing.T) {
+	m := newControlDetailModel()
+	m.SetSize(100, 40)
+	m.SetControl(models.ControlResult{
+		Control: models.Control{ID: "CC6.1"},
+		CheckResults: []models.CheckResult{
+			{ID: "CIS-5.1.1"},
+			{ID: "CIS-5.1.2"},
+		},
+	}, nil)
+
+	m, _ = m.Update(tea.KeyMsg{Type: tea.KeyDown})
+	assert.Equal(t, 1, m.checkCursor)
+	m, _ = m.Update(tea.KeyMsg{Type: tea.KeyUp})
 	assert.Equal(t, 0, m.checkCursor)
 }
 
