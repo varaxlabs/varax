@@ -1,0 +1,2633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <title>SOC2 Readiness Assessment - Varax</title>
+    <style>
+/* Varax Compliance Report Styles */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #2d3748;
+    background: #ffffff;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+/* Header */
+.header {
+    border-bottom: 3px solid #1a365d;
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a365d;
+    letter-spacing: 4px;
+}
+
+.header-meta {
+    text-align: right;
+    color: #718096;
+    font-size: 13px;
+}
+
+/* Sections */
+.section {
+    margin-bottom: 36px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a365d;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+/* Cover */
+.cover {
+    text-align: center;
+    padding: 48px 0 32px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 36px;
+}
+
+.cover h1 {
+    font-size: 32px;
+    color: #1a365d;
+    margin-bottom: 8px;
+}
+
+.cover .subtitle {
+    font-size: 16px;
+    color: #718096;
+}
+
+/* Score Gauge */
+.score-gauge {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.score-value {
+    font-size: 48px;
+    font-weight: 800;
+    min-width: 100px;
+}
+
+.score-bar-container {
+    flex: 1;
+    height: 24px;
+    background: #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.score-bar {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.3s;
+}
+
+.score-high .score-value { color: #38a169; }
+.score-high .score-bar { background: #38a169; }
+.score-medium .score-value { color: #d69e2e; }
+.score-medium .score-bar { background: #d69e2e; }
+.score-low .score-value { color: #e53e3e; }
+.score-low .score-bar { background: #e53e3e; }
+
+/* Summary Cards */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.summary-card {
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+.summary-card .count {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.summary-card .label {
+    font-size: 12px;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-pass { background: #f0fff4; border-color: #c6f6d5; }
+.card-pass .count { color: #38a169; }
+.card-fail { background: #fff5f5; border-color: #fed7d7; }
+.card-fail .count { color: #e53e3e; }
+.card-partial { background: #fffff0; border-color: #fefcbf; }
+.card-partial .count { color: #d69e2e; }
+.card-na { background: #f7fafc; border-color: #e2e8f0; }
+.card-na .count { color: #a0aec0; }
+
+/* Status Badges */
+.badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pass { background: #c6f6d5; color: #276749; }
+.status-fail { background: #fed7d7; color: #9b2c2c; }
+.status-warn { background: #fefcbf; color: #975a16; }
+.status-skip { background: #e2e8f0; color: #4a5568; }
+.status-provider-managed { background: #bee3f8; color: #2a4365; }
+.status-partial { background: #fefcbf; color: #975a16; }
+.status-na { background: #e2e8f0; color: #718096; }
+
+/* Severity Badges */
+.severity-critical { background: #9b2c2c; color: #ffffff; }
+.severity-high { background: #e53e3e; color: #ffffff; }
+.severity-medium { background: #d69e2e; color: #ffffff; }
+.severity-low { background: #3182ce; color: #ffffff; }
+.severity-info { background: #a0aec0; color: #ffffff; }
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+}
+
+thead th {
+    background: #1a365d;
+    color: #ffffff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+tbody tr:nth-child(even) {
+    background: #f7fafc;
+}
+
+tbody tr:hover {
+    background: #edf2f7;
+}
+
+/* Control Cards */
+.control-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.control-card-header {
+    background: #f7fafc;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.control-card-header h3 {
+    font-size: 15px;
+    color: #1a365d;
+}
+
+.control-card-body {
+    padding: 16px;
+}
+
+.control-description {
+    color: #718096;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+/* Scan Metadata */
+.scan-meta {
+    color: #4a5568;
+    font-size: 14px;
+    margin: 12px 0;
+    line-height: 1.8;
+}
+
+.scan-meta-item {
+    margin-bottom: 2px;
+}
+
+/* Evidence Section */
+.evidence-section {
+    margin: 12px 0;
+}
+
+.evidence-section h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a365d;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.evidence-item {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.evidence-category {
+    font-weight: 600;
+    color: #1a365d;
+    font-size: 13px;
+}
+
+.evidence-data {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-top: 8px;
+}
+
+/* History Bar Chart */
+.history-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 120px;
+    padding: 8px 0;
+}
+
+.history-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    min-width: 20px;
+    position: relative;
+}
+
+.history-bar-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #718096;
+}
+
+/* Remediation */
+.remediation-box {
+    background: #fffff0;
+    border: 1px solid #fefcbf;
+    border-left: 4px solid #d69e2e;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-size: 13px;
+}
+
+.remediation-label {
+    font-weight: 600;
+    color: #975a16;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.remediation-text {
+    color: #744210;
+}
+
+.finding-remediation {
+    color: #975a16;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 4px;
+    padding-left: 12px;
+    border-left: 2px solid #d69e2e;
+}
+
+/* Provider Managed */
+.provider-managed-note {
+    background: #ebf8ff;
+    border: 1px solid #bee3f8;
+    border-left: 4px solid #3182ce;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: #2a4365;
+}
+
+/* Findings List */
+.finding {
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.finding:last-child {
+    border-bottom: none;
+}
+
+.finding-header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.finding-id {
+    font-weight: 600;
+    color: #1a365d;
+}
+
+.finding-message {
+    color: #4a5568;
+    font-size: 13px;
+}
+
+/* Footer */
+.footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+    color: #a0aec0;
+    font-size: 12px;
+    text-align: center;
+}
+
+.disclaimer {
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* Print Styles */
+@media print {
+    @page {
+        margin: 20mm 15mm;
+        size: A4;
+    }
+
+    body {
+        font-size: 11px;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .section {
+        page-break-inside: avoid;
+    }
+
+    .control-card {
+        page-break-inside: avoid;
+    }
+
+    .cover {
+        page-break-after: always;
+    }
+
+    .score-bar-container {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .badge, .summary-card, thead th {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    tbody tr:nth-child(even) {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .remediation-box {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        page-break-inside: avoid;
+    }
+
+    .finding {
+        page-break-inside: avoid;
+    }
+
+    p, li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2, h3 {
+        page-break-after: avoid;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">VARAX</div>
+        <div class="header-meta">
+            <div>prod-eks-us-east-1</div>
+            <div>March 7, 2026</div>
+        </div>
+    </div>
+
+    
+<div class="cover">
+    <h1>SOC2 Readiness Assessment</h1>
+    <div class="subtitle">prod-eks-us-east-1 &mdash; March 7, 2026 &mdash; SOC2</div>
+</div>
+
+<div class="section">
+    <h2 class="section-title">Executive Summary</h2>
+    <div class="score-gauge score-medium">
+        <div class="score-value">65%</div>
+        <div class="score-bar-container">
+            <div class="score-bar" style="width: 65%"></div>
+        </div>
+    </div>
+    <div class="summary-grid">
+        <div class="summary-card card-pass">
+            <div class="count">5</div>
+            <div class="label">Passing</div>
+        </div>
+        <div class="summary-card card-fail">
+            <div class="count">1</div>
+            <div class="label">Failing</div>
+        </div>
+        <div class="summary-card card-partial">
+            <div class="count">7</div>
+            <div class="label">Partial</div>
+        </div>
+        <div class="summary-card card-na">
+            <div class="count">3</div>
+            <div class="label">Not Assessed</div>
+        </div>
+    </div>
+    
+    <p><strong>Attention:</strong> 2 critical and 4 high severity findings require immediate remediation.</p>
+    
+</div>
+
+
+<div class="section">
+    <h2 class="section-title">Scan Overview</h2>
+    <div class="scan-meta">
+        <div class="scan-meta-item"><strong>Total Checks:</strong> 39</div>
+        <div class="scan-meta-item"><strong>Pass:</strong> 20 &nbsp; <strong>Fail:</strong> 7 &nbsp; <strong>Warn:</strong> 4 &nbsp; <strong>Skip:</strong> 0 &nbsp; <strong>Provider Managed:</strong> 8</div>
+        <div class="scan-meta-item"><strong>Duration:</strong> 4.23s</div>
+    </div>
+</div>
+
+
+
+<div class="section">
+    <h2 class="section-title">Shared Responsibility</h2>
+    <p>8 check(s) are managed by your cloud provider. Their SOC2 compliance covers these controls as inherited controls.</p>
+    <div class="provider-managed-note">
+        Reference your provider's SOC2 Type II report for evidence of these inherited controls.<br>
+        EKS: AWS Artifact &nbsp;|&nbsp; AKS: Microsoft Service Trust Portal &nbsp;|&nbsp; GKE: Google Compliance Reports
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Check ID</th>
+                <th>Name</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <td>CIS-1.2.1</td>
+                <td>Ensure anonymous auth is disabled</td>
+                <td><span class="badge severity-critical">CRITICAL</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER MANAGED</span></td>
+                <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.2</td>
+                <td>Ensure token auth file is not set</td>
+                <td><span class="badge severity-critical">CRITICAL</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER MANAGED</span></td>
+                <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.6</td>
+                <td>Ensure authorization mode includes RBAC</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER MANAGED</span></td>
+                <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.7</td>
+                <td>Ensure authorization mode excludes AlwaysAllow</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER MANAGED</span></td>
+                <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.8</td>
+                <td>Ensure authorization mode includes Node</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER MANAGED</span></td>
+                <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+            </tr>
+            
+            <tr>
+                <td>CIS-2.1</td>
+                <td>Ensure etcd encryption is configured</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER MANAGED</span></td>
+                <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+            </tr>
+            
+            <tr>
+                <td>CIS-2.2</td>
+                <td>Ensure etcd peer TLS is enabled</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER MANAGED</span></td>
+                <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+            </tr>
+            
+            <tr>
+                <td>CIS-3.2</td>
+                <td>Ensure audit policy covers key operations</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER MANAGED</span></td>
+                <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+            </tr>
+            
+        </tbody>
+    </table>
+</div>
+
+
+<div class="section">
+    <h2 class="section-title">Control Assessment</h2>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC5.1 &mdash; Control Activities Over Technology</h3>
+            <span class="badge status-pass">PASS</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity selects and develops control activities over technology infrastructure to support the achievement of objectives.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>ClusterRoleBinding snapshot - cluster-admin bindings</div>
+                    <div class="evidence-data">{
+  &#34;assessment&#34;: &#34;Only system defaults and break-glass accounts have cluster-admin access&#34;,
+  &#34;bindings&#34;: [
+    {
+      &#34;name&#34;: &#34;system:masters&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;system:masters group&#34;,
+      &#34;type&#34;: &#34;Group&#34;
+    },
+    {
+      &#34;name&#34;: &#34;eks-admin-binding&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;break-glass-admin&#34;,
+      &#34;type&#34;: &#34;User&#34;
+    }
+  ],
+  &#34;totalBindings&#34;: 2
+}</div>
+                </div>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>Service account token auto-mount audit</div>
+                    <div class="evidence-data">{
+  &#34;compliant&#34;: true,
+  &#34;namespacesAudited&#34;: 12,
+  &#34;serviceAccountsWithAutoMount&#34;: 0
+}</div>
+                </div>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Encryption</div>
+                    <div>Secrets encryption configuration</div>
+                    <div class="evidence-data">{
+  &#34;encryptedAtRest&#34;: true,
+  &#34;kmsKeyArn&#34;: &#34;arn:aws:kms:us-east-1:123456789012:key/sample-key-id&#34;,
+  &#34;provider&#34;: &#34;aws-encryption-provider&#34;,
+  &#34;rotationEnabled&#34;: true
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-1.2.6</td>
+                        <td>Ensure authorization mode includes RBAC</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-1.2.7</td>
+                        <td>Ensure authorization mode excludes AlwaysAllow</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-1.2.8</td>
+                        <td>Ensure authorization mode includes Node</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>PSS-1.1</td>
+                        <td>Enforce Baseline Pod Security Standard</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>Baseline PSS enforced on all non-system namespaces</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>PSS-1.2</td>
+                        <td>Enforce Restricted Pod Security Standard</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-warn">WARN</span></td>
+                        <td>Restricted PSS enforced on 4 of 6 production namespaces</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC5.2 &mdash; Policy and Procedure Controls</h3>
+            <span class="badge status-pass">PASS</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity deploys control activities through policies that establish what is expected and in procedures that put policies into action.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>ClusterRoleBinding snapshot - cluster-admin bindings</div>
+                    <div class="evidence-data">{
+  &#34;assessment&#34;: &#34;Only system defaults and break-glass accounts have cluster-admin access&#34;,
+  &#34;bindings&#34;: [
+    {
+      &#34;name&#34;: &#34;system:masters&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;system:masters group&#34;,
+      &#34;type&#34;: &#34;Group&#34;
+    },
+    {
+      &#34;name&#34;: &#34;eks-admin-binding&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;break-glass-admin&#34;,
+      &#34;type&#34;: &#34;User&#34;
+    }
+  ],
+  &#34;totalBindings&#34;: 2
+}</div>
+                </div>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>Service account token auto-mount audit</div>
+                    <div class="evidence-data">{
+  &#34;compliant&#34;: true,
+  &#34;namespacesAudited&#34;: 12,
+  &#34;serviceAccountsWithAutoMount&#34;: 0
+}</div>
+                </div>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Encryption</div>
+                    <div>Secrets encryption configuration</div>
+                    <div class="evidence-data">{
+  &#34;encryptedAtRest&#34;: true,
+  &#34;kmsKeyArn&#34;: &#34;arn:aws:kms:us-east-1:123456789012:key/sample-key-id&#34;,
+  &#34;provider&#34;: &#34;aws-encryption-provider&#34;,
+  &#34;rotationEnabled&#34;: true
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-3.2</td>
+                        <td>Ensure audit policy covers key operations</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC6.1 &mdash; Logical and Physical Access Controls</h3>
+            <span class="badge status-partial">PARTIAL</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity implements logical access security software, infrastructure, and architectures over protected information assets.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>ClusterRoleBinding snapshot - cluster-admin bindings</div>
+                    <div class="evidence-data">{
+  &#34;assessment&#34;: &#34;Only system defaults and break-glass accounts have cluster-admin access&#34;,
+  &#34;bindings&#34;: [
+    {
+      &#34;name&#34;: &#34;system:masters&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;system:masters group&#34;,
+      &#34;type&#34;: &#34;Group&#34;
+    },
+    {
+      &#34;name&#34;: &#34;eks-admin-binding&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;break-glass-admin&#34;,
+      &#34;type&#34;: &#34;User&#34;
+    }
+  ],
+  &#34;totalBindings&#34;: 2
+}</div>
+                </div>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>Service account token auto-mount audit</div>
+                    <div class="evidence-data">{
+  &#34;compliant&#34;: true,
+  &#34;namespacesAudited&#34;: 12,
+  &#34;serviceAccountsWithAutoMount&#34;: 0
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.1.1</td>
+                        <td>Restrict cluster-admin ClusterRoleBinding usage</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>Only 2 cluster-admin bindings found (system defaults)</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.1.3</td>
+                        <td>Minimize wildcard use in Roles and ClusterRoles</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.1.8</td>
+                        <td>Limit use of bind, escalate, and impersonate permissions</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No roles grant bind/escalate/impersonate</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-1.2.1</td>
+                        <td>Ensure anonymous auth is disabled</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-1.2.2</td>
+                        <td>Ensure token auth file is not set</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-1.2.6</td>
+                        <td>Ensure authorization mode includes RBAC</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-1.2.7</td>
+                        <td>Ensure authorization mode excludes AlwaysAllow</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-1.2.8</td>
+                        <td>Ensure authorization mode includes Node</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-2.1</td>
+                        <td>Ensure etcd encryption is configured</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-2.2</td>
+                        <td>Ensure etcd peer TLS is enabled</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>NSA-AA-1</td>
+                        <td>Ensure strong authentication is configured</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>OIDC authentication configured</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>RBAC-1</td>
+                        <td>Audit cluster-admin usage</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>cluster-admin limited to break-glass accounts</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.1.3</div>
+                <div class="remediation-text">Remove wildcard (*) permissions from Roles and ClusterRoles. Specify explicit resources and verbs.</div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC6.2 &mdash; User Access Provisioning</h3>
+            <span class="badge status-pass">PASS</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">Prior to issuing system credentials, the entity registers and authorizes new internal and external users.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>ClusterRoleBinding snapshot - cluster-admin bindings</div>
+                    <div class="evidence-data">{
+  &#34;assessment&#34;: &#34;Only system defaults and break-glass accounts have cluster-admin access&#34;,
+  &#34;bindings&#34;: [
+    {
+      &#34;name&#34;: &#34;system:masters&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;system:masters group&#34;,
+      &#34;type&#34;: &#34;Group&#34;
+    },
+    {
+      &#34;name&#34;: &#34;eks-admin-binding&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;break-glass-admin&#34;,
+      &#34;type&#34;: &#34;User&#34;
+    }
+  ],
+  &#34;totalBindings&#34;: 2
+}</div>
+                </div>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>Service account token auto-mount audit</div>
+                    <div class="evidence-data">{
+  &#34;compliant&#34;: true,
+  &#34;namespacesAudited&#34;: 12,
+  &#34;serviceAccountsWithAutoMount&#34;: 0
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.1.6</td>
+                        <td>Ensure service account tokens are not auto-mounted</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>All service accounts have automountServiceAccountToken: false</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.1.5</td>
+                        <td>Ensure default service accounts are not actively used</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-warn">WARN</span></td>
+                        <td>2 namespaces use default service account: staging, dev</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.1.7</td>
+                        <td>Avoid use of system:masters group</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No bindings to system:masters group found</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            
+            
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC6.3 &mdash; Role-Based Access and Least Privilege</h3>
+            <span class="badge status-partial">PARTIAL</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity authorizes, modifies, or removes access to data, software, functions, and other protected IT resources based on roles.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>ClusterRoleBinding snapshot - cluster-admin bindings</div>
+                    <div class="evidence-data">{
+  &#34;assessment&#34;: &#34;Only system defaults and break-glass accounts have cluster-admin access&#34;,
+  &#34;bindings&#34;: [
+    {
+      &#34;name&#34;: &#34;system:masters&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;system:masters group&#34;,
+      &#34;type&#34;: &#34;Group&#34;
+    },
+    {
+      &#34;name&#34;: &#34;eks-admin-binding&#34;,
+      &#34;role&#34;: &#34;cluster-admin&#34;,
+      &#34;subject&#34;: &#34;break-glass-admin&#34;,
+      &#34;type&#34;: &#34;User&#34;
+    }
+  ],
+  &#34;totalBindings&#34;: 2
+}</div>
+                </div>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">RBAC</div>
+                    <div>Service account token auto-mount audit</div>
+                    <div class="evidence-data">{
+  &#34;compliant&#34;: true,
+  &#34;namespacesAudited&#34;: 12,
+  &#34;serviceAccountsWithAutoMount&#34;: 0
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.1.1</td>
+                        <td>Restrict cluster-admin ClusterRoleBinding usage</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>Only 2 cluster-admin bindings found (system defaults)</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.1.3</td>
+                        <td>Minimize wildcard use in Roles and ClusterRoles</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.1.8</td>
+                        <td>Limit use of bind, escalate, and impersonate permissions</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No roles grant bind/escalate/impersonate</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.1.4</td>
+                        <td>Minimize access to create pods</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>Pod creation restricted to appropriate roles</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>RBAC-1</td>
+                        <td>Audit cluster-admin usage</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>cluster-admin limited to break-glass accounts</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>RBAC-2</td>
+                        <td>Verify least-privilege role bindings</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>3 overly permissive role bindings found</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.1.3</div>
+                <div class="remediation-text">Remove wildcard (*) permissions from Roles and ClusterRoles. Specify explicit resources and verbs.</div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; RBAC-2</div>
+                <div class="remediation-text">Apply least-privilege RBAC policies. Replace broad permissions with specific resource/verb combinations.</div>
+            </div>
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC6.6 &mdash; Security Against Threats Outside System Boundaries</h3>
+            <span class="badge status-partial">PARTIAL</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity implements logical access security measures to protect against threats from sources outside its system boundaries.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Network</div>
+                    <div>NetworkPolicy coverage by namespace</div>
+                    <div class="evidence-data">{
+  &#34;coveragePercentage&#34;: 75,
+  &#34;coveredNamespaces&#34;: 9,
+  &#34;missingNamespaces&#34;: [
+    &#34;staging&#34;,
+    &#34;dev&#34;,
+    &#34;monitoring&#34;
+  ],
+  &#34;totalNamespaces&#34;: 12
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.3.2</td>
+                        <td>Ensure every namespace has a NetworkPolicy</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>3 namespaces missing NetworkPolicy: staging, dev, monitoring</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.3.1</td>
+                        <td>Ensure CNI supports NetworkPolicy</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>CNI supports NetworkPolicy (Calico detected)</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.2.5</td>
+                        <td>Ensure hostPID is not set</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No pods use hostPID</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.2.6</td>
+                        <td>Ensure hostIPC is not set</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No pods use hostIPC</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.2.7</td>
+                        <td>Ensure hostNetwork is not set</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No pods use hostNetwork</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.2.8</td>
+                        <td>Limit container hostPort usage</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No containers use hostPort</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>NSA-NS-1</td>
+                        <td>Ensure namespaces are used to isolate workloads</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>Workloads properly isolated across namespaces</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.3.2</div>
+                <div class="remediation-text">Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.</div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC6.7 &mdash; Data Transmission and Movement Controls</h3>
+            <span class="badge status-pass">PASS</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity restricts the transmission, movement, and removal of information to authorized internal and external users.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Network</div>
+                    <div>NetworkPolicy coverage by namespace</div>
+                    <div class="evidence-data">{
+  &#34;coveragePercentage&#34;: 75,
+  &#34;coveredNamespaces&#34;: 9,
+  &#34;missingNamespaces&#34;: [
+    &#34;staging&#34;,
+    &#34;dev&#34;,
+    &#34;monitoring&#34;
+  ],
+  &#34;totalNamespaces&#34;: 12
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-2.1</td>
+                        <td>Ensure etcd encryption is configured</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC6.8 &mdash; Controls Against Malicious Software</h3>
+            <span class="badge status-partial">PARTIAL</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Encryption</div>
+                    <div>Secrets encryption configuration</div>
+                    <div class="evidence-data">{
+  &#34;encryptedAtRest&#34;: true,
+  &#34;kmsKeyArn&#34;: &#34;arn:aws:kms:us-east-1:123456789012:key/sample-key-id&#34;,
+  &#34;provider&#34;: &#34;aws-encryption-provider&#34;,
+  &#34;rotationEnabled&#34;: true
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.2.3</td>
+                        <td>Minimize privileged containers</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>1 privileged container: monitoring/node-exporter</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.2.1</td>
+                        <td>Ensure allowPrivilegeEscalation is set to false</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>4 containers allow privilege escalation in namespace: production</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.2.2</td>
+                        <td>Ensure containers run as non-root</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>All containers specify runAsNonRoot: true</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.2.4</td>
+                        <td>Ensure containers drop ALL capabilities</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-warn">WARN</span></td>
+                        <td>6 containers do not drop all capabilities</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.2.13</td>
+                        <td>Minimize added capabilities</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No unnecessary capabilities added</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.7.2</td>
+                        <td>Ensure Seccomp profile is set</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>RuntimeDefault seccomp profile applied</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.7.3</td>
+                        <td>Ensure security context is applied to pods and containers</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>All pods have security context set</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>NSA-PS-1</td>
+                        <td>Ensure Pod Security Standards are enforced</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>Pod Security Admission enforced at namespace level</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>PSS-1.2</td>
+                        <td>Enforce Restricted Pod Security Standard</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-warn">WARN</span></td>
+                        <td>Restricted PSS enforced on 4 of 6 production namespaces</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.2.3</div>
+                <div class="remediation-text">Do not allow privileged containers. Set privileged: false in security contexts.</div>
+            </div>
+            
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.2.1</div>
+                <div class="remediation-text">Set allowPrivilegeEscalation: false in pod security contexts.</div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC7.1 &mdash; Detect and Monitor Anomalies</h3>
+            <span class="badge status-partial">PARTIAL</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">To meet its objectives, the entity uses detection and monitoring procedures to identify changes to configurations that result in the introduction of new vulnerabilities.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Audit</div>
+                    <div>EKS control plane audit logging configuration</div>
+                    <div class="evidence-data">{
+  &#34;clusterName&#34;: &#34;prod-eks-us-east-1&#34;,
+  &#34;logTypes&#34;: [
+    &#34;api&#34;,
+    &#34;audit&#34;,
+    &#34;authenticator&#34;,
+    &#34;controllerManager&#34;,
+    &#34;scheduler&#34;
+  ],
+  &#34;loggingEnabled&#34;: true,
+  &#34;provider&#34;: &#34;EKS&#34;,
+  &#34;retentionDays&#34;: 90
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.2.3</td>
+                        <td>Minimize privileged containers</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>1 privileged container: monitoring/node-exporter</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.3.2</td>
+                        <td>Ensure every namespace has a NetworkPolicy</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>3 namespaces missing NetworkPolicy: staging, dev, monitoring</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.7.4</td>
+                        <td>Ensure default namespace is not used</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>No workloads in default namespace</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-3.2</td>
+                        <td>Ensure audit policy covers key operations</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.2.3</div>
+                <div class="remediation-text">Do not allow privileged containers. Set privileged: false in security contexts.</div>
+            </div>
+            
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.3.2</div>
+                <div class="remediation-text">Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.</div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC7.2 &mdash; Monitor System Components for Anomalies</h3>
+            <span class="badge status-fail">FAIL</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Audit</div>
+                    <div>EKS control plane audit logging configuration</div>
+                    <div class="evidence-data">{
+  &#34;clusterName&#34;: &#34;prod-eks-us-east-1&#34;,
+  &#34;logTypes&#34;: [
+    &#34;api&#34;,
+    &#34;audit&#34;,
+    &#34;authenticator&#34;,
+    &#34;controllerManager&#34;,
+    &#34;scheduler&#34;
+  ],
+  &#34;loggingEnabled&#34;: true,
+  &#34;provider&#34;: &#34;EKS&#34;,
+  &#34;retentionDays&#34;: 90
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.2.3</td>
+                        <td>Minimize privileged containers</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>1 privileged container: monitoring/node-exporter</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.3.2</td>
+                        <td>Ensure every namespace has a NetworkPolicy</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>3 namespaces missing NetworkPolicy: staging, dev, monitoring</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.2.3</div>
+                <div class="remediation-text">Do not allow privileged containers. Set privileged: false in security contexts.</div>
+            </div>
+            
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.3.2</div>
+                <div class="remediation-text">Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.</div>
+            </div>
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC7.3 &mdash; Evaluate Security Events</h3>
+            <span class="badge status-partial">PARTIAL</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity evaluates detected security events and determines whether they could or have resulted in a failure of the entity to meet its objectives.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Audit</div>
+                    <div>EKS control plane audit logging configuration</div>
+                    <div class="evidence-data">{
+  &#34;clusterName&#34;: &#34;prod-eks-us-east-1&#34;,
+  &#34;logTypes&#34;: [
+    &#34;api&#34;,
+    &#34;audit&#34;,
+    &#34;authenticator&#34;,
+    &#34;controllerManager&#34;,
+    &#34;scheduler&#34;
+  ],
+  &#34;loggingEnabled&#34;: true,
+  &#34;provider&#34;: &#34;EKS&#34;,
+  &#34;retentionDays&#34;: 90
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.2.3</td>
+                        <td>Minimize privileged containers</td>
+                        <td><span class="badge severity-critical">CRITICAL</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>1 privileged container: monitoring/node-exporter</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.3.2</td>
+                        <td>Ensure every namespace has a NetworkPolicy</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>3 namespaces missing NetworkPolicy: staging, dev, monitoring</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-3.2</td>
+                        <td>Ensure audit policy covers key operations</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                        <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.2.3</div>
+                <div class="remediation-text">Do not allow privileged containers. Set privileged: false in security contexts.</div>
+            </div>
+            
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.3.2</div>
+                <div class="remediation-text">Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.</div>
+            </div>
+            
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC7.4 &mdash; Respond to Security Incidents</h3>
+            <span class="badge status-na">NOT_ASSESSED</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity responds to identified security incidents by executing a defined incident response program.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Audit</div>
+                    <div>EKS control plane audit logging configuration</div>
+                    <div class="evidence-data">{
+  &#34;clusterName&#34;: &#34;prod-eks-us-east-1&#34;,
+  &#34;logTypes&#34;: [
+    &#34;api&#34;,
+    &#34;audit&#34;,
+    &#34;authenticator&#34;,
+    &#34;controllerManager&#34;,
+    &#34;scheduler&#34;
+  ],
+  &#34;loggingEnabled&#34;: true,
+  &#34;provider&#34;: &#34;EKS&#34;,
+  &#34;retentionDays&#34;: 90
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC7.5 &mdash; Recover from Security Incidents</h3>
+            <span class="badge status-na">NOT_ASSESSED</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity identifies, develops, and implements activities to recover from identified security incidents.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Audit</div>
+                    <div>EKS control plane audit logging configuration</div>
+                    <div class="evidence-data">{
+  &#34;clusterName&#34;: &#34;prod-eks-us-east-1&#34;,
+  &#34;logTypes&#34;: [
+    &#34;api&#34;,
+    &#34;audit&#34;,
+    &#34;authenticator&#34;,
+    &#34;controllerManager&#34;,
+    &#34;scheduler&#34;
+  ],
+  &#34;loggingEnabled&#34;: true,
+  &#34;provider&#34;: &#34;EKS&#34;,
+  &#34;retentionDays&#34;: 90
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>CC8.1 &mdash; Change Management</h3>
+            <span class="badge status-partial">PARTIAL</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure and software.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Encryption</div>
+                    <div>Secrets encryption configuration</div>
+                    <div class="evidence-data">{
+  &#34;encryptedAtRest&#34;: true,
+  &#34;kmsKeyArn&#34;: &#34;arn:aws:kms:us-east-1:123456789012:key/sample-key-id&#34;,
+  &#34;provider&#34;: &#34;aws-encryption-provider&#34;,
+  &#34;rotationEnabled&#34;: true
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.1.2</td>
+                        <td>Minimize access to secrets</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>3 roles grant get/list/watch on secrets: dev-team, monitoring, ci-deploy</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>CIS-5.4.1</td>
+                        <td>Prefer using Secrets as files over environment variables</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-fail">FAIL</span></td>
+                        <td>8 pods reference secrets via environment variables</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>PSS-1.1</td>
+                        <td>Enforce Baseline Pod Security Standard</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-pass">PASS</span></td>
+                        <td>Baseline PSS enforced on all non-system namespaces</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>PSS-1.2</td>
+                        <td>Enforce Restricted Pod Security Standard</td>
+                        <td><span class="badge severity-high">HIGH</span></td>
+                        <td><span class="badge status-warn">WARN</span></td>
+                        <td>Restricted PSS enforced on 4 of 6 production namespaces</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.1.2</div>
+                <div class="remediation-text">Restrict access to Kubernetes secrets with fine-grained RBAC policies per namespace.</div>
+            </div>
+            
+            
+            
+            <div class="remediation-box">
+                <div class="remediation-label">Remediation &mdash; CIS-5.4.1</div>
+                <div class="remediation-text">Use Kubernetes secrets or an external secrets manager instead of environment variables for sensitive data.</div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>A1.1 &mdash; Availability Capacity Planning</h3>
+            <span class="badge status-pass">PASS</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity maintains, monitors, and evaluates current processing capacity and use of system components to manage capacity demand.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Network</div>
+                    <div>NetworkPolicy coverage by namespace</div>
+                    <div class="evidence-data">{
+  &#34;coveragePercentage&#34;: 75,
+  &#34;coveredNamespaces&#34;: 9,
+  &#34;missingNamespaces&#34;: [
+    &#34;staging&#34;,
+    &#34;dev&#34;,
+    &#34;monitoring&#34;
+  ],
+  &#34;totalNamespaces&#34;: 12
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check ID</th>
+                        <th>Name</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>CIS-5.7.1</td>
+                        <td>Create resource quota for namespaces</td>
+                        <td><span class="badge severity-medium">MEDIUM</span></td>
+                        <td><span class="badge status-warn">WARN</span></td>
+                        <td>2 namespaces without resource quotas: dev, staging</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div class="control-card">
+        <div class="control-card-header">
+            <h3>A1.2 &mdash; Availability Environmental Protections</h3>
+            <span class="badge status-na">NOT_ASSESSED</span>
+        </div>
+        <div class="control-card-body">
+            <div class="control-description">The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections.</div>
+
+            
+            
+            <div class="evidence-section">
+                <h4>Evidence</h4>
+                
+                <div class="evidence-item">
+                    <div class="evidence-category">Network</div>
+                    <div>NetworkPolicy coverage by namespace</div>
+                    <div class="evidence-data">{
+  &#34;coveragePercentage&#34;: 75,
+  &#34;coveredNamespaces&#34;: 9,
+  &#34;missingNamespaces&#34;: [
+    &#34;staging&#34;,
+    &#34;dev&#34;,
+    &#34;monitoring&#34;
+  ],
+  &#34;totalNamespaces&#34;: 12
+}</div>
+                </div>
+                
+            </div>
+            
+
+            
+        </div>
+    </div>
+    
+</div>
+
+
+<div class="section">
+    <h2 class="section-title">Score Trend</h2>
+    <div class="history-chart">
+        
+        <div class="history-bar score-medium" style="height: 62%; background: #d69e2e">
+            <span class="history-bar-label">62%</span>
+        </div>
+        
+        <div class="history-bar score-medium" style="height: 68%; background: #d69e2e">
+            <span class="history-bar-label">68%</span>
+        </div>
+        
+        <div class="history-bar score-medium" style="height: 72%; background: #d69e2e">
+            <span class="history-bar-label">72%</span>
+        </div>
+        
+        <div class="history-bar score-medium" style="height: 75%; background: #d69e2e">
+            <span class="history-bar-label">75%</span>
+        </div>
+        
+        <div class="history-bar score-medium" style="height: 78%; background: #d69e2e">
+            <span class="history-bar-label">78%</span>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="section">
+    <h2 class="section-title">Top Findings</h2>
+    
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge severity-critical">CRITICAL</span>
+            <span class="finding-id">CIS-5.2.1</span>
+            <span>Ensure allowPrivilegeEscalation is set to false</span>
+        </div>
+        <div class="finding-message">4 containers allow privilege escalation in namespace: production</div>
+        
+        <div class="finding-remediation">Set allowPrivilegeEscalation: false in pod security contexts.</div>
+        
+    </div>
+    
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge severity-critical">CRITICAL</span>
+            <span class="finding-id">CIS-5.2.3</span>
+            <span>Minimize privileged containers</span>
+        </div>
+        <div class="finding-message">1 privileged container: monitoring/node-exporter</div>
+        
+        <div class="finding-remediation">Do not allow privileged containers. Set privileged: false in security contexts.</div>
+        
+    </div>
+    
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge severity-high">HIGH</span>
+            <span class="finding-id">CIS-5.1.2</span>
+            <span>Minimize access to secrets</span>
+        </div>
+        <div class="finding-message">3 roles grant get/list/watch on secrets: dev-team, monitoring, ci-deploy</div>
+        
+        <div class="finding-remediation">Restrict access to Kubernetes secrets with fine-grained RBAC policies per namespace.</div>
+        
+    </div>
+    
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge severity-high">HIGH</span>
+            <span class="finding-id">CIS-5.1.3</span>
+            <span>Minimize wildcard use in Roles and ClusterRoles</span>
+        </div>
+        <div class="finding-message">2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access</div>
+        
+        <div class="finding-remediation">Remove wildcard (*) permissions from Roles and ClusterRoles. Specify explicit resources and verbs.</div>
+        
+    </div>
+    
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge severity-high">HIGH</span>
+            <span class="finding-id">CIS-5.3.2</span>
+            <span>Ensure every namespace has a NetworkPolicy</span>
+        </div>
+        <div class="finding-message">3 namespaces missing NetworkPolicy: staging, dev, monitoring</div>
+        
+        <div class="finding-remediation">Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.</div>
+        
+    </div>
+    
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge severity-high">HIGH</span>
+            <span class="finding-id">RBAC-2</span>
+            <span>Verify least-privilege role bindings</span>
+        </div>
+        <div class="finding-message">3 overly permissive role bindings found</div>
+        
+        <div class="finding-remediation">Apply least-privilege RBAC policies. Replace broad permissions with specific resource/verb combinations.</div>
+        
+    </div>
+    
+    <div class="finding">
+        <div class="finding-header">
+            <span class="badge severity-medium">MEDIUM</span>
+            <span class="finding-id">CIS-5.4.1</span>
+            <span>Prefer using Secrets as files over environment variables</span>
+        </div>
+        <div class="finding-message">8 pods reference secrets via environment variables</div>
+        
+        <div class="finding-remediation">Use Kubernetes secrets or an external secrets manager instead of environment variables for sensitive data.</div>
+        
+    </div>
+    
+</div>
+
+
+
+<div class="section">
+    <h2 class="section-title">Appendix: Full Check Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Benchmark</th>
+                <th>Severity</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <td>CIS-5.1.1</td>
+                <td>Restrict cluster-admin ClusterRoleBinding usage</td>
+                <td>CIS</td>
+                <td><span class="badge severity-critical">CRITICAL</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.1.2</td>
+                <td>Minimize access to secrets</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-fail">FAIL</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.1.3</td>
+                <td>Minimize wildcard use in Roles and ClusterRoles</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-fail">FAIL</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.1.4</td>
+                <td>Minimize access to create pods</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.1.5</td>
+                <td>Ensure default service accounts are not actively used</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-warn">WARN</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.1.6</td>
+                <td>Ensure service account tokens are not auto-mounted</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.1.7</td>
+                <td>Avoid use of system:masters group</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.1.8</td>
+                <td>Limit use of bind, escalate, and impersonate permissions</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.1</td>
+                <td>Ensure allowPrivilegeEscalation is set to false</td>
+                <td>CIS</td>
+                <td><span class="badge severity-critical">CRITICAL</span></td>
+                <td><span class="badge status-fail">FAIL</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.2</td>
+                <td>Ensure containers run as non-root</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.3</td>
+                <td>Minimize privileged containers</td>
+                <td>CIS</td>
+                <td><span class="badge severity-critical">CRITICAL</span></td>
+                <td><span class="badge status-fail">FAIL</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.4</td>
+                <td>Ensure containers drop ALL capabilities</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-warn">WARN</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.5</td>
+                <td>Ensure hostPID is not set</td>
+                <td>CIS</td>
+                <td><span class="badge severity-critical">CRITICAL</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.6</td>
+                <td>Ensure hostIPC is not set</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.7</td>
+                <td>Ensure hostNetwork is not set</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.8</td>
+                <td>Limit container hostPort usage</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.2.13</td>
+                <td>Minimize added capabilities</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.3.1</td>
+                <td>Ensure CNI supports NetworkPolicy</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.3.2</td>
+                <td>Ensure every namespace has a NetworkPolicy</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-fail">FAIL</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.4.1</td>
+                <td>Prefer using Secrets as files over environment variables</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-fail">FAIL</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.7.1</td>
+                <td>Create resource quota for namespaces</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-warn">WARN</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.7.2</td>
+                <td>Ensure Seccomp profile is set</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.7.3</td>
+                <td>Ensure security context is applied to pods and containers</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-5.7.4</td>
+                <td>Ensure default namespace is not used</td>
+                <td>CIS</td>
+                <td><span class="badge severity-medium">MEDIUM</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.1</td>
+                <td>Ensure anonymous auth is disabled</td>
+                <td>CIS</td>
+                <td><span class="badge severity-critical">CRITICAL</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.2</td>
+                <td>Ensure token auth file is not set</td>
+                <td>CIS</td>
+                <td><span class="badge severity-critical">CRITICAL</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.6</td>
+                <td>Ensure authorization mode includes RBAC</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.7</td>
+                <td>Ensure authorization mode excludes AlwaysAllow</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-1.2.8</td>
+                <td>Ensure authorization mode includes Node</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-2.1</td>
+                <td>Ensure etcd encryption is configured</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-2.2</td>
+                <td>Ensure etcd peer TLS is enabled</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+            </tr>
+            
+            <tr>
+                <td>CIS-3.2</td>
+                <td>Ensure audit policy covers key operations</td>
+                <td>CIS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+            </tr>
+            
+            <tr>
+                <td>NSA-NS-1</td>
+                <td>Ensure namespaces are used to isolate workloads</td>
+                <td>NSA</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>NSA-PS-1</td>
+                <td>Ensure Pod Security Standards are enforced</td>
+                <td>NSA</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>NSA-AA-1</td>
+                <td>Ensure strong authentication is configured</td>
+                <td>NSA</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>PSS-1.1</td>
+                <td>Enforce Baseline Pod Security Standard</td>
+                <td>PSS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>PSS-1.2</td>
+                <td>Enforce Restricted Pod Security Standard</td>
+                <td>PSS</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-warn">WARN</span></td>
+            </tr>
+            
+            <tr>
+                <td>RBAC-1</td>
+                <td>Audit cluster-admin usage</td>
+                <td>RBAC</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-pass">PASS</span></td>
+            </tr>
+            
+            <tr>
+                <td>RBAC-2</td>
+                <td>Verify least-privilege role bindings</td>
+                <td>RBAC</td>
+                <td><span class="badge severity-high">HIGH</span></td>
+                <td><span class="badge status-fail">FAIL</span></td>
+            </tr>
+            
+        </tbody>
+    </table>
+</div>
+
+
+
+    <div class="footer">
+        <div>Generated by Varax 1.0.0 on 2026-03-07 14:30:00 UTC</div>
+        <div class="disclaimer">This report is generated from automated compliance checks and should be reviewed by qualified personnel.</div>
+    </div>
+</div>
+</body>
+</html>
