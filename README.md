@@ -129,6 +129,15 @@ varax scan -o json
 varax scan --kubeconfig /path/to/config -o plain
 ```
 
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--timeout` | `5m` | Scan timeout (e.g. `5m`, `30s`) |
+| `--benchmark` | `""` (all) | Filter by benchmark: `CIS`, `NSA-CISA`, `PSS`, `RBAC`, or `all` |
+| `--evidence` | `false` | Collect evidence bundle for auditors |
+| `--no-tui` | `false` | Disable animated TUI even in terminal mode |
+| `--remediate` | `false` | Auto-remediate failed checks (Pro) |
+| `--dry-run` | `true` | Validate remediation without applying changes |
+
 #### `varax status`
 
 Display the most recent stored scan results without running a new scan. Reads from BoltDB at `~/.varax/varax.db`.
@@ -168,6 +177,27 @@ varax evidence --all --format json -o evidence.json
 | `--all` | `false` | Export evidence for all controls |
 | `--format` | `html` | Output format: `html`, `json` |
 
+#### `varax explore` (Pro)
+
+Launch a full-screen TUI to explore SOC2 controls, check results, evidence, and remediation guidance.
+
+```bash
+varax explore
+```
+
+#### `varax remediate` (Pro)
+
+Auto-remediate violations from the latest scan. Loads the most recent scan result from storage and applies safe remediations. Requires a Varax Pro license.
+
+```bash
+varax remediate
+varax remediate --dry-run=false
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--dry-run` | `true` | Validate remediation without applying changes |
+
 #### `varax license`
 
 Manage Pro license activation.
@@ -175,7 +205,14 @@ Manage Pro license activation.
 ```bash
 varax license status
 varax license activate <key>
+varax license refresh
 ```
+
+| Subcommand | Description |
+|------------|-------------|
+| `status` | Show current license status |
+| `activate <KEY>` | Activate a license key |
+| `refresh` | Refresh license key from the Varax licensing server. Override the API endpoint with `VARAX_API_URL`. |
 
 #### `varax operator`
 
@@ -205,6 +242,21 @@ Print version, git commit, and build timestamp.
 
 ```bash
 varax version
+```
+
+#### `varax completion`
+
+Generate shell completion scripts for bash, zsh, or fish.
+
+```bash
+# Bash
+varax completion bash > /etc/bash_completion.d/varax
+
+# Zsh
+varax completion zsh > "${fpath[1]}/_varax"
+
+# Fish
+varax completion fish > ~/.config/fish/completions/varax.fish
 ```
 
 ## Benchmark Coverage
