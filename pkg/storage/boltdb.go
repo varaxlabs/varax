@@ -13,6 +13,7 @@ import (
 var (
 	scanBucket     = []byte("scans")
 	evidenceBucket = []byte("evidence")
+	licenseBucket  = []byte("license")
 )
 
 // BoltStore implements Store using BoltDB.
@@ -31,7 +32,10 @@ func NewBoltStore(path string) (*BoltStore, error) {
 		if _, err := tx.CreateBucketIfNotExists(scanBucket); err != nil {
 			return err
 		}
-		_, err := tx.CreateBucketIfNotExists(evidenceBucket)
+		if _, err := tx.CreateBucketIfNotExists(evidenceBucket); err != nil {
+			return err
+		}
+		_, err := tx.CreateBucketIfNotExists(licenseBucket)
 		return err
 	})
 	if err != nil {
@@ -164,6 +168,28 @@ func (s *BoltStore) PruneOlderThan(maxAge time.Duration) (int, error) {
 	})
 
 	return pruned, err
+}
+
+var licenseCurrentKey = []byte("current")
+
+func (s *BoltStore) SaveLicense(key string) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(licenseBucket)
+		return b.Put(licenseCurrentKey, []byte(key))
+	})
+}
+
+func (s *BoltStore) GetLicense() (string, error) {
+	var key string
+	err := s.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(licenseBucket)
+		v := b.Get(licenseCurrentKey)
+		if v != nil {
+			key = string(v)
+		}
+		return nil
+	})
+	return key, err
 }
 
 func (s *BoltStore) Close() error {

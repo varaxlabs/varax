@@ -210,6 +210,29 @@ func TestBoltStore_PruneNothingToRemove(t *testing.T) {
 	assert.Equal(t, 0, pruned)
 }
 
+func TestBoltStore_SaveAndGetLicense(t *testing.T) {
+	store, err := NewBoltStore(tempDBPath(t))
+	require.NoError(t, err)
+	defer func() { _ = store.Close() }()
+
+	// No license initially
+	key, err := store.GetLicense()
+	require.NoError(t, err)
+	assert.Empty(t, key)
+
+	// Save and retrieve
+	require.NoError(t, store.SaveLicense("test-license-key"))
+	key, err = store.GetLicense()
+	require.NoError(t, err)
+	assert.Equal(t, "test-license-key", key)
+
+	// Overwrite
+	require.NoError(t, store.SaveLicense("updated-key"))
+	key, err = store.GetLicense()
+	require.NoError(t, err)
+	assert.Equal(t, "updated-key", key)
+}
+
 func TestBoltStore_Close(t *testing.T) {
 	path := tempDBPath(t)
 	store, err := NewBoltStore(path)

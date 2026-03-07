@@ -27,6 +27,12 @@ type Store interface {
 	// PruneOlderThan removes scan results and evidence bundles older than the given duration.
 	PruneOlderThan(maxAge time.Duration) (int, error)
 
+	// SaveLicense persists a license key string.
+	SaveLicense(key string) error
+
+	// GetLicense returns the stored license key, or empty string if none.
+	GetLicense() (string, error)
+
 	// Close releases any resources held by the store.
 	Close() error
 }
