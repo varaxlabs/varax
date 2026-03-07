@@ -63,3 +63,11 @@ secrets.*.yaml
 
 # PRD docs
 varax-prd.md
+
+# Task tracking
+TODO.md
+
+# License keygen
+/keygen
+private.key
+public.key
