@@ -41,6 +41,7 @@ func main() {
 	rootCmd.AddCommand(newEvidenceCmd())
 	rootCmd.AddCommand(newLicenseCmd())
 	rootCmd.AddCommand(newExploreCmd())
+	rootCmd.AddCommand(newRemediateCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

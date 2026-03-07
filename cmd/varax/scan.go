@@ -12,7 +12,10 @@ import (
 	"github.com/varax/operator/pkg/cli/tui"
 	"github.com/varax/operator/pkg/compliance"
 	"github.com/varax/operator/pkg/evidence"
+	"github.com/varax/operator/pkg/license"
 	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/remediation"
+	"github.com/varax/operator/pkg/remediation/remediators"
 	"github.com/varax/operator/pkg/scanning"
 	"github.com/varax/operator/pkg/scanning/checks"
 	"github.com/varax/operator/pkg/storage"
@@ -24,6 +27,8 @@ var (
 	benchmark       string
 	collectEvidence bool
 	noTUI           bool
+	scanRemediate   bool
+	scanDryRun      bool
 )
 
 func newScanCmd() *cobra.Command {
@@ -36,6 +41,8 @@ func newScanCmd() *cobra.Command {
 	cmd.Flags().StringVar(&benchmark, "benchmark", "", "filter by benchmark (CIS, NSA-CISA, PSS, RBAC, or all)")
 	cmd.Flags().BoolVar(&collectEvidence, "evidence", false, "collect evidence bundle for auditors")
 	cmd.Flags().BoolVar(&noTUI, "no-tui", false, "disable animated TUI even in terminal mode")
+	cmd.Flags().BoolVar(&scanRemediate, "remediate", false, "auto-remediate failed checks (Pro)")
+	cmd.Flags().BoolVar(&scanDryRun, "dry-run", true, "validate remediation without applying changes")
 	return cmd
 }
 
@@ -132,6 +139,44 @@ func runScan(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	// Auto-remediation
+	var remReport *remediation.RemediationReport
+	if scanRemediate {
+		if remErr := requireProFeature(license.FeatureRemediation); remErr != nil {
+			fmt.Fprintf(os.Stderr, "Warning: %v\n", remErr)
+		} else {
+			reg := remediation.NewRemediatorRegistry()
+			remediators.RegisterAll(reg)
+			engine := remediation.NewEngine(reg, client, scanDryRun)
+
+			plan, planErr := engine.PlanFromScanResult(ctx, scanResult)
+			if planErr != nil {
+				fmt.Fprintf(os.Stderr, "Warning: remediation planning failed: %v\n", planErr)
+			} else if len(plan.Actions) > 0 {
+				var progressCb remediation.ProgressFunc
+				if format == cli.FormatStyled {
+					progressCb = func(completed, total int, action remediation.RemediationAction) {
+						fmt.Fprintf(os.Stderr, "\r  Remediating [%d/%d] %s %s/%s",
+							completed, total, action.CheckID, action.TargetKind, action.TargetName)
+						if completed == total {
+							fmt.Fprintln(os.Stderr)
+						}
+					}
+				}
+
+				var execErr error
+				remReport, execErr = engine.Execute(ctx, plan, progressCb)
+				if execErr != nil {
+					fmt.Fprintf(os.Stderr, "Warning: remediation failed: %v\n", execErr)
+				} else if store != nil {
+					if saveErr := store.SaveRemediationReport(remReport); saveErr != nil {
+						fmt.Fprintf(os.Stderr, "Warning: could not save remediation report: %v\n", saveErr)
+					}
+				}
+			}
+		}
+	}
+
 	// Render output
 	switch format {
 	case cli.FormatJSON:
@@ -142,6 +187,9 @@ func runScan(cmd *cobra.Command, args []string) error {
 		if evidenceBundle != nil {
 			output["evidence"] = evidenceBundle
 		}
+		if remReport != nil {
+			output["remediation"] = remReport
+		}
 		return cli.RenderJSON(output)
 	case cli.FormatPlain:
 		fmt.Println(cli.SummaryBoxPlain(complianceResult, scanResult))
@@ -149,11 +197,17 @@ func runScan(cmd *cobra.Command, args []string) error {
 		if evidenceBundle != nil {
 			fmt.Printf("\nEvidence: collected %d items at %s\n", len(evidenceBundle.Items), evidenceBundle.CollectedAt.Format(time.RFC3339))
 		}
+		if remReport != nil {
+			fmt.Println(cli.RemediationBoxPlain(remReport))
+		}
 	default:
 		fmt.Println(cli.SummaryBox(complianceResult, scanResult))
 		fmt.Println(cli.ControlTable(complianceResult.ControlResults))
 		if evidenceBundle != nil {
 			fmt.Printf("\n  Evidence: collected %d items at %s\n", len(evidenceBundle.Items), evidenceBundle.CollectedAt.Format(time.RFC3339))
+		}
+		if remReport != nil {
+			fmt.Println(cli.RemediationBox(remReport))
 		}
 	}
 
