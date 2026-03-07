@@ -24,5 +24,5 @@ func TestDenyServiceExternalIPsCheck_Fail(t *testing.T) {
 func TestDenyServiceExternalIPsCheck_SkipManaged(t *testing.T) {
 	client := fake.NewSimpleClientset(managedNode())
 	result := (&DenyServiceExternalIPsCheck{}).Run(context.Background(), client)
-	assert.Equal(t, models.StatusSkip, result.Status)
+	assert.Equal(t, models.StatusProviderManaged, result.Status)
 }

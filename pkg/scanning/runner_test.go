@@ -137,14 +137,16 @@ func TestComputeSummary_AllStatuses(t *testing.T) {
 		{Status: models.StatusFail},
 		{Status: models.StatusWarn},
 		{Status: models.StatusSkip},
+		{Status: models.StatusProviderManaged},
 	}
 
 	summary := computeSummary(results)
-	assert.Equal(t, 5, summary.TotalChecks)
+	assert.Equal(t, 6, summary.TotalChecks)
 	assert.Equal(t, 2, summary.PassCount)
 	assert.Equal(t, 1, summary.FailCount)
 	assert.Equal(t, 1, summary.WarnCount)
 	assert.Equal(t, 1, summary.SkipCount)
+	assert.Equal(t, 1, summary.ProviderManagedCount)
 }
 
 func TestComputeSummary_Empty(t *testing.T) {

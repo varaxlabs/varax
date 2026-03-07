@@ -17,6 +17,7 @@ func TestStatusClass(t *testing.T) {
 		{models.StatusFail, "status-fail"},
 		{models.StatusWarn, "status-warn"},
 		{models.StatusSkip, "status-skip"},
+		{models.StatusProviderManaged, "status-provider-managed"},
 		{"UNKNOWN", "status-unknown"},
 	}
 	for _, tt := range tests {
@@ -109,7 +110,7 @@ func TestTemplateFuncs(t *testing.T) {
 		"statusClass", "severityClass", "formatTime", "formatDate",
 		"formatScore", "scoreClass", "jsonPretty", "add", "sub",
 		"seq", "upper", "css", "controlStatusClass", "truncate",
-		"remediation", "hasRemediation", "controlEvidence",
+		"isProviderManaged", "remediation", "hasRemediation", "controlEvidence",
 	}
 	for _, name := range expected {
 		assert.NotNil(t, funcs[name], "missing template func: %s", name)

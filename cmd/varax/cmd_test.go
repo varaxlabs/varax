@@ -233,14 +233,16 @@ func TestFilterByBenchmark_AllStatuses(t *testing.T) {
 			{Benchmark: "CIS", Status: models.StatusFail},
 			{Benchmark: "CIS", Status: models.StatusWarn},
 			{Benchmark: "CIS", Status: models.StatusSkip},
+			{Benchmark: "CIS", Status: models.StatusProviderManaged},
 		},
 	}
 	filtered := filterByBenchmark(result, "CIS")
-	assert.Equal(t, 4, filtered.Summary.TotalChecks)
+	assert.Equal(t, 5, filtered.Summary.TotalChecks)
 	assert.Equal(t, 1, filtered.Summary.PassCount)
 	assert.Equal(t, 1, filtered.Summary.FailCount)
 	assert.Equal(t, 1, filtered.Summary.WarnCount)
 	assert.Equal(t, 1, filtered.Summary.SkipCount)
+	assert.Equal(t, 1, filtered.Summary.ProviderManagedCount)
 }
 
 func TestClusterName_NoConfig(t *testing.T) {
@@ -311,7 +313,8 @@ func TestRunEvidence_InvalidFormat(t *testing.T) {
 
 	err := runEvidence(nil, nil)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "unsupported format")
+	// Without a license, the gate fires before format validation
+	assert.Contains(t, err.Error(), "Varax Pro license")
 }
 
 func TestRunReport_InvalidFormat(t *testing.T) {
@@ -321,7 +324,8 @@ func TestRunReport_InvalidFormat(t *testing.T) {
 
 	err := runReport(nil, nil)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "unsupported format")
+	// Without a license, the gate fires before format validation
+	assert.Contains(t, err.Error(), "Varax Pro license")
 }
 
 func TestRunReport_InvalidType(t *testing.T) {
@@ -331,7 +335,45 @@ func TestRunReport_InvalidType(t *testing.T) {
 
 	err := runReport(nil, nil)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "unsupported report type")
+	// Without a license, the gate fires before type validation
+	assert.Contains(t, err.Error(), "Varax Pro license")
+}
+
+func TestNewLicenseCmd(t *testing.T) {
+	cmd := newLicenseCmd()
+	assert.Equal(t, "license", cmd.Use)
+	assert.NotEmpty(t, cmd.Short)
+
+	// Verify subcommands
+	sub := cmd.Commands()
+	names := make([]string, len(sub))
+	for i, c := range sub {
+		names[i] = c.Use
+	}
+	assert.Contains(t, names, "status")
+	assert.Contains(t, names, "activate <KEY>")
+}
+
+func TestRunLicenseStatus_NoLicense(t *testing.T) {
+	t.Setenv("VARAX_LICENSE", "")
+	// Should not error — prints free tier message
+	err := runLicenseStatus(nil, nil)
+	assert.NoError(t, err)
+}
+
+func TestRunLicenseActivate_InvalidKey(t *testing.T) {
+	err := runLicenseActivate(nil, []string{"not-a-valid-key"})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid license key")
+}
+
+func TestRequireProFeature_NoLicense(t *testing.T) {
+	t.Setenv("VARAX_LICENSE", "")
+	err := requireProFeature("reports")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "Varax Pro license")
+	assert.Contains(t, err.Error(), "varax license activate")
+	assert.Contains(t, err.Error(), "varax.io/pricing")
 }
 
 func TestBuildRESTConfig_FromEnv(t *testing.T) {

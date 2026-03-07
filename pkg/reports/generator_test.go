@@ -252,6 +252,32 @@ func TestParseReportFormat(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestPopulateComputedFields_ProviderManaged(t *testing.T) {
+	g := NewGenerator("test")
+	data := &ReportData{
+		Compliance: &models.ComplianceResult{},
+		Scan: &models.ScanResult{
+			Summary: models.ScanSummary{
+				TotalChecks:          5,
+				PassCount:            2,
+				ProviderManagedCount: 3,
+			},
+			Results: []models.CheckResult{
+				{ID: "C1", Status: models.StatusPass},
+				{ID: "C2", Status: models.StatusPass},
+				{ID: "C3", Status: models.StatusProviderManaged, Name: "API Server"},
+				{ID: "C4", Status: models.StatusProviderManaged, Name: "Scheduler"},
+				{ID: "C5", Status: models.StatusProviderManaged, Name: "Kubelet"},
+			},
+		},
+	}
+	g.populateComputedFields(data)
+
+	assert.Equal(t, 3, data.ProviderManagedCount)
+	assert.Len(t, data.ProviderManagedChecks, 3)
+	assert.Equal(t, "API Server", data.ProviderManagedChecks[0].Name)
+}
+
 func TestPopulateComputedFields_ScanMetadata(t *testing.T) {
 	g := NewGenerator("test")
 	data := &ReportData{

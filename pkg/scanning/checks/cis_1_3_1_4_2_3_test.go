@@ -49,7 +49,7 @@ func TestControllerManagerChecks(t *testing.T) {
 		t.Run(tt.check.ID()+"_SkipManaged", func(t *testing.T) {
 			client := fake.NewSimpleClientset(managedNode())
 			result := tt.check.Run(context.Background(), client)
-			assert.Equal(t, models.StatusSkip, result.Status)
+			assert.Equal(t, models.StatusProviderManaged, result.Status)
 		})
 	}
 }
@@ -128,10 +128,10 @@ func TestKubeletChecks_ManagedCluster(t *testing.T) {
 		KubeletReadOnlyPortCheck, KubeletStreamingCheck,
 	}
 	for _, chk := range checks {
-		t.Run(chk.ID()+"_ManagedPass", func(t *testing.T) {
+		t.Run(chk.ID()+"_ManagedProviderManaged", func(t *testing.T) {
 			client := fake.NewSimpleClientset(managedNode())
 			result := chk.Run(context.Background(), client)
-			assert.Equal(t, models.StatusPass, result.Status)
+			assert.Equal(t, models.StatusProviderManaged, result.Status)
 		})
 	}
 }

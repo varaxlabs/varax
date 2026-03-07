@@ -58,6 +58,21 @@ func TestScorer_AllNotAssessed(t *testing.T) {
 	assert.Equal(t, float64(0), scorer.Calculate(results))
 }
 
+func TestScorer_ProviderManagedCountsAsPass(t *testing.T) {
+	// Controls with provider-managed status should be PASS in scoring
+	// (derived by mapper), so scorer sees them as ControlStatusPass
+	results := []models.ControlResult{
+		{Status: models.ControlStatusPass},
+		{Status: models.ControlStatusPass},
+		{Status: models.ControlStatusFail},
+	}
+
+	scorer := &Scorer{}
+	// 2 pass out of 3 assessed = 66.67%
+	score := scorer.Calculate(results)
+	assert.InDelta(t, 66.67, score, 0.1)
+}
+
 func TestScorer_Empty(t *testing.T) {
 	scorer := &Scorer{}
 	assert.Equal(t, float64(0), scorer.Calculate(nil))

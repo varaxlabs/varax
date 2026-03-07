@@ -104,6 +104,52 @@ func TestMapper_MixedResults(t *testing.T) {
 	assert.True(t, result.Score > 0 && result.Score < 100)
 }
 
+func TestMapper_ProviderManagedAsPass(t *testing.T) {
+	var results []models.CheckResult
+	for _, id := range allCheckIDs() {
+		results = append(results, models.CheckResult{ID: id, Status: models.StatusProviderManaged})
+	}
+
+	scanResult := &models.ScanResult{
+		ID:        "test-scan",
+		Timestamp: time.Now(),
+		Results:   results,
+	}
+
+	mapper := NewSOC2Mapper()
+	result := mapper.MapResults(scanResult)
+
+	require.NotNil(t, result)
+	assert.Equal(t, float64(100), result.Score)
+
+	for _, cr := range result.ControlResults {
+		if cr.Status != models.ControlStatusNotAssessed {
+			assert.Equal(t, models.ControlStatusPass, cr.Status)
+		}
+	}
+}
+
+func TestMapper_MixedProviderManagedAndFail(t *testing.T) {
+	scanResult := &models.ScanResult{
+		ID:        "test-scan",
+		Timestamp: time.Now(),
+		Results: []models.CheckResult{
+			{ID: "CIS-5.1.1", Status: models.StatusProviderManaged},
+			{ID: "CIS-5.1.2", Status: models.StatusPass},
+			{ID: "CIS-5.1.3", Status: models.StatusFail, Evidence: []models.Evidence{{Message: "fail"}}},
+			{ID: "CIS-5.1.5", Status: models.StatusPass},
+			{ID: "CIS-5.1.6", Status: models.StatusPass},
+			{ID: "CIS-5.1.8", Status: models.StatusProviderManaged},
+		},
+	}
+
+	mapper := NewSOC2Mapper()
+	result := mapper.MapResults(scanResult)
+
+	// CC6.1 maps to 5.1.1 (provider-managed) + 5.1.3 (fail) + 5.1.8 (provider-managed) → PARTIAL
+	assert.True(t, result.Score > 0 && result.Score < 100)
+}
+
 func TestMapper_NotAssessedControls(t *testing.T) {
 	scanResult := &models.ScanResult{
 		ID:        "test-scan",

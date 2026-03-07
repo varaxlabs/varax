@@ -27,7 +27,7 @@ func TestAnonAuthCheck_Fail(t *testing.T) {
 func TestAnonAuthCheck_SkipManaged(t *testing.T) {
 	client := fake.NewSimpleClientset(managedNode())
 	result := (&AnonAuthCheck{}).Run(context.Background(), client)
-	assert.Equal(t, models.StatusSkip, result.Status)
+	assert.Equal(t, models.StatusProviderManaged, result.Status)
 }
 
 // Test helpers for API server checks

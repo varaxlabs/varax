@@ -148,7 +148,7 @@ func TestAPIServerChecks_PassFailSkip(t *testing.T) {
 		t.Run(tt.check.ID()+"_SkipManaged", func(t *testing.T) {
 			client := fake.NewSimpleClientset(managedNode())
 			result := tt.check.Run(context.Background(), client)
-			assert.Equal(t, models.StatusSkip, result.Status, "check %s should skip on managed", tt.check.ID())
+			assert.Equal(t, models.StatusProviderManaged, result.Status, "check %s should be provider-managed", tt.check.ID())
 		})
 	}
 }
