@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -10,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/remediation"
 )
 
 func tempDBPath(t *testing.T) string {
@@ -231,6 +233,90 @@ func TestBoltStore_SaveAndGetLicense(t *testing.T) {
 	key, err = store.GetLicense()
 	require.NoError(t, err)
 	assert.Equal(t, "updated-key", key)
+}
+
+func TestBoltStore_SaveAndGetRemediationReport(t *testing.T) {
+	store, err := NewBoltStore(tempDBPath(t))
+	require.NoError(t, err)
+	defer func() { _ = store.Close() }()
+
+	report := &remediation.RemediationReport{
+		ID:        "rem-1",
+		ScanID:    "scan-1",
+		Timestamp: time.Now().UTC().Truncate(time.Millisecond),
+		Duration:  2 * time.Second,
+		DryRun:    true,
+		Results: []remediation.RemediationResult{
+			{
+				Action: remediation.RemediationAction{CheckID: "CIS-5.2.1", TargetKind: "Deployment"},
+				Status: remediation.StatusDryRun,
+			},
+		},
+		Summary: remediation.RemediationSummary{TotalActions: 1, DryRunCount: 1},
+	}
+
+	err = store.SaveRemediationReport(report)
+	require.NoError(t, err)
+
+	latest, err := store.GetLatestRemediationReport()
+	require.NoError(t, err)
+	require.NotNil(t, latest)
+	assert.Equal(t, "rem-1", latest.ID)
+	assert.Equal(t, 1, latest.Summary.TotalActions)
+	assert.Len(t, latest.Results, 1)
+}
+
+func TestBoltStore_GetLatestRemediationReportEmpty(t *testing.T) {
+	store, err := NewBoltStore(tempDBPath(t))
+	require.NoError(t, err)
+	defer func() { _ = store.Close() }()
+
+	latest, err := store.GetLatestRemediationReport()
+	require.NoError(t, err)
+	assert.Nil(t, latest)
+}
+
+func TestBoltStore_ListRemediationReports(t *testing.T) {
+	store, err := NewBoltStore(tempDBPath(t))
+	require.NoError(t, err)
+	defer func() { _ = store.Close() }()
+
+	now := time.Now().UTC()
+	for i := 0; i < 3; i++ {
+		r := &remediation.RemediationReport{
+			ID:        fmt.Sprintf("rem-%d", i),
+			Timestamp: now.Add(time.Duration(i) * time.Minute),
+			Summary:   remediation.RemediationSummary{TotalActions: i + 1},
+		}
+		require.NoError(t, store.SaveRemediationReport(r))
+	}
+
+	reports, err := store.ListRemediationReports(2)
+	require.NoError(t, err)
+	assert.Len(t, reports, 2)
+	assert.Equal(t, 3, reports[0].Summary.TotalActions) // newest first
+	assert.Equal(t, 2, reports[1].Summary.TotalActions)
+}
+
+func TestBoltStore_PruneRemediationReports(t *testing.T) {
+	store, err := NewBoltStore(tempDBPath(t))
+	require.NoError(t, err)
+	defer func() { _ = store.Close() }()
+
+	now := time.Now().UTC()
+	old := &remediation.RemediationReport{ID: "old", Timestamp: now.Add(-48 * time.Hour)}
+	recent := &remediation.RemediationReport{ID: "recent", Timestamp: now.Add(-1 * time.Hour)}
+	require.NoError(t, store.SaveRemediationReport(old))
+	require.NoError(t, store.SaveRemediationReport(recent))
+
+	pruned, err := store.PruneOlderThan(24 * time.Hour)
+	require.NoError(t, err)
+	assert.Equal(t, 1, pruned)
+
+	reports, err := store.ListRemediationReports(10)
+	require.NoError(t, err)
+	assert.Len(t, reports, 1)
+	assert.Equal(t, "recent", reports[0].ID)
 }
 
 func TestBoltStore_Close(t *testing.T) {

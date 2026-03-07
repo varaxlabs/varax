@@ -5,6 +5,7 @@ import (
 
 	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/remediation"
 )
 
 // Store is the interface for persisting scan results.
@@ -24,7 +25,16 @@ type Store interface {
 	// GetLatestEvidenceBundle returns the most recent evidence bundle.
 	GetLatestEvidenceBundle() (*evidence.EvidenceBundle, error)
 
-	// PruneOlderThan removes scan results and evidence bundles older than the given duration.
+	// SaveRemediationReport persists a remediation report.
+	SaveRemediationReport(report *remediation.RemediationReport) error
+
+	// GetLatestRemediationReport returns the most recent remediation report.
+	GetLatestRemediationReport() (*remediation.RemediationReport, error)
+
+	// ListRemediationReports returns remediation reports in reverse chronological order, up to limit.
+	ListRemediationReports(limit int) ([]remediation.RemediationReport, error)
+
+	// PruneOlderThan removes scan results, evidence bundles, and remediation reports older than the given duration.
 	PruneOlderThan(maxAge time.Duration) (int, error)
 
 	// SaveLicense persists a license key string.

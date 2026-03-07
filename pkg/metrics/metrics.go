@@ -59,6 +59,21 @@ var (
 		},
 		[]string{"provider", "cluster"},
 	)
+
+	RemediationActions = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "varax_remediation_actions",
+			Help: "Number of remediation actions by status",
+		},
+		[]string{"status"},
+	)
+
+	RemediationLastTimestamp = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "varax_remediation_last_timestamp",
+			Help: "Unix timestamp of the last remediation run",
+		},
+	)
 )
 
 // RecordControlStatus maps a control status string to its numeric gauge value.
