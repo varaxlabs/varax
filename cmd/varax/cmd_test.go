@@ -380,8 +380,6 @@ func TestRequireProFeature_NoLicense(t *testing.T) {
 	err := requireProFeature("reports")
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "Varax Pro license")
-	assert.Contains(t, err.Error(), "varax license activate")
-	assert.Contains(t, err.Error(), "varax.io/pricing")
 }
 
 func TestBuildRESTConfig_FromEnv(t *testing.T) {

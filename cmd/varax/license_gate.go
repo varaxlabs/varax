@@ -42,12 +42,12 @@ func loadLicense() (*license.License, error) {
 func requireProFeature(feature string) error {
 	l, err := loadLicense()
 	if err != nil {
-		return fmt.Errorf(`This feature requires a Varax Pro license.
-
+		fmt.Fprintln(os.Stderr, `
 Activate a license:  varax license activate <KEY>
 Purchase at:         https://varax.io/pricing
 
 Free tier includes: scanning, SOC2 mapping, Prometheus metrics, score tracking.`)
+		return fmt.Errorf("this feature requires a Varax Pro license")
 	}
 
 	if !l.HasFeature(feature) {
