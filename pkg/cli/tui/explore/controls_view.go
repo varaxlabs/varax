@@ -130,7 +130,7 @@ func (m controlsModel) View() string {
 	// Score gauge at top
 	if m.data.Compliance != nil {
 		gauge := cli.ScoreGauge(m.data.Compliance.Score)
-		b.WriteString(fmt.Sprintf("  Score: %s\n", gauge))
+		fmt.Fprintf(&b, "  Score: %s\n", gauge)
 	}
 
 	b.WriteString(m.list.View())

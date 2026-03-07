@@ -30,8 +30,6 @@ var (
 			Foreground(colorBlue).
 			Width(16)
 
-	valueStyle = lipgloss.NewStyle()
-
 	evidenceBlockStyle = lipgloss.NewStyle().
 				Border(lipgloss.RoundedBorder()).
 				BorderForeground(colorGray).

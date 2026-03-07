@@ -65,15 +65,15 @@ func renderTerminalReport(data *ReportData) string {
 	// Summary
 	b.WriteString(termSectionHeader.Render("Summary"))
 	b.WriteString("\n")
-	b.WriteString(fmt.Sprintf("  Total Checks:       %d\n", data.TotalChecks))
-	b.WriteString(fmt.Sprintf("  Pass:               %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#04B575")).Render(fmt.Sprintf("%d", data.PassCount))))
-	b.WriteString(fmt.Sprintf("  Fail:               %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#FF4672")).Render(fmt.Sprintf("%d", data.FailCount))))
-	b.WriteString(fmt.Sprintf("  Warn:               %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700")).Render(fmt.Sprintf("%d", data.WarnCount))))
-	b.WriteString(fmt.Sprintf("  Skip:               %d\n", data.SkipCount))
+	fmt.Fprintf(&b, "  Total Checks:       %d\n", data.TotalChecks)
+	fmt.Fprintf(&b, "  Pass:               %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#04B575")).Render(fmt.Sprintf("%d", data.PassCount)))
+	fmt.Fprintf(&b, "  Fail:               %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#FF4672")).Render(fmt.Sprintf("%d", data.FailCount)))
+	fmt.Fprintf(&b, "  Warn:               %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700")).Render(fmt.Sprintf("%d", data.WarnCount)))
+	fmt.Fprintf(&b, "  Skip:               %d\n", data.SkipCount)
 	if data.ProviderManagedCount > 0 {
-		b.WriteString(fmt.Sprintf("  Provider-Managed:   %d\n", data.ProviderManagedCount))
+		fmt.Fprintf(&b, "  Provider-Managed:   %d\n", data.ProviderManagedCount)
 	}
-	b.WriteString(fmt.Sprintf("  Duration:           %s\n", data.ScanDuration))
+	fmt.Fprintf(&b, "  Duration:           %s\n", data.ScanDuration)
 	b.WriteString("\n")
 
 	// Controls table
@@ -90,12 +90,12 @@ func renderTerminalReport(data *ReportData) string {
 		b.WriteString("\n")
 		for _, f := range data.TopFindings {
 			sev := renderSeverityBadge(f.Severity)
-			b.WriteString(fmt.Sprintf("  %s  %-12s %s\n", sev, f.ID, f.Name))
+			fmt.Fprintf(&b, "  %s  %-12s %s\n", sev, f.ID, f.Name)
 			if f.Message != "" {
-				b.WriteString(fmt.Sprintf("                       %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#626262")).Render(f.Message)))
+				fmt.Fprintf(&b, "                       %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#626262")).Render(f.Message))
 			}
 			if rem := Remediation(f.ID); rem != "" {
-				b.WriteString(fmt.Sprintf("                       %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700")).Render("Fix: "+rem)))
+				fmt.Fprintf(&b, "                       %s\n", lipgloss.NewStyle().Foreground(lipgloss.Color("#FFD700")).Render("Fix: "+rem))
 			}
 			b.WriteString("\n")
 		}
@@ -106,7 +106,7 @@ func renderTerminalReport(data *ReportData) string {
 		b.WriteString(termSectionHeader.Render("Shared Responsibility (Provider-Managed)"))
 		b.WriteString("\n")
 		for _, c := range data.ProviderManagedChecks {
-			b.WriteString(fmt.Sprintf("  %-12s %s\n", c.ID, c.Name))
+			fmt.Fprintf(&b, "  %-12s %s\n", c.ID, c.Name)
 		}
 		b.WriteString("\n")
 	}

@@ -34,16 +34,16 @@ func (m *checkDetailModel) updateContent() {
 	b.WriteString(headerStyle.Render(fmt.Sprintf("%s — %s", m.check.ID, m.check.Name)))
 	b.WriteString("\n\n")
 
-	b.WriteString(fmt.Sprintf("%s %s\n", labelStyle.Render("Status:"), statusBadge(string(m.check.Status))))
-	b.WriteString(fmt.Sprintf("%s %s\n", labelStyle.Render("Severity:"), severityBadge(string(m.check.Severity))))
-	b.WriteString(fmt.Sprintf("%s %s\n", labelStyle.Render("Benchmark:"), m.check.Benchmark))
+	fmt.Fprintf(&b, "%s %s\n", labelStyle.Render("Status:"), statusBadge(string(m.check.Status)))
+	fmt.Fprintf(&b, "%s %s\n", labelStyle.Render("Severity:"), severityBadge(string(m.check.Severity)))
+	fmt.Fprintf(&b, "%s %s\n", labelStyle.Render("Benchmark:"), m.check.Benchmark)
 
 	if m.check.Description != "" {
-		b.WriteString(fmt.Sprintf("\n%s %s\n", labelStyle.Render("Description:"), m.check.Description))
+		fmt.Fprintf(&b, "\n%s %s\n", labelStyle.Render("Description:"), m.check.Description)
 	}
 
 	if m.check.Message != "" {
-		b.WriteString(fmt.Sprintf("\n%s %s\n", labelStyle.Render("Message:"), m.check.Message))
+		fmt.Fprintf(&b, "\n%s %s\n", labelStyle.Render("Message:"), m.check.Message)
 	}
 
 	// Evidence

@@ -41,11 +41,11 @@ func (m *controlDetailModel) updateContent() {
 	b.WriteString("\n\n")
 
 	// Status and description
-	b.WriteString(fmt.Sprintf("%s %s\n\n", labelStyle.Render("Status:"), statusBadge(string(m.control.Status))))
+	fmt.Fprintf(&b, "%s %s\n\n", labelStyle.Render("Status:"), statusBadge(string(m.control.Status)))
 	if m.control.Control.Description != "" {
-		b.WriteString(fmt.Sprintf("%s %s\n\n", labelStyle.Render("Description:"), m.control.Control.Description))
+		fmt.Fprintf(&b, "%s %s\n\n", labelStyle.Render("Description:"), m.control.Control.Description)
 	}
-	b.WriteString(fmt.Sprintf("%s %d\n\n", labelStyle.Render("Violations:"), m.control.ViolationCount))
+	fmt.Fprintf(&b, "%s %d\n\n", labelStyle.Render("Violations:"), m.control.ViolationCount)
 
 	// Check results
 	b.WriteString(headerStyle.Render("Mapped Checks"))
@@ -59,12 +59,12 @@ func (m *controlDetailModel) updateContent() {
 
 		statusStr := string(cr.Status)
 		sev := string(cr.Severity)
-		b.WriteString(fmt.Sprintf("%s%-12s %-8s %-8s %s\n", prefix, cr.ID, statusStr, sev, cr.Name))
+		fmt.Fprintf(&b, "%s%-12s %-8s %-8s %s\n", prefix, cr.ID, statusStr, sev, cr.Name)
 
 		// Show evidence for selected check
 		if i == m.checkCursor && len(cr.Evidence) > 0 {
 			for _, ev := range cr.Evidence {
-				b.WriteString(fmt.Sprintf("    - %s\n", ev.Message))
+				fmt.Fprintf(&b, "    - %s\n", ev.Message)
 			}
 		}
 	}
