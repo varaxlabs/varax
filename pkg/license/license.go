@@ -11,10 +11,14 @@ import (
 )
 
 var (
-	ErrInvalidFormat    = errors.New("invalid license format")
-	ErrInvalidSignature = errors.New("invalid license signature")
-	ErrExpired          = errors.New("license expired")
-	ErrNoLicense        = errors.New("no license found")
+	ErrInvalidFormat        = errors.New("invalid license format")
+	ErrInvalidSignature     = errors.New("invalid license signature")
+	ErrExpired              = errors.New("license expired")
+	ErrNoLicense            = errors.New("no license found")
+	ErrSubscriptionInactive = errors.New("subscription is no longer active")
+	ErrLicenseNotFound      = errors.New("license not recognized by server")
+	ErrRateLimited          = errors.New("rate limited — try again later")
+	ErrServerError          = errors.New("licensing server error")
 )
 
 const GracePeriod = 5 * 24 * time.Hour
