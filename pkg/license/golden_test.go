@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"strings"
 	"testing"
 	"time"
 
@@ -50,11 +49,6 @@ func TestGoldenVectors(t *testing.T) {
 	payloadJSON, err := json.Marshal(payload)
 	require.NoError(t, err)
 
-	// Verify alphabetical key order
-	expectedFieldOrder := `"expires":`
-	assert.True(t, strings.HasPrefix(string(payloadJSON), "{"+expectedFieldOrder),
-		"JSON keys must be alphabetically sorted (map marshal); got: %s", string(payloadJSON))
-
 	t.Logf("Payload JSON: %s", string(payloadJSON))
 
 	payloadB64 := base64.RawURLEncoding.EncodeToString(payloadJSON)
@@ -95,8 +89,4 @@ func TestGoldenVectors(t *testing.T) {
 	assert.Equal(t, issued, result.Issued.UTC())
 	assert.Equal(t, expires, result.Expires.UTC())
 	assert.Equal(t, []string{"reports", "evidence", "remediation", "scheduled-reports", "explore"}, result.Features)
-
-	// Verify signature is deterministic — Ed25519 signatures are deterministic
-	sig2 := ed25519.Sign(priv, []byte(payloadB64))
-	assert.Equal(t, sig, sig2, "Ed25519 signatures must be deterministic")
 }

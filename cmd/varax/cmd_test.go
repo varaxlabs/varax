@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"io"
 	"os"
 	"path/filepath"
 	"testing"
@@ -12,6 +14,23 @@ import (
 	"github.com/varax/operator/pkg/license"
 	"github.com/varax/operator/pkg/models"
 )
+
+func captureStdout(t *testing.T, f func()) string {
+	t.Helper()
+	old := os.Stdout
+	r, w, err := os.Pipe()
+	require.NoError(t, err)
+	os.Stdout = w
+
+	f()
+
+	_ = w.Close()
+	os.Stdout = old
+
+	var buf bytes.Buffer
+	_, _ = io.Copy(&buf, r)
+	return buf.String()
+}
 
 func TestNewVersionCmd(t *testing.T) {
 	cmd := newVersionCmd()
@@ -437,6 +456,8 @@ func TestRunLicenseRefresh_NoLicense(t *testing.T) {
 
 func TestRunPrune(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
+	origPruneMaxAge := pruneMaxAge
+	defer func() { pruneMaxAge = origPruneMaxAge }()
 	pruneMaxAge = 720 * time.Hour
 
 	err := runPrune(nil, nil)
@@ -445,6 +466,10 @@ func TestRunPrune(t *testing.T) {
 
 func TestRunStatus_NoScanResults(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
+	origHistory, origControls, origEvidence, origBenchmark := statusHistory, statusControls, statusEvidence, statusBenchmark
+	defer func() {
+		statusHistory, statusControls, statusEvidence, statusBenchmark = origHistory, origControls, origEvidence, origBenchmark
+	}()
 	statusHistory = 0
 	statusControls = false
 	statusEvidence = false
@@ -463,20 +488,10 @@ func TestPrintLicenseJSON(t *testing.T) {
 		Features: []string{"reports"},
 	}
 
-	// Redirect stdout
-	old := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	err := printLicenseJSON(l)
-	require.NoError(t, err)
-
-	_ = w.Close()
-	os.Stdout = old
-
-	var buf [4096]byte
-	n, _ := r.Read(buf[:])
-	output := string(buf[:n])
+	output := captureStdout(t, func() {
+		err := printLicenseJSON(l)
+		require.NoError(t, err)
+	})
 
 	assert.Contains(t, output, "Test Corp")
 	assert.Contains(t, output, "pro-annual")
@@ -506,16 +521,11 @@ func TestCompletionCmd_Bash(t *testing.T) {
 	root.AddCommand(newCompletionCmd())
 	root.SetArgs([]string{"completion", "bash"})
 
-	// Redirect stdout
-	old := os.Stdout
-	_, w, _ := os.Pipe()
-	os.Stdout = w
-
-	err := root.Execute()
-
-	_ = w.Close()
-	os.Stdout = old
-	assert.NoError(t, err)
+	output := captureStdout(t, func() {
+		err := root.Execute()
+		assert.NoError(t, err)
+	})
+	assert.NotEmpty(t, output)
 }
 
 func TestBuildRESTConfig_FromEnv(t *testing.T) {
