@@ -4,9 +4,12 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/varax/operator/pkg/license"
 	"github.com/varax/operator/pkg/models"
 )
 
@@ -380,6 +383,139 @@ func TestRequireProFeature_NoLicense(t *testing.T) {
 	err := requireProFeature("reports")
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "Varax Pro license")
+}
+
+func TestNewCompletionCmd(t *testing.T) {
+	cmd := newCompletionCmd()
+	assert.Equal(t, "completion [bash|zsh|fish]", cmd.Use)
+	assert.NotEmpty(t, cmd.Short)
+	assert.Equal(t, []string{"bash", "zsh", "fish"}, cmd.ValidArgs)
+}
+
+func TestNewExploreCmd(t *testing.T) {
+	cmd := newExploreCmd()
+	assert.Equal(t, "explore", cmd.Use)
+	assert.NotEmpty(t, cmd.Short)
+}
+
+func TestNewRemediateCmd(t *testing.T) {
+	cmd := newRemediateCmd()
+	assert.Equal(t, "remediate", cmd.Use)
+	assert.NotEmpty(t, cmd.Short)
+
+	f := cmd.Flags().Lookup("dry-run")
+	assert.NotNil(t, f)
+	assert.Equal(t, "true", f.DefValue)
+}
+
+func TestNewLicenseRefreshCmd(t *testing.T) {
+	cmd := newLicenseRefreshCmd()
+	assert.Equal(t, "refresh", cmd.Use)
+	assert.NotEmpty(t, cmd.Short)
+}
+
+func TestResolveOutputFormat(t *testing.T) {
+	orig := outputFormat
+	defer func() { outputFormat = orig }()
+
+	outputFormat = "json"
+	assert.Equal(t, "json", resolveOutputFormat())
+
+	outputFormat = ""
+	assert.Equal(t, "styled", resolveOutputFormat())
+}
+
+func TestRunLicenseRefresh_NoLicense(t *testing.T) {
+	t.Setenv("VARAX_LICENSE", "")
+	t.Setenv("HOME", t.TempDir())
+
+	cmd := newLicenseRefreshCmd()
+	err := cmd.RunE(cmd, nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "no license to refresh")
+}
+
+func TestRunPrune(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	pruneMaxAge = 720 * time.Hour
+
+	err := runPrune(nil, nil)
+	assert.NoError(t, err)
+}
+
+func TestRunStatus_NoScanResults(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	statusHistory = 0
+	statusControls = false
+	statusEvidence = false
+	statusBenchmark = ""
+
+	err := runStatus(nil, nil)
+	assert.NoError(t, err) // prints message and returns nil when no results
+}
+
+func TestPrintLicenseJSON(t *testing.T) {
+	l := &license.License{
+		Org:      "Test Corp",
+		Plan:     "pro-annual",
+		Issued:   time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+		Expires:  time.Date(2027, 1, 1, 0, 0, 0, 0, time.UTC),
+		Features: []string{"reports"},
+	}
+
+	// Redirect stdout
+	old := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := printLicenseJSON(l)
+	require.NoError(t, err)
+
+	w.Close()
+	os.Stdout = old
+
+	var buf [4096]byte
+	n, _ := r.Read(buf[:])
+	output := string(buf[:n])
+
+	assert.Contains(t, output, "Test Corp")
+	assert.Contains(t, output, "pro-annual")
+	assert.Contains(t, output, "reports")
+}
+
+func TestRunExplore_NoLicense(t *testing.T) {
+	t.Setenv("VARAX_LICENSE", "")
+	t.Setenv("HOME", t.TempDir())
+
+	err := runExplore(nil, nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "Varax Pro license")
+}
+
+func TestRunRemediate_NoLicense(t *testing.T) {
+	t.Setenv("VARAX_LICENSE", "")
+	t.Setenv("HOME", t.TempDir())
+
+	err := runRemediate(nil, nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "Varax Pro license")
+}
+
+func TestCompletionCmd_Bash(t *testing.T) {
+	root := &cobra.Command{Use: "varax"}
+	root.AddCommand(newCompletionCmd())
+	root.SetArgs([]string{"completion", "bash"})
+
+	// Redirect stdout
+	old := os.Stdout
+	_, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := root.Execute()
+
+	w.Close()
+	os.Stdout = old
+	assert.NoError(t, err)
 }
 
 func TestBuildRESTConfig_FromEnv(t *testing.T) {

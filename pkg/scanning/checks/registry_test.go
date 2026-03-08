@@ -27,13 +27,18 @@ func TestRegisterAll_UniqueIDs(t *testing.T) {
 	}
 }
 
-func TestRegisterAll_AllHaveBenchmark(t *testing.T) {
+func TestRegisterAll_AllHaveMetadata(t *testing.T) {
 	registry := scanning.NewRegistry()
 	RegisterAll(registry)
 
 	for _, check := range registry.All() {
-		assert.NotEmpty(t, check.ID(), "check has empty ID")
-		assert.NotEmpty(t, check.Description(), "check %s has empty description", check.ID())
+		id := check.ID()
+		assert.NotEmpty(t, id, "check has empty ID")
+		assert.NotEmpty(t, check.Name(), "check %s has empty Name", id)
+		assert.NotEmpty(t, check.Description(), "check %s has empty Description", id)
+		assert.NotEmpty(t, check.Severity(), "check %s has empty Severity", id)
+		assert.NotEmpty(t, check.Benchmark(), "check %s has empty Benchmark", id)
+		assert.NotEmpty(t, check.Section(), "check %s has empty Section", id)
 	}
 }
 
@@ -51,6 +56,15 @@ func TestRegisterNSACISA_RegistersExpectedCount(t *testing.T) {
 
 	checks := registry.All()
 	assert.Equal(t, 21, len(checks), "RegisterNSACISA should register 21 checks")
+	for _, check := range checks {
+		id := check.ID()
+		assert.NotEmpty(t, id)
+		assert.NotEmpty(t, check.Name(), "check %s has empty Name", id)
+		assert.NotEmpty(t, check.Description(), "check %s has empty Description", id)
+		assert.NotEmpty(t, check.Severity(), "check %s has empty Severity", id)
+		assert.Equal(t, "NSA-CISA", check.Benchmark(), "check %s has wrong Benchmark", id)
+		assert.NotEmpty(t, check.Section(), "check %s has empty Section", id)
+	}
 }
 
 func TestRegisterPSS_RegistersExpectedCount(t *testing.T) {
@@ -59,6 +73,15 @@ func TestRegisterPSS_RegistersExpectedCount(t *testing.T) {
 
 	checks := registry.All()
 	assert.Equal(t, 5, len(checks), "RegisterPSS should register 5 checks")
+	for _, check := range checks {
+		id := check.ID()
+		assert.NotEmpty(t, id)
+		assert.NotEmpty(t, check.Name(), "check %s has empty Name", id)
+		assert.NotEmpty(t, check.Description(), "check %s has empty Description", id)
+		assert.NotEmpty(t, check.Severity(), "check %s has empty Severity", id)
+		assert.Equal(t, "PSS", check.Benchmark(), "check %s has wrong Benchmark", id)
+		assert.NotEmpty(t, check.Section(), "check %s has empty Section", id)
+	}
 }
 
 func TestRegisterRBAC_RegistersExpectedCount(t *testing.T) {
@@ -67,4 +90,13 @@ func TestRegisterRBAC_RegistersExpectedCount(t *testing.T) {
 
 	checks := registry.All()
 	assert.Equal(t, 4, len(checks), "RegisterRBAC should register 4 checks")
+	for _, check := range checks {
+		id := check.ID()
+		assert.NotEmpty(t, id)
+		assert.NotEmpty(t, check.Name(), "check %s has empty Name", id)
+		assert.NotEmpty(t, check.Description(), "check %s has empty Description", id)
+		assert.NotEmpty(t, check.Severity(), "check %s has empty Severity", id)
+		assert.Equal(t, "RBAC", check.Benchmark(), "check %s has wrong Benchmark", id)
+		assert.NotEmpty(t, check.Section(), "check %s has empty Section", id)
+	}
 }
