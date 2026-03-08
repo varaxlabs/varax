@@ -471,7 +471,7 @@ func TestPrintLicenseJSON(t *testing.T) {
 	err := printLicenseJSON(l)
 	require.NoError(t, err)
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = old
 
 	var buf [4096]byte
@@ -513,7 +513,7 @@ func TestCompletionCmd_Bash(t *testing.T) {
 
 	err := root.Execute()
 
-	w.Close()
+	_ = w.Close()
 	os.Stdout = old
 	assert.NoError(t, err)
 }
