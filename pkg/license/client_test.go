@@ -20,7 +20,7 @@ func TestRefreshLicense_Success(t *testing.T) {
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"key": newKey})
+		_ = json.NewEncoder(w).Encode(map[string]string{"key": newKey})
 	}))
 	defer srv.Close()
 
@@ -33,7 +33,7 @@ func TestRefreshLicense_Success(t *testing.T) {
 func TestRefreshLicense_SubscriptionInactive(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{"error": "subscription inactive"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"error": "subscription inactive"})
 	}))
 	defer srv.Close()
 
@@ -45,7 +45,7 @@ func TestRefreshLicense_SubscriptionInactive(t *testing.T) {
 func TestRefreshLicense_NotFound(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(map[string]string{"error": "unknown license"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"error": "unknown license"})
 	}))
 	defer srv.Close()
 
@@ -57,7 +57,7 @@ func TestRefreshLicense_NotFound(t *testing.T) {
 func TestRefreshLicense_RateLimited(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusTooManyRequests)
-		json.NewEncoder(w).Encode(map[string]string{"error": "rate limited"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"error": "rate limited"})
 	}))
 	defer srv.Close()
 
@@ -69,7 +69,7 @@ func TestRefreshLicense_RateLimited(t *testing.T) {
 func TestRefreshLicense_ServerError(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "internal error"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"error": "internal error"})
 	}))
 	defer srv.Close()
 
@@ -81,7 +81,7 @@ func TestRefreshLicense_ServerError(t *testing.T) {
 func TestRefreshLicense_InvalidJSON(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte("not json"))
+		_, _ = w.Write([]byte("not json"))
 	}))
 	defer srv.Close()
 
@@ -94,7 +94,7 @@ func TestRefreshLicense_InvalidJSON(t *testing.T) {
 func TestRefreshLicense_EmptyKey(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"key": ""})
+		_ = json.NewEncoder(w).Encode(map[string]string{"key": ""})
 	}))
 	defer srv.Close()
 
@@ -107,7 +107,7 @@ func TestRefreshLicense_EmptyKey(t *testing.T) {
 func TestRefreshLicense_ContextCancelled(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"key": "new-key"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"key": "new-key"})
 	}))
 	defer srv.Close()
 
@@ -134,7 +134,7 @@ func TestRefreshLicense_SendsCorrectRequest(t *testing.T) {
 		assert.Equal(t, "my-current-key", reqBody["key"])
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"key": "refreshed-key"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"key": "refreshed-key"})
 	}))
 	defer srv.Close()
 
