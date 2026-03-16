@@ -114,6 +114,33 @@ var remediations = map[string]string{
 	"RBAC-2": "Apply least-privilege RBAC policies. Replace broad permissions with specific resource/verb combinations.",
 	"RBAC-3": "Remove wildcard permissions from all Roles and ClusterRoles.",
 	"RBAC-4": "Audit RoleBindings regularly and remove permissions for users/groups that no longer need access.",
+
+	// Workload Hygiene
+	"WH-001": "Pin container images to specific digests (@sha256:...) or semver tags. Avoid mutable tags like :latest, :dev, :main.",
+	"WH-002": "Set CPU and memory requests and limits on all containers to prevent resource exhaustion and ensure fair scheduling.",
+	"WH-003": "Define liveness and readiness probes on all containers to enable self-healing and traffic management.",
+
+	// Supply Chain
+	"SC-001": "Add SBOM attestation annotations to container images using tools like Syft, Trivy, or cosign attach sbom.",
+	"SC-002": "Sign container images with Cosign/Sigstore and add signature annotations. Enforce verification at admission.",
+	"SC-003": "Only deploy images from approved registries. Configure admission policies to enforce a registry allowlist.",
+
+	// Ingress Hardening
+	"IH-001": "Configure TLS on all Ingress resources. Use cert-manager to automate certificate provisioning.",
+	"IH-002": "Create egress NetworkPolicies per namespace to restrict outbound traffic to only required destinations.",
+
+	// Namespace Governance
+	"NG-001": "Create ResourceQuotas in each namespace to enforce CPU, memory, and pod count limits.",
+	"NG-002": "Create LimitRanges in each namespace to set default container resource constraints.",
+	"NG-003": "Apply standard Kubernetes labels (app.kubernetes.io/name, component, managed-by) to all resources.",
+
+	// Workload Hygiene (additional)
+	"WH-004": "Scale critical workloads to 2+ replicas for high availability, or annotate with varax.io/single-replica-ok if single replica is intentional.",
+	"WH-005": "Create PodDisruptionBudgets for multi-replica workloads to ensure controlled maintenance and upgrades.",
+
+	// API Hygiene
+	"AH-001": "Migrate resources from deprecated API versions to their stable replacements before they are removed.",
+	"AH-002": "Evaluate use of alpha/beta APIs and plan migration to stable versions when available.",
 }
 
 // Remediation returns the remediation guidance for a check ID, or empty string if none exists.

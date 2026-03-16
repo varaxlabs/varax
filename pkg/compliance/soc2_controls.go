@@ -126,6 +126,7 @@ func SOC2Mappings() []models.ControlMapping {
 			"CIS-2.1", "CIS-2.2",
 			"NSA-AA-1", "NSA-AA-2", "NSA-AA-5",
 			"RBAC-1", "RBAC-3",
+			"NG-003",
 		}},
 		// CC6.2 — User Access Provisioning
 		{ControlID: "CC6.2", CheckIDs: []string{
@@ -141,11 +142,14 @@ func SOC2Mappings() []models.ControlMapping {
 		{ControlID: "CC6.6", CheckIDs: []string{
 			"CIS-5.3.2", "CIS-5.3.1", "CIS-5.2.5", "CIS-5.2.6", "CIS-5.2.7", "CIS-5.2.8",
 			"NSA-NS-1", "NSA-NS-2", "NSA-NS-3",
+			"SC-003", "IH-002",
+			"NG-001", "NG-002",
 		}},
 		// CC6.7 — Data Transmission and Movement Controls
 		{ControlID: "CC6.7", CheckIDs: []string{
 			"CIS-1.2.23", "CIS-1.2.24", "CIS-1.2.26",
 			"CIS-2.1", "CIS-2.4",
+			"IH-001",
 		}},
 		// CC6.8 — Controls Against Malicious Software
 		{ControlID: "CC6.8", CheckIDs: []string{
@@ -155,6 +159,8 @@ func SOC2Mappings() []models.ControlMapping {
 			"NSA-PS-1", "NSA-PS-2", "NSA-PS-3", "NSA-PS-4",
 			"NSA-SC-1", "NSA-SC-2",
 			"PSS-1.2", "PSS-1.3",
+			"WH-001",
+			"SC-001", "SC-002", "SC-003",
 		}},
 		// CC7.1 — Detect and Monitor Anomalies
 		{ControlID: "CC7.1", CheckIDs: []string{
@@ -162,11 +168,15 @@ func SOC2Mappings() []models.ControlMapping {
 			"CIS-1.2.16", "CIS-1.2.17", "CIS-1.2.18", "CIS-1.2.19",
 			"CIS-3.2",
 			"NSA-LM-1", "NSA-LM-2",
+			"WH-001",
+			"SC-002",
+			"AH-001", "AH-002",
 		}},
 		// CC7.2 — Monitor System Components
 		{ControlID: "CC7.2", CheckIDs: []string{
 			"CIS-5.2.3", "CIS-5.3.2",
 			"CIS-4.2.9",
+			"WH-002", "WH-003", "WH-004", "WH-005",
 		}},
 		// CC7.3 — Evaluate Security Events
 		{ControlID: "CC7.3", CheckIDs: []string{
@@ -186,16 +196,19 @@ func SOC2Mappings() []models.ControlMapping {
 			"CIS-5.1.2", "CIS-5.4.1",
 			"NSA-VM-1",
 			"PSS-1.1", "PSS-1.2",
+			"SC-001", "AH-001",
 		}},
 		// A1.1 — Availability Capacity Planning
 		{ControlID: "A1.1", CheckIDs: []string{
 			"CIS-5.7.1",
 			"NSA-PS-8",
+			"WH-002", "NG-001",
 		}},
 		// A1.2 — Availability Environmental Protections
 		{ControlID: "A1.2", CheckIDs: []string{
 			"CIS-1.3.1",
 			"CIS-4.2.5", "CIS-4.2.6", "CIS-4.2.7",
+			"WH-003", "WH-004", "WH-005",
 		}},
 	}
 }

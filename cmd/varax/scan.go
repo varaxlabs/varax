@@ -38,7 +38,7 @@ func newScanCmd() *cobra.Command {
 		RunE:  runScan,
 	}
 	cmd.Flags().DurationVar(&scanTimeout, "timeout", 5*time.Minute, "scan timeout (e.g. 5m, 30s)")
-	cmd.Flags().StringVar(&benchmark, "benchmark", "", "filter by benchmark (CIS, NSA-CISA, PSS, RBAC, or all)")
+	cmd.Flags().StringVar(&benchmark, "benchmark", "", "filter by benchmark (CIS, NSA-CISA, PSS, RBAC, WorkloadHygiene, SupplyChain, NamespaceGov, APIHygiene, IngressHardening, or all)")
 	cmd.Flags().BoolVar(&collectEvidence, "evidence", false, "collect evidence bundle for auditors")
 	cmd.Flags().BoolVar(&noTUI, "no-tui", false, "disable animated TUI even in terminal mode")
 	cmd.Flags().BoolVar(&scanRemediate, "remediate", false, "auto-remediate failed checks (Pro)")
@@ -64,6 +64,11 @@ func runScan(cmd *cobra.Command, args []string) error {
 	checks.RegisterNSACISA(registry)
 	checks.RegisterPSS(registry)
 	checks.RegisterRBAC(registry)
+	checks.RegisterWorkloadHygiene(registry)
+	checks.RegisterSupplyChain(registry)
+	checks.RegisterIngressHardening(registry)
+	checks.RegisterNamespaceGov(registry)
+	checks.RegisterAPIHygiene(registry)
 
 	// Filter by benchmark if specified
 	if benchmark != "" && benchmark != "all" {
