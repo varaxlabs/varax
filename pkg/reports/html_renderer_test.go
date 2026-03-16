@@ -211,6 +211,80 @@ func TestRenderReadinessHTML_Stdout(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestRenderReadinessHTML_RecommendedPracticesIncluded(t *testing.T) {
+	tmpDir := t.TempDir()
+	outPath := filepath.Join(tmpDir, "readiness.html")
+
+	data := testReportData()
+	// SkipRecommendations defaults to false
+
+	err := renderReadinessHTML(outPath, data)
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(outPath)
+	require.NoError(t, err)
+
+	html := string(content)
+	assert.Contains(t, html, "Recommended Practices")
+	assert.Contains(t, html, "Container Image Hygiene")
+	assert.Contains(t, html, "Vulnerability Management Process")
+	assert.Contains(t, html, "Proactive Validation")
+	assert.Contains(t, html, "Continuous Improvement")
+}
+
+func TestRenderReadinessHTML_RecommendedPracticesSkipped(t *testing.T) {
+	tmpDir := t.TempDir()
+	outPath := filepath.Join(tmpDir, "readiness.html")
+
+	data := testReportData()
+	data.SkipRecommendations = true
+
+	err := renderReadinessHTML(outPath, data)
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(outPath)
+	require.NoError(t, err)
+
+	html := string(content)
+	assert.NotContains(t, html, "Beyond Automated Scanning")
+	assert.NotContains(t, html, "Container Image Hygiene")
+}
+
+func TestRenderExecutiveHTML_RecommendedPracticesMention(t *testing.T) {
+	tmpDir := t.TempDir()
+	outPath := filepath.Join(tmpDir, "executive.html")
+
+	data := testReportData()
+	data.ReportTitle = "SOC2 Executive Summary"
+
+	err := renderExecutiveHTML(outPath, data)
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(outPath)
+	require.NoError(t, err)
+
+	html := string(content)
+	assert.Contains(t, html, "recommended practices")
+}
+
+func TestRenderExecutiveHTML_RecommendedPracticesSkipped(t *testing.T) {
+	tmpDir := t.TempDir()
+	outPath := filepath.Join(tmpDir, "executive.html")
+
+	data := testReportData()
+	data.ReportTitle = "SOC2 Executive Summary"
+	data.SkipRecommendations = true
+
+	err := renderExecutiveHTML(outPath, data)
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(outPath)
+	require.NoError(t, err)
+
+	html := string(content)
+	assert.NotContains(t, html, "recommended practices")
+}
+
 func TestWriteToFileOrStdout_InvalidPath(t *testing.T) {
 	err := writeToFileOrStdout("/nonexistent/dir/file.html", func(w io.Writer) error {
 		return nil

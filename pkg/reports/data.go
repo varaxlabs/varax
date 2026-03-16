@@ -73,6 +73,9 @@ type ReportData struct {
 	CriticalCount   int
 	HighCount       int
 	TopFindings     []models.CheckResult
+
+	// Options
+	SkipRecommendations bool
 }
 
 // ParseReportType validates and converts a string to ReportType.

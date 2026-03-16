@@ -174,6 +174,75 @@
 </div>
 {{end}}
 
+{{if not .SkipRecommendations}}
+<div class="section recommended-practices">
+    <h2 class="section-title">Beyond Automated Scanning: Recommended Practices</h2>
+
+    <p class="section-intro">
+        The controls above reflect what Varax can validate directly within your cluster.
+        Mature Kubernetes security programs also implement the following practices, which
+        require organizational process or CI/CD integration beyond runtime scanning.
+    </p>
+
+    <div class="info-callout">
+        These recommendations are provided for guidance and to support your compliance
+        narrative &mdash; they are not pass/fail findings.
+    </div>
+
+    <div class="practice-card">
+        <h3>Container Image Hygiene</h3>
+        <div class="soc2-mapping">Maps to: CC6.8 &mdash; Prevention and Detection of Unauthorized Software</div>
+        <div class="why-matters">Container images are the primary attack surface in Kubernetes environments. CC6.8 (Vulnerability Management) requires demonstrable controls over software vulnerabilities.</div>
+        <ul>
+            <li><strong>Minimal base images:</strong> Use distroless or scratch images to dramatically reduce CVE exposure. Teams report 70&ndash;90% reductions in vulnerability counts after migrating from full OS images.</li>
+            <li><strong>Multi-stage builds:</strong> Separate build-time dependencies from runtime images. Copy only compiled artifacts to the final image, eliminating build tools, package managers, and shells that attackers exploit.</li>
+            <li><strong>Automated rebuilds:</strong> Trigger image rebuilds based on base image updates or relevant CVE disclosures. Prioritize exploitable vulnerabilities over raw CVE counts &mdash; tools like EPSS scores help focus remediation effort.</li>
+            <li><strong>Image signing and verification:</strong> Sign images with Cosign/Sigstore and enforce signature verification at admission. This proves provenance and prevents unauthorized image deployment.</li>
+        </ul>
+        <div class="evidence-suggestion"><strong>Evidence suggestion:</strong> Document your image build pipeline, base image policy, and rebuild triggers. Include sample CI/CD configuration showing multi-stage builds and automated security scanning.</div>
+    </div>
+
+    <div class="practice-card">
+        <h3>Vulnerability Management Process</h3>
+        <div class="soc2-mapping">Maps to: CC6.8, CC7.3 &mdash; Vulnerability Identification and Remediation</div>
+        <div class="why-matters">SOC2 requires not just vulnerability detection but a defined process for evaluation and remediation. Auditors want to see both the policy and evidence of adherence.</div>
+        <ul>
+            <li><strong>Prioritize exploitability:</strong> Use EPSS (Exploit Prediction Scoring System), CISA KEV (Known Exploited Vulnerabilities), or vendor threat intelligence to focus on vulnerabilities with real-world exploits.</li>
+            <li><strong>Define SLAs by severity:</strong> Establish remediation timelines (e.g., Critical: 72 hours, High: 7 days, Medium: 30 days) and track compliance.</li>
+            <li><strong>Integrate with CI/CD gates:</strong> Block deployments that introduce new Critical or High vulnerabilities. This shifts remediation left and prevents accumulation of security debt.</li>
+            <li><strong>Maintain exception documentation:</strong> When vulnerabilities cannot be immediately remediated, document the business justification, compensating controls, and planned resolution timeline.</li>
+        </ul>
+        <div class="evidence-suggestion"><strong>Evidence suggestion:</strong> Provide your vulnerability management policy, SLA definitions, sample CI/CD gate configuration, and metrics showing mean time to remediation by severity.</div>
+    </div>
+
+    <div class="practice-card">
+        <h3>Proactive Validation</h3>
+        <div class="soc2-mapping">Maps to: CC7.2 &mdash; Monitoring of System Components</div>
+        <div class="why-matters">CC7.2 implies not just reactive monitoring but proactive validation that controls work under stress. Continuous validation ensures security controls remain effective between formal audits.</div>
+        <ul>
+            <li><strong>Chaos experiments:</strong> Simulate failures (pod kills, network partitions, node drain) to validate that your system degrades gracefully and monitoring detects issues. Tools like Chaos Mesh, Litmus, or Gremlin integrate with Kubernetes.</li>
+            <li><strong>SLO compliance testing:</strong> Define Service Level Objectives and run synthetic tests that verify you meet them. Mature teams automate SLO pass/fail checks tied to chaos experiments.</li>
+            <li><strong>Gameday exercises:</strong> Conduct periodic incident simulations to test runbooks, on-call response, and communication procedures. Document findings and improvements.</li>
+            <li><strong>Configuration drift detection:</strong> Monitor for unexpected changes to security-critical resources (RBAC, NetworkPolicies, admission controllers). Alert on drift from approved baselines.</li>
+        </ul>
+        <div class="evidence-suggestion"><strong>Evidence suggestion:</strong> Document your chaos testing schedule, SLO definitions, gameday cadence, and sample incident response metrics. Include screenshots of drift detection alerts.</div>
+    </div>
+
+    <div class="practice-card">
+        <h3>Continuous Improvement</h3>
+        <div class="soc2-mapping">Maps to: General Trust Services Criteria &mdash; Ongoing Monitoring and Evaluation</div>
+        <div class="why-matters">The Trust Services Criteria emphasize ongoing monitoring and improvement, not point-in-time compliance. Auditors look for evidence that your organization actively improves its security posture over time.</div>
+        <ul>
+            <li><strong>Regular compliance scanning:</strong> Schedule Varax scans on a recurring basis (daily or weekly) and track compliance score trends over time. Investigate regressions immediately.</li>
+            <li><strong>Security retrospectives:</strong> Include security findings in sprint retrospectives. Track security debt alongside feature work.</li>
+            <li><strong>Benchmark evolution:</strong> CIS Benchmarks and NSA/CISA guidance update periodically. Review new versions and assess your compliance against updated requirements.</li>
+            <li><strong>Third-party assessments:</strong> Supplement automated scanning with periodic penetration testing or security reviews. External perspective catches blind spots.</li>
+        </ul>
+        <div class="evidence-suggestion"><strong>Evidence suggestion:</strong> Provide compliance score trend charts (available in Varax Pro reports), security retrospective cadence documentation, and records of third-party assessments.</div>
+    </div>
+</div>
+{{end}}
+
 {{if .Scan}}
 <div class="section">
     <h2 class="section-title">Appendix: Full Check Results</h2>

@@ -84,6 +84,12 @@
 </div>
 {{end}}
 
+{{if not .SkipRecommendations}}
+<div class="section">
+    <p><strong>Additional Guidance:</strong> The full readiness report includes recommended practices for container image hygiene, vulnerability management, proactive validation, and continuous improvement that complement Varax&rsquo;s automated checks.</p>
+</div>
+{{end}}
+
 {{if ge (len .HistoricalScores) 2}}
 <div class="section">
     <h2 class="section-title">Trend</h2>

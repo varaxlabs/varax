@@ -399,6 +399,77 @@ tbody tr:hover {
     font-style: italic;
 }
 
+/* Practice Cards */
+.recommended-practices {
+    margin-top: 36px;
+    border-top: 2px solid #e2e8f0;
+    padding-top: 24px;
+}
+
+.recommended-practices .section-intro {
+    font-size: 1.05rem;
+    color: #718096;
+    margin-bottom: 1.5rem;
+}
+
+.recommended-practices .info-callout {
+    background: #ebf8ff;
+    border-left: 4px solid #3182ce;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+    color: #2a4365;
+    border-radius: 0 4px 4px 0;
+}
+
+.practice-card {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.practice-card h3 {
+    font-size: 15px;
+    color: #1a365d;
+    margin-bottom: 4px;
+}
+
+.practice-card .soc2-mapping {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 12px;
+}
+
+.practice-card .why-matters {
+    background: #ebf8ff;
+    border-left: 4px solid #3182ce;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #2a4365;
+    border-radius: 0 4px 4px 0;
+}
+
+.practice-card ul {
+    margin: 8px 0 12px 20px;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.practice-card li {
+    margin-bottom: 4px;
+}
+
+.practice-card .evidence-suggestion {
+    font-size: 12px;
+    color: #718096;
+    font-style: italic;
+    padding-left: 12px;
+    border-left: 2px solid #e2e8f0;
+}
+
 /* Print Styles */
 @media print {
     @page {
@@ -449,6 +520,10 @@ tbody tr:hover {
     }
 
     .finding {
+        page-break-inside: avoid;
+    }
+
+    .practice-card {
         page-break-inside: avoid;
     }
 

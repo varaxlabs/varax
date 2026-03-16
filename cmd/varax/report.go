@@ -13,10 +13,11 @@ import (
 )
 
 var (
-	reportFramework string
-	reportFormat    string
-	reportType      string
-	reportOutput    string
+	reportFramework     string
+	reportFormat        string
+	reportType          string
+	reportOutput        string
+	skipRecommendations bool
 )
 
 func newReportCmd() *cobra.Command {
@@ -29,6 +30,7 @@ func newReportCmd() *cobra.Command {
 	cmd.Flags().StringVar(&reportFormat, "format", "html", "output format (html, json, terminal)")
 	cmd.Flags().StringVar(&reportType, "type", "readiness", "report type (readiness, executive)")
 	cmd.Flags().StringVar(&reportOutput, "output", "", "output file path (default: stdout)")
+	cmd.Flags().BoolVar(&skipRecommendations, "skip-recommendations", false, "omit recommended practices section from report")
 	return cmd
 }
 
@@ -87,7 +89,8 @@ func runReport(cmd *cobra.Command, args []string) error {
 		Compliance:       complianceResult,
 		Scan:             scanResult,
 		Evidence:         evidenceBundle,
-		HistoricalScores: historicalScores,
+		HistoricalScores:    historicalScores,
+		SkipRecommendations: skipRecommendations,
 	}
 
 	gen := reports.NewGenerator(Version)
