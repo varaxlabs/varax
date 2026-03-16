@@ -2,9 +2,12 @@ package scanning
 
 import (
 	"context"
+	"sync"
 
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
+	policyv1 "k8s.io/api/policy/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -25,6 +28,12 @@ type ResourceCache struct {
 	RoleBindings        []rbacv1.RoleBinding
 	Nodes               []corev1.Node
 	NetworkPolicies     []networkingv1.NetworkPolicy
+	Ingresses           []networkingv1.Ingress
+	Deployments         []appsv1.Deployment
+	StatefulSets        []appsv1.StatefulSet
+	PDBs                []policyv1.PodDisruptionBudget
+	ResourceQuotas      []corev1.ResourceQuota
+	LimitRanges         []corev1.LimitRange
 }
 
 type cacheContextKey struct{}
@@ -46,31 +55,53 @@ func CacheFromContext(ctx context.Context) *ResourceCache {
 // Individual resource fetch failures are non-fatal; checks fall back to direct API calls.
 func BuildCache(ctx context.Context, client kubernetes.Interface) *ResourceCache {
 	cache := &ResourceCache{}
-	cache.Pods, _ = paginatedListPods(ctx, client, "")
-	cache.Namespaces, _ = paginatedListNamespaces(ctx, client)
-	cache.ServiceAccounts, _ = paginatedListServiceAccounts(ctx, client)
-	cache.ClusterRoles, _ = paginatedListClusterRoles(ctx, client)
-	cache.ClusterRoleBindings, _ = paginatedListClusterRoleBindings(ctx, client)
-	cache.Roles, _ = paginatedListRoles(ctx, client)
-	cache.RoleBindings, _ = paginatedListRoleBindings(ctx, client)
-	cache.Nodes, _ = paginatedListNodes(ctx, client)
-	cache.NetworkPolicies, _ = paginatedListNetworkPolicies(ctx, client, "")
+	var wg sync.WaitGroup
+	fetch := func(fn func()) {
+		wg.Add(1)
+		go func() { defer wg.Done(); fn() }()
+	}
+	fetch(func() { cache.Pods, _ = paginatedListPods(ctx, client, "") })
+	fetch(func() { cache.Namespaces, _ = paginatedListNamespaces(ctx, client) })
+	fetch(func() { cache.ServiceAccounts, _ = paginatedListServiceAccounts(ctx, client) })
+	fetch(func() { cache.ClusterRoles, _ = paginatedListClusterRoles(ctx, client) })
+	fetch(func() { cache.ClusterRoleBindings, _ = paginatedListClusterRoleBindings(ctx, client) })
+	fetch(func() { cache.Roles, _ = paginatedListRoles(ctx, client) })
+	fetch(func() { cache.RoleBindings, _ = paginatedListRoleBindings(ctx, client) })
+	fetch(func() { cache.Nodes, _ = paginatedListNodes(ctx, client) })
+	fetch(func() { cache.NetworkPolicies, _ = paginatedListNetworkPolicies(ctx, client, "") })
+	fetch(func() { cache.Ingresses, _ = paginatedListIngresses(ctx, client, "") })
+	fetch(func() { cache.Deployments, _ = paginatedListDeployments(ctx, client, "") })
+	fetch(func() { cache.StatefulSets, _ = paginatedListStatefulSets(ctx, client, "") })
+	fetch(func() { cache.PDBs, _ = paginatedListPDBs(ctx, client, "") })
+	fetch(func() { cache.ResourceQuotas, _ = paginatedListResourceQuotas(ctx, client, "") })
+	fetch(func() { cache.LimitRanges, _ = paginatedListLimitRanges(ctx, client, "") })
+	wg.Wait()
 	return cache
+}
+
+// filterByNamespace returns items matching the given namespace, or all items if
+// namespace is empty. The pointer constraint P satisfies GetNamespace() while
+// allowing the slice to hold value types (e.g. []corev1.Pod).
+func filterByNamespace[T any, P interface {
+	*T
+	GetNamespace() string
+}](items []T, namespace string) []T {
+	if namespace == "" {
+		return items
+	}
+	var filtered []T
+	for i := range items {
+		if P(&items[i]).GetNamespace() == namespace {
+			filtered = append(filtered, items[i])
+		}
+	}
+	return filtered
 }
 
 // ListPods returns pods from cache if available, otherwise fetches with pagination.
 func ListPods(ctx context.Context, client kubernetes.Interface, namespace string) ([]corev1.Pod, error) {
 	if cache := CacheFromContext(ctx); cache != nil && cache.Pods != nil {
-		if namespace == "" {
-			return cache.Pods, nil
-		}
-		var filtered []corev1.Pod
-		for _, p := range cache.Pods {
-			if p.Namespace == namespace {
-				filtered = append(filtered, p)
-			}
-		}
-		return filtered, nil
+		return filterByNamespace(cache.Pods, namespace), nil
 	}
 	return paginatedListPods(ctx, client, namespace)
 }
@@ -134,16 +165,7 @@ func ListNodes(ctx context.Context, client kubernetes.Interface) ([]corev1.Node,
 // ListNetworkPolicies returns network policies from cache or fetches with pagination.
 func ListNetworkPolicies(ctx context.Context, client kubernetes.Interface, namespace string) ([]networkingv1.NetworkPolicy, error) {
 	if cache := CacheFromContext(ctx); cache != nil && cache.NetworkPolicies != nil {
-		if namespace == "" {
-			return cache.NetworkPolicies, nil
-		}
-		var filtered []networkingv1.NetworkPolicy
-		for _, np := range cache.NetworkPolicies {
-			if np.Namespace == namespace {
-				filtered = append(filtered, np)
-			}
-		}
-		return filtered, nil
+		return filterByNamespace(cache.NetworkPolicies, namespace), nil
 	}
 	return paginatedListNetworkPolicies(ctx, client, namespace)
 }
@@ -161,6 +183,9 @@ func paginatedList[T any](ctx context.Context, listFn func(ctx context.Context, 
 		}
 		all = append(all, items...)
 		if continueToken == "" {
+			if all == nil {
+				all = make([]T, 0)
+			}
 			return all, nil
 		}
 		opts.Continue = continueToken
@@ -250,6 +275,114 @@ func paginatedListNodes(ctx context.Context, client kubernetes.Interface) ([]cor
 func paginatedListNetworkPolicies(ctx context.Context, client kubernetes.Interface, namespace string) ([]networkingv1.NetworkPolicy, error) {
 	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]networkingv1.NetworkPolicy, string, error) {
 		list, err := client.NetworkingV1().NetworkPolicies(namespace).List(ctx, opts)
+		if err != nil {
+			return nil, "", err
+		}
+		return list.Items, list.Continue, nil
+	})
+}
+
+// ListIngresses returns ingresses from cache or fetches with pagination.
+func ListIngresses(ctx context.Context, client kubernetes.Interface, namespace string) ([]networkingv1.Ingress, error) {
+	if cache := CacheFromContext(ctx); cache != nil && cache.Ingresses != nil {
+		return filterByNamespace(cache.Ingresses, namespace), nil
+	}
+	return paginatedListIngresses(ctx, client, namespace)
+}
+
+func paginatedListIngresses(ctx context.Context, client kubernetes.Interface, namespace string) ([]networkingv1.Ingress, error) {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]networkingv1.Ingress, string, error) {
+		list, err := client.NetworkingV1().Ingresses(namespace).List(ctx, opts)
+		if err != nil {
+			return nil, "", err
+		}
+		return list.Items, list.Continue, nil
+	})
+}
+
+// ListDeployments returns deployments from cache or fetches with pagination.
+func ListDeployments(ctx context.Context, client kubernetes.Interface, namespace string) ([]appsv1.Deployment, error) {
+	if cache := CacheFromContext(ctx); cache != nil && cache.Deployments != nil {
+		return filterByNamespace(cache.Deployments, namespace), nil
+	}
+	return paginatedListDeployments(ctx, client, namespace)
+}
+
+func paginatedListDeployments(ctx context.Context, client kubernetes.Interface, namespace string) ([]appsv1.Deployment, error) {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]appsv1.Deployment, string, error) {
+		list, err := client.AppsV1().Deployments(namespace).List(ctx, opts)
+		if err != nil {
+			return nil, "", err
+		}
+		return list.Items, list.Continue, nil
+	})
+}
+
+// ListStatefulSets returns statefulsets from cache or fetches with pagination.
+func ListStatefulSets(ctx context.Context, client kubernetes.Interface, namespace string) ([]appsv1.StatefulSet, error) {
+	if cache := CacheFromContext(ctx); cache != nil && cache.StatefulSets != nil {
+		return filterByNamespace(cache.StatefulSets, namespace), nil
+	}
+	return paginatedListStatefulSets(ctx, client, namespace)
+}
+
+func paginatedListStatefulSets(ctx context.Context, client kubernetes.Interface, namespace string) ([]appsv1.StatefulSet, error) {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]appsv1.StatefulSet, string, error) {
+		list, err := client.AppsV1().StatefulSets(namespace).List(ctx, opts)
+		if err != nil {
+			return nil, "", err
+		}
+		return list.Items, list.Continue, nil
+	})
+}
+
+// ListPDBs returns pod disruption budgets from cache or fetches with pagination.
+func ListPDBs(ctx context.Context, client kubernetes.Interface, namespace string) ([]policyv1.PodDisruptionBudget, error) {
+	if cache := CacheFromContext(ctx); cache != nil && cache.PDBs != nil {
+		return filterByNamespace(cache.PDBs, namespace), nil
+	}
+	return paginatedListPDBs(ctx, client, namespace)
+}
+
+func paginatedListPDBs(ctx context.Context, client kubernetes.Interface, namespace string) ([]policyv1.PodDisruptionBudget, error) {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]policyv1.PodDisruptionBudget, string, error) {
+		list, err := client.PolicyV1().PodDisruptionBudgets(namespace).List(ctx, opts)
+		if err != nil {
+			return nil, "", err
+		}
+		return list.Items, list.Continue, nil
+	})
+}
+
+// ListResourceQuotas returns resource quotas from cache or fetches with pagination.
+func ListResourceQuotas(ctx context.Context, client kubernetes.Interface, namespace string) ([]corev1.ResourceQuota, error) {
+	if cache := CacheFromContext(ctx); cache != nil && cache.ResourceQuotas != nil {
+		return filterByNamespace(cache.ResourceQuotas, namespace), nil
+	}
+	return paginatedListResourceQuotas(ctx, client, namespace)
+}
+
+func paginatedListResourceQuotas(ctx context.Context, client kubernetes.Interface, namespace string) ([]corev1.ResourceQuota, error) {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]corev1.ResourceQuota, string, error) {
+		list, err := client.CoreV1().ResourceQuotas(namespace).List(ctx, opts)
+		if err != nil {
+			return nil, "", err
+		}
+		return list.Items, list.Continue, nil
+	})
+}
+
+// ListLimitRanges returns limit ranges from cache or fetches with pagination.
+func ListLimitRanges(ctx context.Context, client kubernetes.Interface, namespace string) ([]corev1.LimitRange, error) {
+	if cache := CacheFromContext(ctx); cache != nil && cache.LimitRanges != nil {
+		return filterByNamespace(cache.LimitRanges, namespace), nil
+	}
+	return paginatedListLimitRanges(ctx, client, namespace)
+}
+
+func paginatedListLimitRanges(ctx context.Context, client kubernetes.Interface, namespace string) ([]corev1.LimitRange, error) {
+	return paginatedList(ctx, func(ctx context.Context, opts metav1.ListOptions) ([]corev1.LimitRange, string, error) {
+		list, err := client.CoreV1().LimitRanges(namespace).List(ctx, opts)
 		if err != nil {
 			return nil, "", err
 		}

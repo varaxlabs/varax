@@ -11,6 +11,57 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
+// Benchmark constants for non-CIS check categories.
+const (
+	BenchmarkWorkloadHygiene  = "WorkloadHygiene"
+	BenchmarkSupplyChain      = "SupplyChain"
+	BenchmarkNamespaceGov     = "NamespaceGov"
+	BenchmarkAPIHygiene       = "APIHygiene"
+	BenchmarkIngressHardening = "IngressHardening"
+)
+
+// parseImageRef extracts registry, repository, and tag from a container image reference.
+// Examples:
+//
+//	"nginx"                    → ("docker.io", "library/nginx", "latest")
+//	"nginx:1.25"               → ("docker.io", "library/nginx", "1.25")
+//	"gcr.io/proj/app:v1"       → ("gcr.io", "proj/app", "v1")
+//	"reg.io/app@sha256:abc"    → ("reg.io", "app", "sha256:abc")
+func parseImageRef(image string) (registry, repo, tag string) {
+	// Handle digest references
+	if idx := strings.Index(image, "@"); idx >= 0 {
+		tag = image[idx+1:]
+		image = image[:idx]
+	} else if idx := strings.LastIndex(image, ":"); idx >= 0 {
+		// Ensure we don't split on a port number (registry:port/repo)
+		afterColon := image[idx+1:]
+		if !strings.Contains(afterColon, "/") {
+			tag = afterColon
+			image = image[:idx]
+		}
+	}
+
+	// Split registry from repository
+	parts := strings.SplitN(image, "/", 2)
+	if len(parts) == 1 {
+		// No slash → Docker Hub official image
+		registry = "docker.io"
+		repo = "library/" + parts[0]
+	} else if strings.Contains(parts[0], ".") || strings.Contains(parts[0], ":") || parts[0] == "localhost" {
+		registry = parts[0]
+		repo = parts[1]
+	} else {
+		// No dots in first segment → Docker Hub user image
+		registry = "docker.io"
+		repo = image
+	}
+
+	if tag == "" {
+		tag = "latest"
+	}
+	return
+}
+
 // isManagedCluster checks cached node labels for EKS/AKS/GKE markers.
 func isManagedCluster(ctx context.Context, client kubernetes.Interface) bool {
 	nodes, err := scanning.ListNodes(ctx, client)
@@ -187,7 +238,12 @@ func runContainerCheck(ctx context.Context, client kubernetes.Interface, c scann
 		if isSystemNamespace(pod.Namespace) {
 			continue
 		}
-		for _, container := range allContainers(pod) {
+		for _, container := range pod.Spec.InitContainers {
+			if ev := checkFn(container, pod); ev != nil {
+				evidence = append(evidence, *ev)
+			}
+		}
+		for _, container := range pod.Spec.Containers {
 			if ev := checkFn(container, pod); ev != nil {
 				evidence = append(evidence, *ev)
 			}
@@ -200,6 +256,67 @@ func runContainerCheck(ctx context.Context, client kubernetes.Interface, c scann
 	} else {
 		result.Status = models.StatusFail
 		result.Message = fmt.Sprintf("Found %d violation(s)", len(evidence))
+		result.Evidence = evidence
+	}
+	return result
+}
+
+// runNamespacePresenceCheck verifies that every non-system namespace contains at
+// least one instance of a namespaced resource (e.g., ResourceQuota, LimitRange).
+// The two-type-parameter pattern (T value, P pointer) handles K8s types whose
+// GetNamespace() is on the pointer receiver.
+func runNamespacePresenceCheck[T any, P interface {
+	*T
+	GetNamespace() string
+}](
+	ctx context.Context,
+	client kubernetes.Interface,
+	c scanning.Check,
+	resourceName string,
+	listFn func(ctx context.Context, client kubernetes.Interface, ns string) ([]T, error),
+) models.CheckResult {
+	result := baseResult(c)
+
+	namespaces, err := scanning.ListNamespaces(ctx, client)
+	if err != nil {
+		result.Status = models.StatusSkip
+		result.Message = "failed to list namespaces"
+		return result
+	}
+
+	resources, err := listFn(ctx, client, "")
+	if err != nil {
+		result.Status = models.StatusSkip
+		result.Message = fmt.Sprintf("failed to list %ss", strings.ToLower(resourceName))
+		return result
+	}
+
+	nsWithResource := make(map[string]bool)
+	for i := range resources {
+		nsWithResource[P(&resources[i]).GetNamespace()] = true
+	}
+
+	var evidence []models.Evidence
+	for _, ns := range namespaces {
+		if isSystemNamespace(ns.Name) {
+			continue
+		}
+		if !nsWithResource[ns.Name] {
+			evidence = append(evidence, models.Evidence{
+				Message:  fmt.Sprintf("Namespace '%s' has no %s", ns.Name, resourceName),
+				Resource: models.Resource{Kind: "Namespace", Name: ns.Name},
+				Field:    resourceName,
+				Value:    "not found",
+			})
+		}
+	}
+
+	if len(evidence) == 0 {
+		result.Status = models.StatusPass
+		result.Message = fmt.Sprintf("All non-system namespaces have %ss", resourceName)
+	} else {
+		result.Status = models.StatusFail
+		result.Message = fmt.Sprintf("Found %d namespace(s) without %ss", len(evidence), resourceName)
 		result.Evidence = evidence
 	}
 	return result
