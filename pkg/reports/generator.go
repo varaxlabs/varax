@@ -9,6 +9,7 @@ import (
 
 	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/reports/narrative"
 )
 
 // Generator produces compliance reports.
@@ -54,9 +55,19 @@ func (g *Generator) GenerateControlDetail(
 	control models.ControlResult,
 	evidenceItems []evidence.EvidenceItem,
 ) error {
+	// Build narrative for this control
+	evidenceMap := map[string][]evidence.EvidenceItem{control.Control.ID: evidenceItems}
+	narratives := narrative.BuildAll([]models.ControlResult{control}, evidenceMap)
+	var sections []narrative.NarrativeSection
+	if n, ok := narratives[control.Control.ID]; ok && n != nil {
+		sections = n.Sections()
+	}
+
 	detail := &ControlDetail{
-		Control:  control,
-		Evidence: evidenceItems,
+		Control:              control,
+		Evidence:             evidenceItems,
+		Narrative:            sections,
+		VerificationCommands: CommandsForControl(control.Control.ID),
 	}
 
 	switch format {
@@ -70,6 +81,28 @@ func (g *Generator) GenerateControlDetail(
 }
 
 func (g *Generator) populateComputedFields(data *ReportData) {
+	// Compute assessment period from historical scan times
+	if len(data.HistoricalTimes) > 0 {
+		data.ScanCount = len(data.HistoricalTimes)
+		data.PeriodStart = data.HistoricalTimes[0]
+		data.PeriodEnd = data.HistoricalTimes[0]
+		for _, t := range data.HistoricalTimes {
+			if t.Before(data.PeriodStart) {
+				data.PeriodStart = t
+			}
+			if t.After(data.PeriodEnd) {
+				data.PeriodEnd = t
+			}
+		}
+		data.PeriodDays = int(data.PeriodEnd.Sub(data.PeriodStart).Hours()/24) + 1
+	} else if data.Scan != nil {
+		// Single scan — period is just the scan date
+		data.ScanCount = 1
+		data.PeriodStart = data.Scan.Timestamp
+		data.PeriodEnd = data.Scan.Timestamp
+		data.PeriodDays = 1
+	}
+
 	// Populate scan metadata
 	if data.Scan != nil {
 		data.ScanDuration = data.Scan.Duration.Round(time.Millisecond).String()
@@ -92,14 +125,35 @@ func (g *Generator) populateComputedFields(data *ReportData) {
 		return
 	}
 
-	// Build per-control evidence map
+	// Build per-control evidence map using fine-grained profiles
 	if data.Evidence != nil {
 		data.ControlEvidence = make(map[string][]evidence.EvidenceItem, len(data.Compliance.ControlResults))
 		for _, cr := range data.Compliance.ControlResults {
-			items := FilterEvidenceForControl(data.Evidence, cr.Control.ID)
+			items := FilterEvidenceByProfile(data.Evidence, cr.Control.ID)
 			if len(items) > 0 {
 				data.ControlEvidence[cr.Control.ID] = items
 			}
+		}
+	}
+
+	// Build per-control narratives
+	data.ControlNarratives = narrative.BuildAll(data.Compliance.ControlResults, data.ControlEvidence)
+
+	// Build per-control verification commands
+	data.ControlVerificationCommands = make(map[string][]VerificationCommand, len(data.Compliance.ControlResults))
+	for _, cr := range data.Compliance.ControlResults {
+		cmds := CommandsForControl(cr.Control.ID)
+		if len(cmds) > 0 {
+			data.ControlVerificationCommands[cr.Control.ID] = cmds
+		}
+	}
+
+	// Build per-control structured remediations
+	data.ControlRemediations = make(map[string][]RemediationDetail, len(data.Compliance.ControlResults))
+	for _, cr := range data.Compliance.ControlResults {
+		details := BuildRemediationsForControl(cr)
+		if len(details) > 0 {
+			data.ControlRemediations[cr.Control.ID] = details
 		}
 	}
 

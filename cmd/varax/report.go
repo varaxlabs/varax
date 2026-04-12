@@ -71,25 +71,29 @@ func runReport(cmd *cobra.Command, args []string) error {
 		fmt.Fprintf(os.Stderr, "Warning: could not read evidence: %v\n", evErr)
 	}
 
-	// Historical scores
+	// Historical scores and timestamps
 	var historicalScores []float64
+	var historicalTimes []time.Time
 	results, listErr := store.ListScanResults(20)
 	if listErr == nil && len(results) > 0 {
 		historicalScores = make([]float64, len(results))
+		historicalTimes = make([]time.Time, len(results))
 		for i, r := range results {
 			r := r
 			cr := mapper.MapResults(&r)
 			historicalScores[len(results)-1-i] = cr.Score
+			historicalTimes[len(results)-1-i] = r.Timestamp
 		}
 	}
 
 	data := &reports.ReportData{
-		GeneratedAt:      time.Now().UTC(),
-		ClusterName:      clusterName(),
-		Compliance:       complianceResult,
-		Scan:             scanResult,
-		Evidence:         evidenceBundle,
+		GeneratedAt:         time.Now().UTC(),
+		ClusterName:         clusterName(),
+		Compliance:          complianceResult,
+		Scan:                scanResult,
+		Evidence:            evidenceBundle,
 		HistoricalScores:    historicalScores,
+		HistoricalTimes:     historicalTimes,
 		SkipRecommendations: skipRecommendations,
 	}
 

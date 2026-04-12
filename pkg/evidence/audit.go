@@ -10,7 +10,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-type auditSnapshot struct {
+// AuditSnapshot contains audit logging configuration from the API server.
+type AuditSnapshot struct {
 	APIServerFound  bool   `json:"apiServerFound"`
 	AuditLogPath    string `json:"auditLogPath,omitempty"`
 	AuditPolicyFile string `json:"auditPolicyFile,omitempty"`
@@ -19,7 +20,7 @@ type auditSnapshot struct {
 
 func collectAudit(ctx context.Context, client kubernetes.Interface) ([]EvidenceItem, error) {
 	now := time.Now().UTC()
-	snap := auditSnapshot{}
+	snap := AuditSnapshot{}
 
 	pods, err := client.CoreV1().Pods("kube-system").List(ctx, metav1.ListOptions{})
 	if err != nil {
@@ -55,8 +56,10 @@ func collectAudit(ctx context.Context, client kubernetes.Interface) ([]EvidenceI
 
 	return []EvidenceItem{{
 		Category:    "Audit",
+		Type:        "audit-logging",
 		Description: desc,
 		Data:        snap,
 		Timestamp:   now,
+		SHA256:      computeSHA256(snap),
 	}}, nil
 }

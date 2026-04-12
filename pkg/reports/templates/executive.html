@@ -90,12 +90,21 @@
 </div>
 {{end}}
 
-{{if ge (len .HistoricalScores) 2}}
+{{if .HistoricalScores}}
 <div class="section">
-    <h2 class="section-title">Trend</h2>
+    <h2 class="section-title">Score Trend</h2>
+    <div class="history-chart">
+        {{range $i, $score := .HistoricalScores}}
+        <div class="history-bar {{scoreClass $score}}" style="height: {{formatScore $score}}; background: {{if ge $score 80.0}}#38a169{{else if ge $score 50.0}}#d69e2e{{else}}#e53e3e{{end}}">
+            <span class="history-bar-label">{{formatScore $score}}</span>
+        </div>
+        {{end}}
+    </div>
+    {{if ge (len .HistoricalScores) 2}}
     {{$prev := index .HistoricalScores (sub (len .HistoricalScores) 2)}}
     {{$curr := index .HistoricalScores (sub (len .HistoricalScores) 1)}}
-    <p>Previous scan score: {{formatScore $prev}} &rarr; Current: {{formatScore $curr}}</p>
+    <p class="scan-meta">Previous: {{formatScore $prev}} &rarr; Current: {{formatScore $curr}}</p>
+    {{end}}
 </div>
 {{end}}
 {{end}}

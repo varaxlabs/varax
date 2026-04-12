@@ -9,6 +9,7 @@ import (
 
 	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/reports/narrative"
 )
 
 func templateFuncs() template.FuncMap {
@@ -37,6 +38,29 @@ func templateFuncs() template.FuncMap {
 				return nil
 			}
 			return m[id]
+		},
+		"formatTimestamp": formatTimestamp,
+		"controlRemediations": func(m map[string][]RemediationDetail, id string) []RemediationDetail {
+			if m == nil {
+				return nil
+			}
+			return m[id]
+		},
+		"controlVerification": func(m map[string][]VerificationCommand, id string) []VerificationCommand {
+			if m == nil {
+				return nil
+			}
+			return m[id]
+		},
+		"controlNarrative": func(m map[string]narrative.ControlNarrative, id string) []narrative.NarrativeSection {
+			if m == nil {
+				return nil
+			}
+			n, ok := m[id]
+			if !ok || n == nil {
+				return nil
+			}
+			return n.Sections()
 		},
 	}
 }
@@ -139,6 +163,13 @@ func seq(n int) []int {
 		s[i] = i
 	}
 	return s
+}
+
+func formatTimestamp(t time.Time) string {
+	if t.IsZero() {
+		return "N/A"
+	}
+	return t.Format("2006-01-02T15:04:05Z")
 }
 
 func truncate(s string, maxLen int) string {

@@ -405,6 +405,234 @@ tbody tr:hover {
     font-style: italic;
 }
 
+/* Practice Cards */
+.recommended-practices {
+    margin-top: 36px;
+    border-top: 2px solid #e2e8f0;
+    padding-top: 24px;
+}
+
+.recommended-practices .section-intro {
+    font-size: 1.05rem;
+    color: #718096;
+    margin-bottom: 1.5rem;
+}
+
+.recommended-practices .info-callout {
+    background: #ebf8ff;
+    border-left: 4px solid #3182ce;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+    color: #2a4365;
+    border-radius: 0 4px 4px 0;
+}
+
+.practice-card {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.practice-card h3 {
+    font-size: 15px;
+    color: #1a365d;
+    margin-bottom: 4px;
+}
+
+.practice-card .soc2-mapping {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 12px;
+}
+
+.practice-card .why-matters {
+    background: #ebf8ff;
+    border-left: 4px solid #3182ce;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #2a4365;
+    border-radius: 0 4px 4px 0;
+}
+
+.practice-card ul {
+    margin: 8px 0 12px 20px;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.practice-card li {
+    margin-bottom: 4px;
+}
+
+.practice-card .evidence-suggestion {
+    font-size: 12px;
+    color: #718096;
+    font-style: italic;
+    padding-left: 12px;
+    border-left: 2px solid #e2e8f0;
+}
+
+/* Assessment Period */
+.assessment-period {
+    font-size: 16px;
+    color: #2d3748;
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+.assessment-meta {
+    font-size: 13px;
+    color: #718096;
+    margin-top: 6px;
+}
+
+/* Scope Section */
+.scope-box {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 10px 0;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.scope-included {
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+}
+
+.scope-excluded {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+}
+
+/* Evidence Meta (SHA256 + Timestamp) */
+.evidence-meta {
+    font-size: 11px;
+    color: #718096;
+    font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+    margin: 6px 0;
+    padding: 4px 8px;
+    background: #edf2f7;
+    border-radius: 3px;
+}
+
+.evidence-meta code {
+    font-size: 11px;
+    color: #4a5568;
+    word-break: break-all;
+}
+
+/* Narrative Section */
+.narrative-section {
+    margin: 16px 0;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #1a365d;
+    border-radius: 4px;
+}
+
+.narrative-section h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a365d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.narrative-section p {
+    margin-bottom: 10px;
+    line-height: 1.7;
+}
+
+.narrative-findings {
+    background: #fffff0;
+    border: 1px solid #fefcbf;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 12px 0;
+}
+
+.narrative-assessment {
+    font-size: 13px;
+    padding: 8px 12px;
+    background: #f7fafc;
+    border-radius: 4px;
+    margin-top: 12px;
+}
+
+/* Verification Commands */
+.verification-section {
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+    border-radius: 6px;
+}
+
+.verification-section h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #276749;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.verification-note {
+    font-size: 12px;
+    color: #4a5568;
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.verification-item {
+    margin-bottom: 10px;
+}
+
+.verification-desc {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+/* Remediation YAML */
+.remediation-yaml-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a365d;
+    margin: 10px 0 4px;
+}
+
+.remediation-export {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #f7fafc;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #4a5568;
+}
+
+/* Provider Managed Enhanced */
+.provider-managed-note ul {
+    margin: 8px 0 8px 20px;
+    font-size: 13px;
+}
+
+.provider-managed-note li {
+    margin-bottom: 4px;
+}
+
+.provider-managed-note p {
+    margin: 8px 0;
+}
+
 /* Print Styles */
 @media print {
     @page {
@@ -458,6 +686,32 @@ tbody tr:hover {
         page-break-inside: avoid;
     }
 
+    .practice-card {
+        page-break-inside: avoid;
+    }
+
+    .narrative-section {
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .verification-section {
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .scope-box {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .evidence-meta {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
     p, li {
         orphans: 3;
         widows: 3;
@@ -492,41 +746,109 @@ tbody tr:hover {
 
     
     <div class="section">
-        <h2 class="section-title">Evidence</h2>
+        <div class="narrative-section">
+            <h4>Control Implementation</h4>
+            
+            <p>The organization enforces logical access controls through Kubernetes Role-Based Access Control (RBAC), which provides granular permission management across all cluster resources. The RBAC configuration comprises 47 ClusterRoles and 23 ClusterRoleBindings. Access to the cluster-admin role, which grants unrestricted administrative privileges, is restricted to 2 authorized bindings: system:masters (Group) and break-glass-admin (User).</p>
+            
+            <p>Service account credential exposure is controlled across all 12 audited namespaces. Automatic mounting of service account tokens is disabled, preventing unintended credential availability to workloads that do not require Kubernetes API access.</p>
+            
+            
+            <div class="narrative-findings">
+                <strong>Findings requiring attention:</strong>
+                <ul>
+                <li>CIS-5.1.3 and RBAC-3: 2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access (2 independent checks confirm this finding)</li>
+                
+                </ul>
+            </div>
+            
+            
+            <p>Assessment: PARTIAL — 16 checks passing and 2 checks failing.</p>
+            
+        </div>
+    </div>
+    
+
+    
+    <div class="section">
+        <h2 class="section-title">Evidence Artifacts</h2>
         
         <div class="evidence-item">
             <div class="evidence-category">RBAC</div>
-            <div>ClusterRoleBinding snapshot - cluster-admin bindings</div>
+            <div>RBAC ClusterRoleBinding inventory and cluster-admin scope</div>
+            
+            <div class="evidence-meta">
+                Captured: 2026-03-07T14:29:47Z
+                &nbsp;|&nbsp;
+                SHA256: <code>a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890</code>
+            </div>
+            
             <div class="evidence-data">{
-  &#34;assessment&#34;: &#34;Only system defaults and break-glass accounts have cluster-admin access&#34;,
-  &#34;bindings&#34;: [
+  &#34;clusterRoleCount&#34;: 47,
+  &#34;clusterRoleBindingCount&#34;: 23,
+  &#34;roleCount&#34;: 31,
+  &#34;roleBindingCount&#34;: 93,
+  &#34;serviceAccountCount&#34;: 58,
+  &#34;clusterAdminBindings&#34;: [
     {
-      &#34;name&#34;: &#34;system:masters&#34;,
-      &#34;role&#34;: &#34;cluster-admin&#34;,
-      &#34;subject&#34;: &#34;system:masters group&#34;,
+      &#34;name&#34;: &#34;system:masters-binding&#34;,
+      &#34;subject&#34;: &#34;system:masters&#34;,
       &#34;type&#34;: &#34;Group&#34;
     },
     {
       &#34;name&#34;: &#34;eks-admin-binding&#34;,
-      &#34;role&#34;: &#34;cluster-admin&#34;,
       &#34;subject&#34;: &#34;break-glass-admin&#34;,
       &#34;type&#34;: &#34;User&#34;
     }
   ],
-  &#34;totalBindings&#34;: 2
+  &#34;wildcardRoles&#34;: [
+    &#34;legacy-admin&#34;,
+    &#34;dev-full-access&#34;
+  ]
 }</div>
         </div>
         
         <div class="evidence-item">
             <div class="evidence-category">RBAC</div>
-            <div>Service account token auto-mount audit</div>
+            <div>Service account token mount audit across 12 namespaces</div>
+            
+            <div class="evidence-meta">
+                Captured: 2026-03-07T14:29:48Z
+                &nbsp;|&nbsp;
+                SHA256: <code>b2c3d4e5f6a7890abcdef1234567890abcdef1234567890abcdef1234567890ab</code>
+            </div>
+            
             <div class="evidence-data">{
-  &#34;compliant&#34;: true,
   &#34;namespacesAudited&#34;: 12,
-  &#34;serviceAccountsWithAutoMount&#34;: 0
+  &#34;autoMountCount&#34;: 0
 }</div>
         </div>
         
+    </div>
+    
+
+    
+    <div class="section">
+        <div class="verification-section">
+            <h4>Auditor Verification Commands</h4>
+            <p class="verification-note">Run these commands against the assessed cluster to independently verify the evidence above.</p>
+            
+            <div class="verification-item">
+                <div class="verification-desc">Count cluster-admin bindings</div>
+                <div class="evidence-data">kubectl get clusterrolebindings -o json | jq &#39;[.items[] | select(.roleRef.name==&#34;cluster-admin&#34;)] | length&#39;</div>
+            </div>
+            
+            <div class="verification-item">
+                <div class="verification-desc">List cluster-admin binding details</div>
+                <div class="evidence-data">kubectl get clusterrolebindings -o json | jq &#39;.items[] | select(.roleRef.name==&#34;cluster-admin&#34;) | {name: .metadata.name, subjects: .subjects}&#39;</div>
+            </div>
+            
+            <div class="verification-item">
+                <div class="verification-desc">List service accounts with auto-mount enabled</div>
+                <div class="evidence-data">kubectl get serviceaccounts -A -o json | jq &#39;.items[] | select(.automountServiceAccountToken == true) | {ns: .metadata.namespace, name: .metadata.name}&#39;</div>
+            </div>
+            
+        </div>
     </div>
     
 
@@ -610,8 +932,24 @@ tbody tr:hover {
                 </tr>
                 
                 <tr>
+                    <td>CIS-1.2.21</td>
+                    <td>Ensure request timeout configured</td>
+                    <td><span class="badge severity-medium">MEDIUM</span></td>
+                    <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                    <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                </tr>
+                
+                <tr>
+                    <td>CIS-1.2.25</td>
+                    <td>Ensure TLS 1.2 minimum</td>
+                    <td><span class="badge severity-high">HIGH</span></td>
+                    <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
+                    <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
+                </tr>
+                
+                <tr>
                     <td>CIS-2.1</td>
-                    <td>Ensure etcd encryption is configured</td>
+                    <td>Ensure etcd encryption configured</td>
                     <td><span class="badge severity-high">HIGH</span></td>
                     <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
                     <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
@@ -619,7 +957,7 @@ tbody tr:hover {
                 
                 <tr>
                     <td>CIS-2.2</td>
-                    <td>Ensure etcd peer TLS is enabled</td>
+                    <td>Ensure etcd peer TLS enabled</td>
                     <td><span class="badge severity-high">HIGH</span></td>
                     <td><span class="badge status-provider-managed">PROVIDER_MANAGED</span></td>
                     <td>Control plane managed by AWS EKS. See AWS shared responsibility model.</td>
@@ -627,10 +965,26 @@ tbody tr:hover {
                 
                 <tr>
                     <td>NSA-AA-1</td>
-                    <td>Ensure strong authentication is configured</td>
+                    <td>Configure strong authentication</td>
                     <td><span class="badge severity-high">HIGH</span></td>
                     <td><span class="badge status-pass">PASS</span></td>
                     <td>OIDC authentication configured</td>
+                </tr>
+                
+                <tr>
+                    <td>NSA-AA-2</td>
+                    <td>Implement MFA for cluster access</td>
+                    <td><span class="badge severity-medium">MEDIUM</span></td>
+                    <td><span class="badge status-pass">PASS</span></td>
+                    <td>MFA enforced via identity provider</td>
+                </tr>
+                
+                <tr>
+                    <td>NSA-AA-5</td>
+                    <td>Rotate service account tokens</td>
+                    <td><span class="badge severity-medium">MEDIUM</span></td>
+                    <td><span class="badge status-pass">PASS</span></td>
+                    <td>Token rotation configured</td>
                 </tr>
                 
                 <tr>
@@ -639,6 +993,22 @@ tbody tr:hover {
                     <td><span class="badge severity-high">HIGH</span></td>
                     <td><span class="badge status-pass">PASS</span></td>
                     <td>cluster-admin limited to break-glass accounts</td>
+                </tr>
+                
+                <tr>
+                    <td>RBAC-3</td>
+                    <td>Remove wildcard permissions</td>
+                    <td><span class="badge severity-high">HIGH</span></td>
+                    <td><span class="badge status-fail">FAIL</span></td>
+                    <td>2 ClusterRoles use wildcard: legacy-admin, dev-full-access</td>
+                </tr>
+                
+                <tr>
+                    <td>NG-003</td>
+                    <td>Apply standard Kubernetes labels</td>
+                    <td><span class="badge severity-low">LOW</span></td>
+                    <td><span class="badge status-pass">PASS</span></td>
+                    <td>Standard labels applied to all resources</td>
                 </tr>
                 
             </tbody>

@@ -1,0 +1,5687 @@
+{
+  "ReportTitle": "SOC2 Readiness Assessment",
+  "GeneratedAt": "2026-03-07T14:30:00Z",
+  "VaraxVersion": "1.0.0",
+  "ClusterName": "prod-eks-us-east-1",
+  "Compliance": {
+    "framework": "SOC2",
+    "score": 43.75,
+    "controlResults": [
+      {
+        "control": {
+          "id": "CC5.1",
+          "name": "Control Activities Over Technology",
+          "description": "The entity selects and develops control activities over technology infrastructure to support the achievement of objectives.",
+          "category": "Common Criteria"
+        },
+        "status": "PASS",
+        "violationCount": 0,
+        "checkResults": [
+          {
+            "id": "CIS-1.2.6",
+            "name": "Ensure authorization mode includes RBAC",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.7",
+            "name": "Ensure authorization mode excludes AlwaysAllow",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.8",
+            "name": "Ensure authorization mode includes Node",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.14",
+            "name": "Ensure anonymous auth disabled",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "CRITICAL",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.3.6",
+            "name": "Ensure service account credentials rotated",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.3",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-4.2.12",
+            "name": "Ensure kubelet cert rotation",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "PSS-1.1",
+            "name": "Enforce Baseline Pod Security Standard",
+            "description": "",
+            "benchmark": "PSS",
+            "section": "Pod Security",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Baseline PSS enforced on all non-system namespaces"
+          },
+          {
+            "id": "PSS-1.2",
+            "name": "Enforce Restricted Pod Security Standard",
+            "description": "",
+            "benchmark": "PSS",
+            "section": "Pod Security",
+            "severity": "HIGH",
+            "status": "WARN",
+            "message": "Restricted PSS enforced on 4 of 6 production namespaces"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC5.2",
+          "name": "Policy and Procedure Controls",
+          "description": "The entity deploys control activities through policies that establish what is expected and in procedures that put policies into action.",
+          "category": "Common Criteria"
+        },
+        "status": "PASS",
+        "violationCount": 0,
+        "checkResults": [
+          {
+            "id": "CIS-3.2",
+            "name": "Ensure audit policy covers key operations",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "3.x",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.16",
+            "name": "Ensure audit logging enabled",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.17",
+            "name": "Ensure audit log maxage set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "PSS-2.1",
+            "name": "Enforce PSA at cluster level",
+            "description": "",
+            "benchmark": "PSS",
+            "section": "Pod Security",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "PSA configured cluster-wide"
+          },
+          {
+            "id": "PSS-2.2",
+            "name": "Enable PSA audit and warn modes",
+            "description": "",
+            "benchmark": "PSS",
+            "section": "Pod Security",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Audit and warn modes enabled"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC6.1",
+          "name": "Logical and Physical Access Controls",
+          "description": "The entity implements logical access security software, infrastructure, and architectures over protected information assets.",
+          "category": "Common Criteria"
+        },
+        "status": "PARTIAL",
+        "violationCount": 4,
+        "checkResults": [
+          {
+            "id": "CIS-5.1.1",
+            "name": "Restrict cluster-admin ClusterRoleBinding usage",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "CRITICAL",
+            "status": "PASS",
+            "message": "Only 2 cluster-admin bindings found (system defaults)"
+          },
+          {
+            "id": "CIS-5.1.3",
+            "name": "Minimize wildcard use in Roles and ClusterRoles",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Wildcard resource permission",
+                "resource": {
+                  "kind": "ClusterRole",
+                  "name": "legacy-admin"
+                },
+                "field": "rules[0].resources",
+                "value": "*"
+              },
+              {
+                "message": "Wildcard resource permission",
+                "resource": {
+                  "kind": "ClusterRole",
+                  "name": "dev-full-access"
+                },
+                "field": "rules[0].resources",
+                "value": "*"
+              }
+            ],
+            "message": "2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access"
+          },
+          {
+            "id": "CIS-5.1.8",
+            "name": "Limit use of bind, escalate, and impersonate permissions",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "No roles grant bind/escalate/impersonate"
+          },
+          {
+            "id": "CIS-1.2.1",
+            "name": "Ensure anonymous auth is disabled",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "CRITICAL",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.2",
+            "name": "Ensure token auth file is not set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "CRITICAL",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.6",
+            "name": "Ensure authorization mode includes RBAC",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.7",
+            "name": "Ensure authorization mode excludes AlwaysAllow",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.8",
+            "name": "Ensure authorization mode includes Node",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.21",
+            "name": "Ensure request timeout configured",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.25",
+            "name": "Ensure TLS 1.2 minimum",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-2.1",
+            "name": "Ensure etcd encryption configured",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "2.x",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-2.2",
+            "name": "Ensure etcd peer TLS enabled",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "2.x",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "NSA-AA-1",
+            "name": "Configure strong authentication",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Authentication",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "OIDC authentication configured"
+          },
+          {
+            "id": "NSA-AA-2",
+            "name": "Implement MFA for cluster access",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Authentication",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "MFA enforced via identity provider"
+          },
+          {
+            "id": "NSA-AA-5",
+            "name": "Rotate service account tokens",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Authentication",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Token rotation configured"
+          },
+          {
+            "id": "RBAC-1",
+            "name": "Audit cluster-admin usage",
+            "description": "",
+            "benchmark": "RBAC",
+            "section": "Access Control",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "cluster-admin limited to break-glass accounts"
+          },
+          {
+            "id": "RBAC-3",
+            "name": "Remove wildcard permissions",
+            "description": "",
+            "benchmark": "RBAC",
+            "section": "Access Control",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Wildcard permissions",
+                "resource": {
+                  "kind": "ClusterRole",
+                  "name": "legacy-admin"
+                },
+                "field": "rules[0].resources",
+                "value": "*"
+              },
+              {
+                "message": "Wildcard permissions",
+                "resource": {
+                  "kind": "ClusterRole",
+                  "name": "dev-full-access"
+                },
+                "field": "rules[0].verbs",
+                "value": "*"
+              }
+            ],
+            "message": "2 ClusterRoles use wildcard: legacy-admin, dev-full-access"
+          },
+          {
+            "id": "NG-003",
+            "name": "Apply standard Kubernetes labels",
+            "description": "",
+            "benchmark": "Namespace Gov",
+            "section": "Labels",
+            "severity": "LOW",
+            "status": "PASS",
+            "message": "Standard labels applied to all resources"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC6.2",
+          "name": "User Access Provisioning",
+          "description": "Prior to issuing system credentials, the entity registers and authorizes new internal and external users.",
+          "category": "Common Criteria"
+        },
+        "status": "PASS",
+        "violationCount": 0,
+        "checkResults": [
+          {
+            "id": "CIS-5.1.6",
+            "name": "Ensure service account tokens are not auto-mounted",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "All service accounts have automountServiceAccountToken: false"
+          },
+          {
+            "id": "CIS-5.1.5",
+            "name": "Ensure default service accounts are not actively used",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "MEDIUM",
+            "status": "WARN",
+            "message": "2 namespaces use default service account: staging, dev"
+          },
+          {
+            "id": "CIS-5.1.7",
+            "name": "Avoid use of system:masters group",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "No bindings to system:masters group found"
+          },
+          {
+            "id": "NSA-AA-3",
+            "name": "Implement centralized identity",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Authentication",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Centralized identity via OIDC"
+          },
+          {
+            "id": "NSA-AA-4",
+            "name": "Review and audit user access",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Authentication",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Access review process in place"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC6.3",
+          "name": "Role-Based Access and Least Privilege",
+          "description": "The entity authorizes, modifies, or removes access to data, software, functions, and other protected IT resources based on roles.",
+          "category": "Common Criteria"
+        },
+        "status": "PARTIAL",
+        "violationCount": 7,
+        "checkResults": [
+          {
+            "id": "CIS-5.1.1",
+            "name": "Restrict cluster-admin ClusterRoleBinding usage",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "CRITICAL",
+            "status": "PASS",
+            "message": "Only 2 cluster-admin bindings found (system defaults)"
+          },
+          {
+            "id": "CIS-5.1.3",
+            "name": "Minimize wildcard use in Roles and ClusterRoles",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Wildcard resource permission",
+                "resource": {
+                  "kind": "ClusterRole",
+                  "name": "legacy-admin"
+                },
+                "field": "rules[0].resources",
+                "value": "*"
+              },
+              {
+                "message": "Wildcard resource permission",
+                "resource": {
+                  "kind": "ClusterRole",
+                  "name": "dev-full-access"
+                },
+                "field": "rules[0].resources",
+                "value": "*"
+              }
+            ],
+            "message": "2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access"
+          },
+          {
+            "id": "CIS-5.1.8",
+            "name": "Limit use of bind, escalate, and impersonate permissions",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "No roles grant bind/escalate/impersonate"
+          },
+          {
+            "id": "CIS-5.1.4",
+            "name": "Minimize access to create pods",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Pod creation restricted to appropriate roles"
+          },
+          {
+            "id": "RBAC-1",
+            "name": "Audit cluster-admin usage",
+            "description": "",
+            "benchmark": "RBAC",
+            "section": "Access Control",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "cluster-admin limited to break-glass accounts"
+          },
+          {
+            "id": "RBAC-2",
+            "name": "Verify least-privilege role bindings",
+            "description": "",
+            "benchmark": "RBAC",
+            "section": "Access Control",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Overly permissive binding",
+                "resource": {
+                  "kind": "ClusterRoleBinding",
+                  "name": "dev-cluster-admin"
+                }
+              },
+              {
+                "message": "Overly permissive binding",
+                "resource": {
+                  "kind": "ClusterRoleBinding",
+                  "name": "ci-admin-binding"
+                }
+              },
+              {
+                "message": "Overly permissive binding",
+                "resource": {
+                  "kind": "RoleBinding",
+                  "name": "staging-admin",
+                  "namespace": "staging"
+                }
+              }
+            ],
+            "message": "3 overly permissive role bindings found"
+          },
+          {
+            "id": "RBAC-3",
+            "name": "Remove wildcard permissions",
+            "description": "",
+            "benchmark": "RBAC",
+            "section": "Access Control",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Wildcard permissions",
+                "resource": {
+                  "kind": "ClusterRole",
+                  "name": "legacy-admin"
+                },
+                "field": "rules[0].resources",
+                "value": "*"
+              },
+              {
+                "message": "Wildcard permissions",
+                "resource": {
+                  "kind": "ClusterRole",
+                  "name": "dev-full-access"
+                },
+                "field": "rules[0].verbs",
+                "value": "*"
+              }
+            ],
+            "message": "2 ClusterRoles use wildcard: legacy-admin, dev-full-access"
+          },
+          {
+            "id": "RBAC-4",
+            "name": "Audit stale RoleBindings",
+            "description": "",
+            "benchmark": "RBAC",
+            "section": "Access Control",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "No stale bindings detected"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC6.6",
+          "name": "Security Against Threats Outside System Boundaries",
+          "description": "The entity implements logical access security measures to protect against threats from sources outside its system boundaries.",
+          "category": "Common Criteria"
+        },
+        "status": "PARTIAL",
+        "violationCount": 11,
+        "checkResults": [
+          {
+            "id": "CIS-5.3.2",
+            "name": "Ensure every namespace has a NetworkPolicy",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.3",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "staging"
+                }
+              },
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "dev"
+                }
+              },
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "monitoring"
+                }
+              }
+            ],
+            "message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+          },
+          {
+            "id": "CIS-5.3.1",
+            "name": "Ensure CNI supports NetworkPolicy",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.3",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "CNI supports NetworkPolicy (Calico detected)"
+          },
+          {
+            "id": "CIS-5.2.5",
+            "name": "Ensure hostPID is not set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "CRITICAL",
+            "status": "PASS",
+            "message": "No pods use hostPID"
+          },
+          {
+            "id": "CIS-5.2.6",
+            "name": "Ensure hostIPC is not set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "No pods use hostIPC"
+          },
+          {
+            "id": "CIS-5.2.7",
+            "name": "Ensure hostNetwork is not set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "No pods use hostNetwork"
+          },
+          {
+            "id": "CIS-5.2.8",
+            "name": "Limit container hostPort usage",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "No containers use hostPort"
+          },
+          {
+            "id": "NSA-NS-1",
+            "name": "Ensure namespaces isolate workloads",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Network Security",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Workloads properly isolated across namespaces"
+          },
+          {
+            "id": "NSA-NS-2",
+            "name": "Segment workloads by sensitivity",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Network Security",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Namespaces segmented by environment"
+          },
+          {
+            "id": "NSA-NS-3",
+            "name": "Restrict external network access",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Network Security",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No egress NetworkPolicy",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "staging"
+                }
+              },
+              {
+                "message": "No egress NetworkPolicy",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "dev"
+                }
+              }
+            ],
+            "message": "2 namespaces allow unrestricted egress"
+          },
+          {
+            "id": "SC-003",
+            "name": "Deploy from approved registries only",
+            "description": "",
+            "benchmark": "Supply Chain",
+            "section": "Provenance",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Registry allowlist enforced via admission"
+          },
+          {
+            "id": "IH-002",
+            "name": "Create egress NetworkPolicies",
+            "description": "",
+            "benchmark": "Ingress",
+            "section": "Egress",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No egress NetworkPolicy",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "staging"
+                }
+              },
+              {
+                "message": "No egress NetworkPolicy",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "dev"
+                }
+              }
+            ],
+            "message": "2 namespaces without egress policies"
+          },
+          {
+            "id": "NG-001",
+            "name": "Create ResourceQuotas",
+            "description": "",
+            "benchmark": "Namespace Gov",
+            "section": "Quotas",
+            "severity": "MEDIUM",
+            "status": "WARN",
+            "message": "2 namespaces without ResourceQuotas"
+          },
+          {
+            "id": "NG-002",
+            "name": "Create LimitRanges",
+            "description": "",
+            "benchmark": "Namespace Gov",
+            "section": "Limits",
+            "severity": "MEDIUM",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No LimitRange defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "staging"
+                }
+              },
+              {
+                "message": "No LimitRange defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "dev"
+                }
+              },
+              {
+                "message": "No LimitRange defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "monitoring"
+                }
+              },
+              {
+                "message": "No LimitRange defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "logging"
+                }
+              }
+            ],
+            "message": "4 namespaces without LimitRanges"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC6.7",
+          "name": "Data Transmission and Movement Controls",
+          "description": "The entity restricts the transmission, movement, and removal of information to authorized internal and external users.",
+          "category": "Common Criteria"
+        },
+        "status": "PASS",
+        "violationCount": 0,
+        "checkResults": [
+          {
+            "id": "CIS-1.2.23",
+            "name": "Ensure encryption at rest configured",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.24",
+            "name": "Ensure encryption providers configured",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.26",
+            "name": "Ensure strong TLS ciphers",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-2.1",
+            "name": "Ensure etcd encryption configured",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "2.x",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-2.4",
+            "name": "Ensure etcd peer cert auth",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "2.x",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "IH-001",
+            "name": "Configure TLS on Ingress resources",
+            "description": "",
+            "benchmark": "Ingress",
+            "section": "TLS",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "TLS configured on all Ingress resources"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC6.8",
+          "name": "Controls Against Malicious Software",
+          "description": "The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software.",
+          "category": "Common Criteria"
+        },
+        "status": "PARTIAL",
+        "violationCount": 9,
+        "checkResults": [
+          {
+            "id": "CIS-5.2.3",
+            "name": "Minimize privileged containers",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "CRITICAL",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Container runs in privileged mode",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "node-exporter-k8s2x",
+                  "namespace": "monitoring"
+                },
+                "field": "securityContext.privileged",
+                "value": "true"
+              }
+            ],
+            "message": "1 privileged container: monitoring/node-exporter"
+          },
+          {
+            "id": "CIS-5.2.1",
+            "name": "Ensure allowPrivilegeEscalation is set to false",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "CRITICAL",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "allowPrivilegeEscalation not set to false",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "api-server-7f8d9",
+                  "namespace": "production"
+                },
+                "field": "securityContext.allowPrivilegeEscalation"
+              },
+              {
+                "message": "allowPrivilegeEscalation not set to false",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "worker-3a2b1",
+                  "namespace": "production"
+                },
+                "field": "securityContext.allowPrivilegeEscalation"
+              },
+              {
+                "message": "allowPrivilegeEscalation not set to false",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "scheduler-9c4d5",
+                  "namespace": "production"
+                },
+                "field": "securityContext.allowPrivilegeEscalation"
+              },
+              {
+                "message": "allowPrivilegeEscalation not set to false",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "migrator-1e6f7",
+                  "namespace": "production"
+                },
+                "field": "securityContext.allowPrivilegeEscalation"
+              }
+            ],
+            "message": "4 containers allow privilege escalation in namespace: production"
+          },
+          {
+            "id": "CIS-5.2.2",
+            "name": "Ensure containers run as non-root",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "All containers specify runAsNonRoot: true"
+          },
+          {
+            "id": "CIS-5.2.4",
+            "name": "Ensure containers drop ALL capabilities",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "HIGH",
+            "status": "WARN",
+            "message": "6 containers do not drop all capabilities"
+          },
+          {
+            "id": "CIS-5.2.13",
+            "name": "Apply Seccomp profile",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "RuntimeDefault seccomp profile applied"
+          },
+          {
+            "id": "CIS-5.7.2",
+            "name": "Ensure Seccomp profile is set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.7",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "RuntimeDefault seccomp profile applied"
+          },
+          {
+            "id": "CIS-5.7.3",
+            "name": "Ensure security context is applied to pods and containers",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.7",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "All pods have security context set"
+          },
+          {
+            "id": "CIS-5.2.9",
+            "name": "Drop all capabilities",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "All containers drop ALL capabilities"
+          },
+          {
+            "id": "CIS-5.2.10",
+            "name": "Ensure NET_RAW is not added",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "No containers add NET_RAW"
+          },
+          {
+            "id": "CIS-5.2.11",
+            "name": "Ensure SYS_ADMIN is not added",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "CRITICAL",
+            "status": "PASS",
+            "message": "No containers add SYS_ADMIN"
+          },
+          {
+            "id": "CIS-5.2.12",
+            "name": "Minimize added capabilities",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Minimal capabilities added"
+          },
+          {
+            "id": "CIS-4.2.1",
+            "name": "Ensure anonymous kubelet auth disabled",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-4.2.2",
+            "name": "Ensure kubelet authorization Webhook",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-4.2.3",
+            "name": "Ensure kubelet client TLS",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-4.2.4",
+            "name": "Ensure kubelet HTTPS",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "NSA-PS-1",
+            "name": "Run containers as non-root",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Pod Security",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "All containers run as non-root"
+          },
+          {
+            "id": "NSA-PS-2",
+            "name": "Use read-only root filesystem",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Pod Security",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Read-only root filesystems enforced"
+          },
+          {
+            "id": "NSA-PS-3",
+            "name": "Drop all capabilities",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Pod Security",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Capabilities dropped"
+          },
+          {
+            "id": "NSA-PS-4",
+            "name": "Prevent privilege escalation",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Pod Security",
+            "severity": "CRITICAL",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Privilege escalation allowed",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "api-server-7f8d9",
+                  "namespace": "production"
+                }
+              },
+              {
+                "message": "Privilege escalation allowed",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "worker-3a2b1",
+                  "namespace": "production"
+                }
+              },
+              {
+                "message": "Privilege escalation allowed",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "scheduler-9c4d5",
+                  "namespace": "production"
+                }
+              },
+              {
+                "message": "Privilege escalation allowed",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "migrator-1e6f7",
+                  "namespace": "production"
+                }
+              }
+            ],
+            "message": "4 containers allow privilege escalation"
+          },
+          {
+            "id": "NSA-SC-1",
+            "name": "Use signed container images",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Supply Chain",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Cosign signatures verified at admission"
+          },
+          {
+            "id": "NSA-SC-2",
+            "name": "Scan images for vulnerabilities",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Supply Chain",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Trivy scanning integrated in CI/CD"
+          },
+          {
+            "id": "PSS-1.2",
+            "name": "Enforce Restricted Pod Security Standard",
+            "description": "",
+            "benchmark": "PSS",
+            "section": "Pod Security",
+            "severity": "HIGH",
+            "status": "WARN",
+            "message": "Restricted PSS enforced on 4 of 6 production namespaces"
+          },
+          {
+            "id": "PSS-1.3",
+            "name": "Enforce PSS via namespace labels",
+            "description": "",
+            "benchmark": "PSS",
+            "section": "Pod Security",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "pod-security.kubernetes.io/enforce labels applied"
+          },
+          {
+            "id": "WH-001",
+            "name": "Pin container images to digests",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Images",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "All images pinned to SHA256 digests"
+          },
+          {
+            "id": "SC-001",
+            "name": "Add SBOM attestation",
+            "description": "",
+            "benchmark": "Supply Chain",
+            "section": "Provenance",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "SBOM attestations present on all images"
+          },
+          {
+            "id": "SC-002",
+            "name": "Sign container images",
+            "description": "",
+            "benchmark": "Supply Chain",
+            "section": "Provenance",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "All images signed with Cosign"
+          },
+          {
+            "id": "SC-003",
+            "name": "Deploy from approved registries only",
+            "description": "",
+            "benchmark": "Supply Chain",
+            "section": "Provenance",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Registry allowlist enforced via admission"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC7.1",
+          "name": "Detect and Monitor Anomalies",
+          "description": "To meet its objectives, the entity uses detection and monitoring procedures to identify changes to configurations that result in the introduction of new vulnerabilities.",
+          "category": "Common Criteria"
+        },
+        "status": "PARTIAL",
+        "violationCount": 4,
+        "checkResults": [
+          {
+            "id": "CIS-5.2.3",
+            "name": "Minimize privileged containers",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "CRITICAL",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Container runs in privileged mode",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "node-exporter-k8s2x",
+                  "namespace": "monitoring"
+                },
+                "field": "securityContext.privileged",
+                "value": "true"
+              }
+            ],
+            "message": "1 privileged container: monitoring/node-exporter"
+          },
+          {
+            "id": "CIS-5.3.2",
+            "name": "Ensure every namespace has a NetworkPolicy",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.3",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "staging"
+                }
+              },
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "dev"
+                }
+              },
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "monitoring"
+                }
+              }
+            ],
+            "message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+          },
+          {
+            "id": "CIS-5.7.4",
+            "name": "Ensure default namespace is not used",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.7",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "No workloads in default namespace"
+          },
+          {
+            "id": "CIS-1.2.16",
+            "name": "Ensure audit logging enabled",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.17",
+            "name": "Ensure audit log maxage set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.18",
+            "name": "Ensure audit log maxbackup set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.19",
+            "name": "Ensure audit log maxsize set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-3.2",
+            "name": "Ensure audit policy covers key operations",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "3.x",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "NSA-LM-1",
+            "name": "Enable audit logging",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Logging",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Audit logging enabled via EKS"
+          },
+          {
+            "id": "NSA-LM-2",
+            "name": "Centralize log collection",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Logging",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Logs shipped to CloudWatch + Datadog"
+          },
+          {
+            "id": "WH-001",
+            "name": "Pin container images to digests",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Images",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "All images pinned to SHA256 digests"
+          },
+          {
+            "id": "SC-002",
+            "name": "Sign container images",
+            "description": "",
+            "benchmark": "Supply Chain",
+            "section": "Provenance",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "All images signed with Cosign"
+          },
+          {
+            "id": "AH-001",
+            "name": "Migrate deprecated APIs",
+            "description": "",
+            "benchmark": "API Hygiene",
+            "section": "Deprecation",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "No deprecated API versions in use"
+          },
+          {
+            "id": "AH-002",
+            "name": "Evaluate alpha/beta API usage",
+            "description": "",
+            "benchmark": "API Hygiene",
+            "section": "Stability",
+            "severity": "LOW",
+            "status": "PASS",
+            "message": "No alpha APIs in use; 1 beta API (autoscaling/v2beta2) under review"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC7.2",
+          "name": "Monitor System Components for Anomalies",
+          "description": "The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors.",
+          "category": "Common Criteria"
+        },
+        "status": "PARTIAL",
+        "violationCount": 11,
+        "checkResults": [
+          {
+            "id": "CIS-5.2.3",
+            "name": "Minimize privileged containers",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "CRITICAL",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Container runs in privileged mode",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "node-exporter-k8s2x",
+                  "namespace": "monitoring"
+                },
+                "field": "securityContext.privileged",
+                "value": "true"
+              }
+            ],
+            "message": "1 privileged container: monitoring/node-exporter"
+          },
+          {
+            "id": "CIS-5.3.2",
+            "name": "Ensure every namespace has a NetworkPolicy",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.3",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "staging"
+                }
+              },
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "dev"
+                }
+              },
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "monitoring"
+                }
+              }
+            ],
+            "message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+          },
+          {
+            "id": "CIS-4.2.9",
+            "name": "Ensure event recording configured",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "WH-002",
+            "name": "Set resource requests and limits",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Resources",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Resource limits set on all containers"
+          },
+          {
+            "id": "WH-003",
+            "name": "Define liveness and readiness probes",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Health",
+            "severity": "MEDIUM",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No liveness probe defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "batch-worker",
+                  "namespace": "workers"
+                }
+              },
+              {
+                "message": "No readiness probe defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "batch-worker",
+                  "namespace": "workers"
+                }
+              },
+              {
+                "message": "No liveness probe defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "cron-runner",
+                  "namespace": "workers"
+                }
+              },
+              {
+                "message": "No readiness probe defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "cron-runner",
+                  "namespace": "workers"
+                }
+              }
+            ],
+            "message": "4 containers missing health probes"
+          },
+          {
+            "id": "WH-004",
+            "name": "Scale critical workloads to 2+ replicas",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Availability",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "All critical workloads have 2+ replicas"
+          },
+          {
+            "id": "WH-005",
+            "name": "Create PodDisruptionBudgets",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Availability",
+            "severity": "MEDIUM",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No PDB defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "api-server",
+                  "namespace": "production"
+                }
+              },
+              {
+                "message": "No PDB defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "web-frontend",
+                  "namespace": "production"
+                }
+              },
+              {
+                "message": "No PDB defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "event-processor",
+                  "namespace": "workers"
+                }
+              }
+            ],
+            "message": "3 multi-replica deployments lack PDBs"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC7.3",
+          "name": "Evaluate Security Events",
+          "description": "The entity evaluates detected security events and determines whether they could or have resulted in a failure of the entity to meet its objectives.",
+          "category": "Common Criteria"
+        },
+        "status": "PARTIAL",
+        "violationCount": 4,
+        "checkResults": [
+          {
+            "id": "CIS-5.2.3",
+            "name": "Minimize privileged containers",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.2",
+            "severity": "CRITICAL",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Container runs in privileged mode",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "node-exporter-k8s2x",
+                  "namespace": "monitoring"
+                },
+                "field": "securityContext.privileged",
+                "value": "true"
+              }
+            ],
+            "message": "1 privileged container: monitoring/node-exporter"
+          },
+          {
+            "id": "CIS-5.3.2",
+            "name": "Ensure every namespace has a NetworkPolicy",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.3",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "staging"
+                }
+              },
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "dev"
+                }
+              },
+              {
+                "message": "No NetworkPolicy defined",
+                "resource": {
+                  "kind": "Namespace",
+                  "name": "monitoring"
+                }
+              }
+            ],
+            "message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+          },
+          {
+            "id": "CIS-3.2",
+            "name": "Ensure audit policy covers key operations",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "3.x",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC7.4",
+          "name": "Respond to Security Incidents",
+          "description": "The entity responds to identified security incidents by executing a defined incident response program.",
+          "category": "Common Criteria"
+        },
+        "status": "PASS",
+        "violationCount": 0,
+        "checkResults": [
+          {
+            "id": "CIS-1.2.9",
+            "name": "Ensure EventRateLimit admission controller",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.20",
+            "name": "Ensure audit policy configured",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "HIGH",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC7.5",
+          "name": "Recover from Security Incidents",
+          "description": "The entity identifies, develops, and implements activities to recover from identified security incidents.",
+          "category": "Common Criteria"
+        },
+        "status": "PASS",
+        "violationCount": 0,
+        "checkResults": [
+          {
+            "id": "CIS-1.2.18",
+            "name": "Ensure audit log maxbackup set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-1.2.19",
+            "name": "Ensure audit log maxsize set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "CC8.1",
+          "name": "Change Management",
+          "description": "The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure and software.",
+          "category": "Common Criteria"
+        },
+        "status": "PARTIAL",
+        "violationCount": 4,
+        "checkResults": [
+          {
+            "id": "CIS-5.1.2",
+            "name": "Minimize access to secrets",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.1",
+            "severity": "HIGH",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Role grants secret access",
+                "resource": {
+                  "kind": "Role",
+                  "name": "dev-team",
+                  "namespace": "development"
+                }
+              },
+              {
+                "message": "Role grants secret access",
+                "resource": {
+                  "kind": "Role",
+                  "name": "monitoring",
+                  "namespace": "monitoring"
+                }
+              },
+              {
+                "message": "Role grants secret access",
+                "resource": {
+                  "kind": "Role",
+                  "name": "ci-deploy",
+                  "namespace": "ci"
+                }
+              }
+            ],
+            "message": "3 roles grant get/list/watch on secrets: dev-team, monitoring, ci-deploy"
+          },
+          {
+            "id": "CIS-5.4.1",
+            "name": "Prefer using Secrets as files over environment variables",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.4",
+            "severity": "MEDIUM",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "Secret referenced via env var",
+                "resource": {
+                  "kind": "Pod",
+                  "name": "api-server-7f8d9",
+                  "namespace": "production"
+                },
+                "field": "env[DB_PASSWORD].valueFrom.secretKeyRef"
+              }
+            ],
+            "message": "8 pods reference secrets via environment variables"
+          },
+          {
+            "id": "NSA-VM-1",
+            "name": "Implement vulnerability management",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Vulnerability",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Vulnerability management process defined"
+          },
+          {
+            "id": "PSS-1.1",
+            "name": "Enforce Baseline Pod Security Standard",
+            "description": "",
+            "benchmark": "PSS",
+            "section": "Pod Security",
+            "severity": "HIGH",
+            "status": "PASS",
+            "message": "Baseline PSS enforced on all non-system namespaces"
+          },
+          {
+            "id": "PSS-1.2",
+            "name": "Enforce Restricted Pod Security Standard",
+            "description": "",
+            "benchmark": "PSS",
+            "section": "Pod Security",
+            "severity": "HIGH",
+            "status": "WARN",
+            "message": "Restricted PSS enforced on 4 of 6 production namespaces"
+          },
+          {
+            "id": "SC-001",
+            "name": "Add SBOM attestation",
+            "description": "",
+            "benchmark": "Supply Chain",
+            "section": "Provenance",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "SBOM attestations present on all images"
+          },
+          {
+            "id": "AH-001",
+            "name": "Migrate deprecated APIs",
+            "description": "",
+            "benchmark": "API Hygiene",
+            "section": "Deprecation",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "No deprecated API versions in use"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "A1.1",
+          "name": "Availability Capacity Planning",
+          "description": "The entity maintains, monitors, and evaluates current processing capacity and use of system components to manage capacity demand.",
+          "category": "Availability"
+        },
+        "status": "PASS",
+        "violationCount": 0,
+        "checkResults": [
+          {
+            "id": "CIS-5.7.1",
+            "name": "Create resource quota for namespaces",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "5.7",
+            "severity": "MEDIUM",
+            "status": "WARN",
+            "message": "2 namespaces without resource quotas: dev, staging"
+          },
+          {
+            "id": "NSA-PS-8",
+            "name": "Set resource requests and limits",
+            "description": "",
+            "benchmark": "NSA-CISA",
+            "section": "Pod Security",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Resource limits defined on all containers"
+          },
+          {
+            "id": "WH-002",
+            "name": "Set resource requests and limits",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Resources",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "Resource limits set on all containers"
+          },
+          {
+            "id": "NG-001",
+            "name": "Create ResourceQuotas",
+            "description": "",
+            "benchmark": "Namespace Gov",
+            "section": "Quotas",
+            "severity": "MEDIUM",
+            "status": "WARN",
+            "message": "2 namespaces without ResourceQuotas"
+          }
+        ]
+      },
+      {
+        "control": {
+          "id": "A1.2",
+          "name": "Availability Environmental Protections",
+          "description": "The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections.",
+          "category": "Availability"
+        },
+        "status": "PARTIAL",
+        "violationCount": 7,
+        "checkResults": [
+          {
+            "id": "CIS-1.3.1",
+            "name": "Ensure terminated-pod-gc-threshold set",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "1.3",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-4.2.5",
+            "name": "Ensure kubelet streaming idle timeout",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-4.2.6",
+            "name": "Ensure protect kernel defaults",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "CIS-4.2.7",
+            "name": "Ensure iptables util chains",
+            "description": "",
+            "benchmark": "CIS",
+            "section": "4.2",
+            "severity": "MEDIUM",
+            "status": "PROVIDER_MANAGED",
+            "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+          },
+          {
+            "id": "WH-003",
+            "name": "Define liveness and readiness probes",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Health",
+            "severity": "MEDIUM",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No liveness probe defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "batch-worker",
+                  "namespace": "workers"
+                }
+              },
+              {
+                "message": "No readiness probe defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "batch-worker",
+                  "namespace": "workers"
+                }
+              },
+              {
+                "message": "No liveness probe defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "cron-runner",
+                  "namespace": "workers"
+                }
+              },
+              {
+                "message": "No readiness probe defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "cron-runner",
+                  "namespace": "workers"
+                }
+              }
+            ],
+            "message": "4 containers missing health probes"
+          },
+          {
+            "id": "WH-004",
+            "name": "Scale critical workloads to 2+ replicas",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Availability",
+            "severity": "MEDIUM",
+            "status": "PASS",
+            "message": "All critical workloads have 2+ replicas"
+          },
+          {
+            "id": "WH-005",
+            "name": "Create PodDisruptionBudgets",
+            "description": "",
+            "benchmark": "Workload Hygiene",
+            "section": "Availability",
+            "severity": "MEDIUM",
+            "status": "FAIL",
+            "evidence": [
+              {
+                "message": "No PDB defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "api-server",
+                  "namespace": "production"
+                }
+              },
+              {
+                "message": "No PDB defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "web-frontend",
+                  "namespace": "production"
+                }
+              },
+              {
+                "message": "No PDB defined",
+                "resource": {
+                  "kind": "Deployment",
+                  "name": "event-processor",
+                  "namespace": "workers"
+                }
+              }
+            ],
+            "message": "3 multi-replica deployments lack PDBs"
+          }
+        ]
+      }
+    ]
+  },
+  "Scan": {
+    "id": "sample-scan-001",
+    "timestamp": "2026-03-07T14:28:00Z",
+    "duration": 4230000000,
+    "results": [
+      {
+        "id": "CIS-5.1.1",
+        "name": "Restrict cluster-admin ClusterRoleBinding usage",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.1",
+        "severity": "CRITICAL",
+        "status": "PASS",
+        "message": "Only 2 cluster-admin bindings found (system defaults)"
+      },
+      {
+        "id": "CIS-5.1.2",
+        "name": "Minimize access to secrets",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.1",
+        "severity": "HIGH",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "Role grants secret access",
+            "resource": {
+              "kind": "Role",
+              "name": "dev-team",
+              "namespace": "development"
+            }
+          },
+          {
+            "message": "Role grants secret access",
+            "resource": {
+              "kind": "Role",
+              "name": "monitoring",
+              "namespace": "monitoring"
+            }
+          },
+          {
+            "message": "Role grants secret access",
+            "resource": {
+              "kind": "Role",
+              "name": "ci-deploy",
+              "namespace": "ci"
+            }
+          }
+        ],
+        "message": "3 roles grant get/list/watch on secrets: dev-team, monitoring, ci-deploy"
+      },
+      {
+        "id": "CIS-5.1.3",
+        "name": "Minimize wildcard use in Roles and ClusterRoles",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.1",
+        "severity": "HIGH",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "Wildcard resource permission",
+            "resource": {
+              "kind": "ClusterRole",
+              "name": "legacy-admin"
+            },
+            "field": "rules[0].resources",
+            "value": "*"
+          },
+          {
+            "message": "Wildcard resource permission",
+            "resource": {
+              "kind": "ClusterRole",
+              "name": "dev-full-access"
+            },
+            "field": "rules[0].resources",
+            "value": "*"
+          }
+        ],
+        "message": "2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access"
+      },
+      {
+        "id": "CIS-5.1.4",
+        "name": "Minimize access to create pods",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.1",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Pod creation restricted to appropriate roles"
+      },
+      {
+        "id": "CIS-5.1.5",
+        "name": "Ensure default service accounts are not actively used",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.1",
+        "severity": "MEDIUM",
+        "status": "WARN",
+        "message": "2 namespaces use default service account: staging, dev"
+      },
+      {
+        "id": "CIS-5.1.6",
+        "name": "Ensure service account tokens are not auto-mounted",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.1",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "All service accounts have automountServiceAccountToken: false"
+      },
+      {
+        "id": "CIS-5.1.7",
+        "name": "Avoid use of system:masters group",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.1",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "No bindings to system:masters group found"
+      },
+      {
+        "id": "CIS-5.1.8",
+        "name": "Limit use of bind, escalate, and impersonate permissions",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.1",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "No roles grant bind/escalate/impersonate"
+      },
+      {
+        "id": "CIS-5.2.1",
+        "name": "Ensure allowPrivilegeEscalation is set to false",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "CRITICAL",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "allowPrivilegeEscalation not set to false",
+            "resource": {
+              "kind": "Pod",
+              "name": "api-server-7f8d9",
+              "namespace": "production"
+            },
+            "field": "securityContext.allowPrivilegeEscalation"
+          },
+          {
+            "message": "allowPrivilegeEscalation not set to false",
+            "resource": {
+              "kind": "Pod",
+              "name": "worker-3a2b1",
+              "namespace": "production"
+            },
+            "field": "securityContext.allowPrivilegeEscalation"
+          },
+          {
+            "message": "allowPrivilegeEscalation not set to false",
+            "resource": {
+              "kind": "Pod",
+              "name": "scheduler-9c4d5",
+              "namespace": "production"
+            },
+            "field": "securityContext.allowPrivilegeEscalation"
+          },
+          {
+            "message": "allowPrivilegeEscalation not set to false",
+            "resource": {
+              "kind": "Pod",
+              "name": "migrator-1e6f7",
+              "namespace": "production"
+            },
+            "field": "securityContext.allowPrivilegeEscalation"
+          }
+        ],
+        "message": "4 containers allow privilege escalation in namespace: production"
+      },
+      {
+        "id": "CIS-5.2.2",
+        "name": "Ensure containers run as non-root",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "All containers specify runAsNonRoot: true"
+      },
+      {
+        "id": "CIS-5.2.3",
+        "name": "Minimize privileged containers",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "CRITICAL",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "Container runs in privileged mode",
+            "resource": {
+              "kind": "Pod",
+              "name": "node-exporter-k8s2x",
+              "namespace": "monitoring"
+            },
+            "field": "securityContext.privileged",
+            "value": "true"
+          }
+        ],
+        "message": "1 privileged container: monitoring/node-exporter"
+      },
+      {
+        "id": "CIS-5.2.4",
+        "name": "Ensure containers drop ALL capabilities",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "HIGH",
+        "status": "WARN",
+        "message": "6 containers do not drop all capabilities"
+      },
+      {
+        "id": "CIS-5.2.5",
+        "name": "Ensure hostPID is not set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "CRITICAL",
+        "status": "PASS",
+        "message": "No pods use hostPID"
+      },
+      {
+        "id": "CIS-5.2.6",
+        "name": "Ensure hostIPC is not set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "No pods use hostIPC"
+      },
+      {
+        "id": "CIS-5.2.7",
+        "name": "Ensure hostNetwork is not set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "No pods use hostNetwork"
+      },
+      {
+        "id": "CIS-5.2.8",
+        "name": "Limit container hostPort usage",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "No containers use hostPort"
+      },
+      {
+        "id": "CIS-5.2.9",
+        "name": "Drop all capabilities",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "All containers drop ALL capabilities"
+      },
+      {
+        "id": "CIS-5.2.10",
+        "name": "Ensure NET_RAW is not added",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "No containers add NET_RAW"
+      },
+      {
+        "id": "CIS-5.2.11",
+        "name": "Ensure SYS_ADMIN is not added",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "CRITICAL",
+        "status": "PASS",
+        "message": "No containers add SYS_ADMIN"
+      },
+      {
+        "id": "CIS-5.2.12",
+        "name": "Minimize added capabilities",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Minimal capabilities added"
+      },
+      {
+        "id": "CIS-5.2.13",
+        "name": "Apply Seccomp profile",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.2",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "RuntimeDefault seccomp profile applied"
+      },
+      {
+        "id": "CIS-5.3.1",
+        "name": "Ensure CNI supports NetworkPolicy",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.3",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "CNI supports NetworkPolicy (Calico detected)"
+      },
+      {
+        "id": "CIS-5.3.2",
+        "name": "Ensure every namespace has a NetworkPolicy",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.3",
+        "severity": "HIGH",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "No NetworkPolicy defined",
+            "resource": {
+              "kind": "Namespace",
+              "name": "staging"
+            }
+          },
+          {
+            "message": "No NetworkPolicy defined",
+            "resource": {
+              "kind": "Namespace",
+              "name": "dev"
+            }
+          },
+          {
+            "message": "No NetworkPolicy defined",
+            "resource": {
+              "kind": "Namespace",
+              "name": "monitoring"
+            }
+          }
+        ],
+        "message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+      },
+      {
+        "id": "CIS-5.4.1",
+        "name": "Prefer using Secrets as files over environment variables",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.4",
+        "severity": "MEDIUM",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "Secret referenced via env var",
+            "resource": {
+              "kind": "Pod",
+              "name": "api-server-7f8d9",
+              "namespace": "production"
+            },
+            "field": "env[DB_PASSWORD].valueFrom.secretKeyRef"
+          }
+        ],
+        "message": "8 pods reference secrets via environment variables"
+      },
+      {
+        "id": "CIS-5.7.1",
+        "name": "Create resource quota for namespaces",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.7",
+        "severity": "MEDIUM",
+        "status": "WARN",
+        "message": "2 namespaces without resource quotas: dev, staging"
+      },
+      {
+        "id": "CIS-5.7.2",
+        "name": "Ensure Seccomp profile is set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.7",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "RuntimeDefault seccomp profile applied"
+      },
+      {
+        "id": "CIS-5.7.3",
+        "name": "Ensure security context is applied to pods and containers",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.7",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "All pods have security context set"
+      },
+      {
+        "id": "CIS-5.7.4",
+        "name": "Ensure default namespace is not used",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "5.7",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "No workloads in default namespace"
+      },
+      {
+        "id": "CIS-1.2.1",
+        "name": "Ensure anonymous auth is disabled",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "CRITICAL",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.2",
+        "name": "Ensure token auth file is not set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "CRITICAL",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.6",
+        "name": "Ensure authorization mode includes RBAC",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.7",
+        "name": "Ensure authorization mode excludes AlwaysAllow",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.8",
+        "name": "Ensure authorization mode includes Node",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.9",
+        "name": "Ensure EventRateLimit admission controller",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.14",
+        "name": "Ensure anonymous auth disabled",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "CRITICAL",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.16",
+        "name": "Ensure audit logging enabled",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.17",
+        "name": "Ensure audit log maxage set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.18",
+        "name": "Ensure audit log maxbackup set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.19",
+        "name": "Ensure audit log maxsize set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.20",
+        "name": "Ensure audit policy configured",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.21",
+        "name": "Ensure request timeout configured",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.23",
+        "name": "Ensure encryption at rest configured",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.24",
+        "name": "Ensure encryption providers configured",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.25",
+        "name": "Ensure TLS 1.2 minimum",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.2.26",
+        "name": "Ensure strong TLS ciphers",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.3.1",
+        "name": "Ensure terminated-pod-gc-threshold set",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.3",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-1.3.6",
+        "name": "Ensure service account credentials rotated",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "1.3",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-2.1",
+        "name": "Ensure etcd encryption configured",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "2.x",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-2.2",
+        "name": "Ensure etcd peer TLS enabled",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "2.x",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-2.4",
+        "name": "Ensure etcd peer cert auth",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "2.x",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-3.2",
+        "name": "Ensure audit policy covers key operations",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "3.x",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.1",
+        "name": "Ensure anonymous kubelet auth disabled",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.2",
+        "name": "Ensure kubelet authorization Webhook",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.3",
+        "name": "Ensure kubelet client TLS",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.4",
+        "name": "Ensure kubelet HTTPS",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "HIGH",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.5",
+        "name": "Ensure kubelet streaming idle timeout",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.6",
+        "name": "Ensure protect kernel defaults",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.7",
+        "name": "Ensure iptables util chains",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.9",
+        "name": "Ensure event recording configured",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "CIS-4.2.12",
+        "name": "Ensure kubelet cert rotation",
+        "description": "",
+        "benchmark": "CIS",
+        "section": "4.2",
+        "severity": "MEDIUM",
+        "status": "PROVIDER_MANAGED",
+        "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+      },
+      {
+        "id": "NSA-NS-1",
+        "name": "Ensure namespaces isolate workloads",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Network Security",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "Workloads properly isolated across namespaces"
+      },
+      {
+        "id": "NSA-NS-2",
+        "name": "Segment workloads by sensitivity",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Network Security",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Namespaces segmented by environment"
+      },
+      {
+        "id": "NSA-NS-3",
+        "name": "Restrict external network access",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Network Security",
+        "severity": "HIGH",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "No egress NetworkPolicy",
+            "resource": {
+              "kind": "Namespace",
+              "name": "staging"
+            }
+          },
+          {
+            "message": "No egress NetworkPolicy",
+            "resource": {
+              "kind": "Namespace",
+              "name": "dev"
+            }
+          }
+        ],
+        "message": "2 namespaces allow unrestricted egress"
+      },
+      {
+        "id": "NSA-PS-1",
+        "name": "Run containers as non-root",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Pod Security",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "All containers run as non-root"
+      },
+      {
+        "id": "NSA-PS-2",
+        "name": "Use read-only root filesystem",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Pod Security",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Read-only root filesystems enforced"
+      },
+      {
+        "id": "NSA-PS-3",
+        "name": "Drop all capabilities",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Pod Security",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "Capabilities dropped"
+      },
+      {
+        "id": "NSA-PS-4",
+        "name": "Prevent privilege escalation",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Pod Security",
+        "severity": "CRITICAL",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "Privilege escalation allowed",
+            "resource": {
+              "kind": "Pod",
+              "name": "api-server-7f8d9",
+              "namespace": "production"
+            }
+          },
+          {
+            "message": "Privilege escalation allowed",
+            "resource": {
+              "kind": "Pod",
+              "name": "worker-3a2b1",
+              "namespace": "production"
+            }
+          },
+          {
+            "message": "Privilege escalation allowed",
+            "resource": {
+              "kind": "Pod",
+              "name": "scheduler-9c4d5",
+              "namespace": "production"
+            }
+          },
+          {
+            "message": "Privilege escalation allowed",
+            "resource": {
+              "kind": "Pod",
+              "name": "migrator-1e6f7",
+              "namespace": "production"
+            }
+          }
+        ],
+        "message": "4 containers allow privilege escalation"
+      },
+      {
+        "id": "NSA-PS-8",
+        "name": "Set resource requests and limits",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Pod Security",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Resource limits defined on all containers"
+      },
+      {
+        "id": "NSA-AA-1",
+        "name": "Configure strong authentication",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Authentication",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "OIDC authentication configured"
+      },
+      {
+        "id": "NSA-AA-2",
+        "name": "Implement MFA for cluster access",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Authentication",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "MFA enforced via identity provider"
+      },
+      {
+        "id": "NSA-AA-3",
+        "name": "Implement centralized identity",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Authentication",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Centralized identity via OIDC"
+      },
+      {
+        "id": "NSA-AA-4",
+        "name": "Review and audit user access",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Authentication",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Access review process in place"
+      },
+      {
+        "id": "NSA-AA-5",
+        "name": "Rotate service account tokens",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Authentication",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Token rotation configured"
+      },
+      {
+        "id": "NSA-SC-1",
+        "name": "Use signed container images",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Supply Chain",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "Cosign signatures verified at admission"
+      },
+      {
+        "id": "NSA-SC-2",
+        "name": "Scan images for vulnerabilities",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Supply Chain",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "Trivy scanning integrated in CI/CD"
+      },
+      {
+        "id": "NSA-LM-1",
+        "name": "Enable audit logging",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Logging",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "Audit logging enabled via EKS"
+      },
+      {
+        "id": "NSA-LM-2",
+        "name": "Centralize log collection",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Logging",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Logs shipped to CloudWatch + Datadog"
+      },
+      {
+        "id": "NSA-VM-1",
+        "name": "Implement vulnerability management",
+        "description": "",
+        "benchmark": "NSA-CISA",
+        "section": "Vulnerability",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "Vulnerability management process defined"
+      },
+      {
+        "id": "PSS-1.1",
+        "name": "Enforce Baseline Pod Security Standard",
+        "description": "",
+        "benchmark": "PSS",
+        "section": "Pod Security",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "Baseline PSS enforced on all non-system namespaces"
+      },
+      {
+        "id": "PSS-1.2",
+        "name": "Enforce Restricted Pod Security Standard",
+        "description": "",
+        "benchmark": "PSS",
+        "section": "Pod Security",
+        "severity": "HIGH",
+        "status": "WARN",
+        "message": "Restricted PSS enforced on 4 of 6 production namespaces"
+      },
+      {
+        "id": "PSS-1.3",
+        "name": "Enforce PSS via namespace labels",
+        "description": "",
+        "benchmark": "PSS",
+        "section": "Pod Security",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "pod-security.kubernetes.io/enforce labels applied"
+      },
+      {
+        "id": "PSS-2.1",
+        "name": "Enforce PSA at cluster level",
+        "description": "",
+        "benchmark": "PSS",
+        "section": "Pod Security",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "PSA configured cluster-wide"
+      },
+      {
+        "id": "PSS-2.2",
+        "name": "Enable PSA audit and warn modes",
+        "description": "",
+        "benchmark": "PSS",
+        "section": "Pod Security",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Audit and warn modes enabled"
+      },
+      {
+        "id": "RBAC-1",
+        "name": "Audit cluster-admin usage",
+        "description": "",
+        "benchmark": "RBAC",
+        "section": "Access Control",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "cluster-admin limited to break-glass accounts"
+      },
+      {
+        "id": "RBAC-2",
+        "name": "Verify least-privilege role bindings",
+        "description": "",
+        "benchmark": "RBAC",
+        "section": "Access Control",
+        "severity": "HIGH",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "Overly permissive binding",
+            "resource": {
+              "kind": "ClusterRoleBinding",
+              "name": "dev-cluster-admin"
+            }
+          },
+          {
+            "message": "Overly permissive binding",
+            "resource": {
+              "kind": "ClusterRoleBinding",
+              "name": "ci-admin-binding"
+            }
+          },
+          {
+            "message": "Overly permissive binding",
+            "resource": {
+              "kind": "RoleBinding",
+              "name": "staging-admin",
+              "namespace": "staging"
+            }
+          }
+        ],
+        "message": "3 overly permissive role bindings found"
+      },
+      {
+        "id": "RBAC-3",
+        "name": "Remove wildcard permissions",
+        "description": "",
+        "benchmark": "RBAC",
+        "section": "Access Control",
+        "severity": "HIGH",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "Wildcard permissions",
+            "resource": {
+              "kind": "ClusterRole",
+              "name": "legacy-admin"
+            },
+            "field": "rules[0].resources",
+            "value": "*"
+          },
+          {
+            "message": "Wildcard permissions",
+            "resource": {
+              "kind": "ClusterRole",
+              "name": "dev-full-access"
+            },
+            "field": "rules[0].verbs",
+            "value": "*"
+          }
+        ],
+        "message": "2 ClusterRoles use wildcard: legacy-admin, dev-full-access"
+      },
+      {
+        "id": "RBAC-4",
+        "name": "Audit stale RoleBindings",
+        "description": "",
+        "benchmark": "RBAC",
+        "section": "Access Control",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "No stale bindings detected"
+      },
+      {
+        "id": "WH-001",
+        "name": "Pin container images to digests",
+        "description": "",
+        "benchmark": "Workload Hygiene",
+        "section": "Images",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "All images pinned to SHA256 digests"
+      },
+      {
+        "id": "WH-002",
+        "name": "Set resource requests and limits",
+        "description": "",
+        "benchmark": "Workload Hygiene",
+        "section": "Resources",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "Resource limits set on all containers"
+      },
+      {
+        "id": "WH-003",
+        "name": "Define liveness and readiness probes",
+        "description": "",
+        "benchmark": "Workload Hygiene",
+        "section": "Health",
+        "severity": "MEDIUM",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "No liveness probe defined",
+            "resource": {
+              "kind": "Deployment",
+              "name": "batch-worker",
+              "namespace": "workers"
+            }
+          },
+          {
+            "message": "No readiness probe defined",
+            "resource": {
+              "kind": "Deployment",
+              "name": "batch-worker",
+              "namespace": "workers"
+            }
+          },
+          {
+            "message": "No liveness probe defined",
+            "resource": {
+              "kind": "Deployment",
+              "name": "cron-runner",
+              "namespace": "workers"
+            }
+          },
+          {
+            "message": "No readiness probe defined",
+            "resource": {
+              "kind": "Deployment",
+              "name": "cron-runner",
+              "namespace": "workers"
+            }
+          }
+        ],
+        "message": "4 containers missing health probes"
+      },
+      {
+        "id": "WH-004",
+        "name": "Scale critical workloads to 2+ replicas",
+        "description": "",
+        "benchmark": "Workload Hygiene",
+        "section": "Availability",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "All critical workloads have 2+ replicas"
+      },
+      {
+        "id": "WH-005",
+        "name": "Create PodDisruptionBudgets",
+        "description": "",
+        "benchmark": "Workload Hygiene",
+        "section": "Availability",
+        "severity": "MEDIUM",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "No PDB defined",
+            "resource": {
+              "kind": "Deployment",
+              "name": "api-server",
+              "namespace": "production"
+            }
+          },
+          {
+            "message": "No PDB defined",
+            "resource": {
+              "kind": "Deployment",
+              "name": "web-frontend",
+              "namespace": "production"
+            }
+          },
+          {
+            "message": "No PDB defined",
+            "resource": {
+              "kind": "Deployment",
+              "name": "event-processor",
+              "namespace": "workers"
+            }
+          }
+        ],
+        "message": "3 multi-replica deployments lack PDBs"
+      },
+      {
+        "id": "SC-001",
+        "name": "Add SBOM attestation",
+        "description": "",
+        "benchmark": "Supply Chain",
+        "section": "Provenance",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "SBOM attestations present on all images"
+      },
+      {
+        "id": "SC-002",
+        "name": "Sign container images",
+        "description": "",
+        "benchmark": "Supply Chain",
+        "section": "Provenance",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "All images signed with Cosign"
+      },
+      {
+        "id": "SC-003",
+        "name": "Deploy from approved registries only",
+        "description": "",
+        "benchmark": "Supply Chain",
+        "section": "Provenance",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "Registry allowlist enforced via admission"
+      },
+      {
+        "id": "IH-001",
+        "name": "Configure TLS on Ingress resources",
+        "description": "",
+        "benchmark": "Ingress",
+        "section": "TLS",
+        "severity": "HIGH",
+        "status": "PASS",
+        "message": "TLS configured on all Ingress resources"
+      },
+      {
+        "id": "IH-002",
+        "name": "Create egress NetworkPolicies",
+        "description": "",
+        "benchmark": "Ingress",
+        "section": "Egress",
+        "severity": "HIGH",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "No egress NetworkPolicy",
+            "resource": {
+              "kind": "Namespace",
+              "name": "staging"
+            }
+          },
+          {
+            "message": "No egress NetworkPolicy",
+            "resource": {
+              "kind": "Namespace",
+              "name": "dev"
+            }
+          }
+        ],
+        "message": "2 namespaces without egress policies"
+      },
+      {
+        "id": "NG-001",
+        "name": "Create ResourceQuotas",
+        "description": "",
+        "benchmark": "Namespace Gov",
+        "section": "Quotas",
+        "severity": "MEDIUM",
+        "status": "WARN",
+        "message": "2 namespaces without ResourceQuotas"
+      },
+      {
+        "id": "NG-002",
+        "name": "Create LimitRanges",
+        "description": "",
+        "benchmark": "Namespace Gov",
+        "section": "Limits",
+        "severity": "MEDIUM",
+        "status": "FAIL",
+        "evidence": [
+          {
+            "message": "No LimitRange defined",
+            "resource": {
+              "kind": "Namespace",
+              "name": "staging"
+            }
+          },
+          {
+            "message": "No LimitRange defined",
+            "resource": {
+              "kind": "Namespace",
+              "name": "dev"
+            }
+          },
+          {
+            "message": "No LimitRange defined",
+            "resource": {
+              "kind": "Namespace",
+              "name": "monitoring"
+            }
+          },
+          {
+            "message": "No LimitRange defined",
+            "resource": {
+              "kind": "Namespace",
+              "name": "logging"
+            }
+          }
+        ],
+        "message": "4 namespaces without LimitRanges"
+      },
+      {
+        "id": "NG-003",
+        "name": "Apply standard Kubernetes labels",
+        "description": "",
+        "benchmark": "Namespace Gov",
+        "section": "Labels",
+        "severity": "LOW",
+        "status": "PASS",
+        "message": "Standard labels applied to all resources"
+      },
+      {
+        "id": "AH-001",
+        "name": "Migrate deprecated APIs",
+        "description": "",
+        "benchmark": "API Hygiene",
+        "section": "Deprecation",
+        "severity": "MEDIUM",
+        "status": "PASS",
+        "message": "No deprecated API versions in use"
+      },
+      {
+        "id": "AH-002",
+        "name": "Evaluate alpha/beta API usage",
+        "description": "",
+        "benchmark": "API Hygiene",
+        "section": "Stability",
+        "severity": "LOW",
+        "status": "PASS",
+        "message": "No alpha APIs in use; 1 beta API (autoscaling/v2beta2) under review"
+      }
+    ],
+    "summary": {
+      "totalChecks": 102,
+      "passCount": 51,
+      "failCount": 14,
+      "warnCount": 5,
+      "skipCount": 0,
+      "providerManagedCount": 32
+    }
+  },
+  "Evidence": {
+    "collectedAt": "2026-03-07T14:29:47Z",
+    "clusterName": "prod-eks-us-east-1",
+    "items": [
+      {
+        "category": "RBAC",
+        "type": "rbac-cluster-admin",
+        "description": "RBAC ClusterRoleBinding inventory and cluster-admin scope",
+        "data": {
+          "clusterRoleCount": 47,
+          "clusterRoleBindingCount": 23,
+          "roleCount": 31,
+          "roleBindingCount": 93,
+          "serviceAccountCount": 58,
+          "clusterAdminBindings": [
+            {
+              "name": "system:masters-binding",
+              "subject": "system:masters",
+              "type": "Group"
+            },
+            {
+              "name": "eks-admin-binding",
+              "subject": "break-glass-admin",
+              "type": "User"
+            }
+          ],
+          "wildcardRoles": [
+            "legacy-admin",
+            "dev-full-access"
+          ]
+        },
+        "timestamp": "2026-03-07T14:29:47Z",
+        "sha256": "a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890"
+      },
+      {
+        "category": "RBAC",
+        "type": "rbac-sa-token-mount",
+        "description": "Service account token mount audit across 12 namespaces",
+        "data": {
+          "namespacesAudited": 12,
+          "autoMountCount": 0
+        },
+        "timestamp": "2026-03-07T14:29:48Z",
+        "sha256": "b2c3d4e5f6a7890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+      },
+      {
+        "category": "RBAC",
+        "type": "rbac-namespace-scope",
+        "description": "Namespace scope ratio: 80% namespace-scoped",
+        "data": {
+          "totalRoleBindings": 116,
+          "namespaceScopedCount": 93,
+          "clusterScopedCount": 23,
+          "namespaceScopedPercent": 80
+        },
+        "timestamp": "2026-03-07T14:29:48Z",
+        "sha256": "c3d4e5f6a7b890abcdef1234567890abcdef1234567890abcdef1234567890abc"
+      },
+      {
+        "category": "Network",
+        "type": "network-policy-coverage",
+        "description": "NetworkPolicy coverage: 18 policies across 9 namespaces",
+        "data": {
+          "totalPolicies": 18,
+          "namespaceSummaries": [
+            {
+              "namespace": "production",
+              "policyCount": 4,
+              "hasIngress": true,
+              "hasEgress": true
+            },
+            {
+              "namespace": "api",
+              "policyCount": 3,
+              "hasIngress": true,
+              "hasEgress": true
+            },
+            {
+              "namespace": "workers",
+              "policyCount": 2,
+              "hasIngress": true,
+              "hasEgress": false
+            },
+            {
+              "namespace": "data",
+              "policyCount": 3,
+              "hasIngress": true,
+              "hasEgress": true
+            },
+            {
+              "namespace": "monitoring",
+              "policyCount": 2,
+              "hasIngress": true,
+              "hasEgress": false
+            },
+            {
+              "namespace": "logging",
+              "policyCount": 1,
+              "hasIngress": true,
+              "hasEgress": false
+            },
+            {
+              "namespace": "kube-system",
+              "policyCount": 1,
+              "hasIngress": true,
+              "hasEgress": false
+            },
+            {
+              "namespace": "cert-manager",
+              "policyCount": 1,
+              "hasIngress": false,
+              "hasEgress": true
+            },
+            {
+              "namespace": "ingress-nginx",
+              "policyCount": 1,
+              "hasIngress": true,
+              "hasEgress": true
+            }
+          ]
+        },
+        "timestamp": "2026-03-07T14:29:49Z",
+        "sha256": "d4e5f6a7b8c90abcdef1234567890abcdef1234567890abcdef1234567890abcd"
+      },
+      {
+        "category": "Network",
+        "type": "default-deny-status",
+        "description": "Default-deny status: 7 of 12 namespaces have default-deny policies",
+        "data": {
+          "totalNamespaces": 12,
+          "namespacesWithDeny": 7,
+          "namespacesWithoutDeny": [
+            "staging",
+            "dev",
+            "monitoring",
+            "logging",
+            "default"
+          ]
+        },
+        "timestamp": "2026-03-07T14:29:49Z",
+        "sha256": "e5f6a7b8c9d0abcdef1234567890abcdef1234567890abcdef1234567890abcde"
+      },
+      {
+        "category": "Audit",
+        "type": "audit-logging",
+        "description": "Audit logging: API server not found (managed cluster)",
+        "data": {
+          "apiServerFound": false
+        },
+        "timestamp": "2026-03-07T14:29:50Z",
+        "sha256": "f6a7b8c9d0e1abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "category": "Encryption",
+        "type": "encryption-tls",
+        "description": "Encryption: etcd not found (managed cluster)",
+        "data": {
+          "etcdFound": false,
+          "certFileSet": false,
+          "clientCertAuth": false,
+          "peerCertFileSet": false,
+          "trustedCASet": false
+        },
+        "timestamp": "2026-03-07T14:29:50Z",
+        "sha256": "a7b8c9d0e1f2abcdef1234567890abcdef1234567890abcdef1234567890abcde0"
+      }
+    ]
+  },
+  "HistoricalScores": [
+    62,
+    68,
+    72,
+    75,
+    78
+  ],
+  "HistoricalTimes": [
+    "2026-02-05T10:00:00Z",
+    "2026-02-12T10:00:00Z",
+    "2026-02-19T10:00:00Z",
+    "2026-02-26T10:00:00Z",
+    "2026-03-07T14:28:00Z"
+  ],
+  "PeriodStart": "2026-02-05T10:00:00Z",
+  "PeriodEnd": "2026-03-07T14:28:00Z",
+  "ScanCount": 5,
+  "PeriodDays": 31,
+  "ScanDuration": "4.23s",
+  "TotalChecks": 102,
+  "PassCount": 51,
+  "FailCount": 14,
+  "WarnCount": 5,
+  "SkipCount": 0,
+  "ProviderManagedCount": 32,
+  "ProviderManagedChecks": [
+    {
+      "id": "CIS-1.2.1",
+      "name": "Ensure anonymous auth is disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.2",
+      "name": "Ensure token auth file is not set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.6",
+      "name": "Ensure authorization mode includes RBAC",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.7",
+      "name": "Ensure authorization mode excludes AlwaysAllow",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.8",
+      "name": "Ensure authorization mode includes Node",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.9",
+      "name": "Ensure EventRateLimit admission controller",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.14",
+      "name": "Ensure anonymous auth disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.16",
+      "name": "Ensure audit logging enabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.17",
+      "name": "Ensure audit log maxage set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.18",
+      "name": "Ensure audit log maxbackup set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.19",
+      "name": "Ensure audit log maxsize set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.20",
+      "name": "Ensure audit policy configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.21",
+      "name": "Ensure request timeout configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.23",
+      "name": "Ensure encryption at rest configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.24",
+      "name": "Ensure encryption providers configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.25",
+      "name": "Ensure TLS 1.2 minimum",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.26",
+      "name": "Ensure strong TLS ciphers",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.3.1",
+      "name": "Ensure terminated-pod-gc-threshold set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.3",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.3.6",
+      "name": "Ensure service account credentials rotated",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.3",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.1",
+      "name": "Ensure etcd encryption configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.2",
+      "name": "Ensure etcd peer TLS enabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.4",
+      "name": "Ensure etcd peer cert auth",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-3.2",
+      "name": "Ensure audit policy covers key operations",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "3.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.1",
+      "name": "Ensure anonymous kubelet auth disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.2",
+      "name": "Ensure kubelet authorization Webhook",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.3",
+      "name": "Ensure kubelet client TLS",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.4",
+      "name": "Ensure kubelet HTTPS",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.5",
+      "name": "Ensure kubelet streaming idle timeout",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.6",
+      "name": "Ensure protect kernel defaults",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.7",
+      "name": "Ensure iptables util chains",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.9",
+      "name": "Ensure event recording configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.12",
+      "name": "Ensure kubelet cert rotation",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.1",
+      "name": "Ensure anonymous auth is disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.2",
+      "name": "Ensure token auth file is not set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.6",
+      "name": "Ensure authorization mode includes RBAC",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.7",
+      "name": "Ensure authorization mode excludes AlwaysAllow",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.8",
+      "name": "Ensure authorization mode includes Node",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.9",
+      "name": "Ensure EventRateLimit admission controller",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.14",
+      "name": "Ensure anonymous auth disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.16",
+      "name": "Ensure audit logging enabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.17",
+      "name": "Ensure audit log maxage set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.18",
+      "name": "Ensure audit log maxbackup set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.19",
+      "name": "Ensure audit log maxsize set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.20",
+      "name": "Ensure audit policy configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.21",
+      "name": "Ensure request timeout configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.23",
+      "name": "Ensure encryption at rest configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.24",
+      "name": "Ensure encryption providers configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.25",
+      "name": "Ensure TLS 1.2 minimum",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.26",
+      "name": "Ensure strong TLS ciphers",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.3.1",
+      "name": "Ensure terminated-pod-gc-threshold set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.3",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.3.6",
+      "name": "Ensure service account credentials rotated",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.3",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.1",
+      "name": "Ensure etcd encryption configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.2",
+      "name": "Ensure etcd peer TLS enabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.4",
+      "name": "Ensure etcd peer cert auth",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-3.2",
+      "name": "Ensure audit policy covers key operations",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "3.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.1",
+      "name": "Ensure anonymous kubelet auth disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.2",
+      "name": "Ensure kubelet authorization Webhook",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.3",
+      "name": "Ensure kubelet client TLS",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.4",
+      "name": "Ensure kubelet HTTPS",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.5",
+      "name": "Ensure kubelet streaming idle timeout",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.6",
+      "name": "Ensure protect kernel defaults",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.7",
+      "name": "Ensure iptables util chains",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.9",
+      "name": "Ensure event recording configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.12",
+      "name": "Ensure kubelet cert rotation",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.1",
+      "name": "Ensure anonymous auth is disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.2",
+      "name": "Ensure token auth file is not set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.6",
+      "name": "Ensure authorization mode includes RBAC",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.7",
+      "name": "Ensure authorization mode excludes AlwaysAllow",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.8",
+      "name": "Ensure authorization mode includes Node",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.9",
+      "name": "Ensure EventRateLimit admission controller",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.14",
+      "name": "Ensure anonymous auth disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "CRITICAL",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.16",
+      "name": "Ensure audit logging enabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.17",
+      "name": "Ensure audit log maxage set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.18",
+      "name": "Ensure audit log maxbackup set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.19",
+      "name": "Ensure audit log maxsize set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.20",
+      "name": "Ensure audit policy configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.21",
+      "name": "Ensure request timeout configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.23",
+      "name": "Ensure encryption at rest configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.24",
+      "name": "Ensure encryption providers configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.25",
+      "name": "Ensure TLS 1.2 minimum",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.2.26",
+      "name": "Ensure strong TLS ciphers",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.3.1",
+      "name": "Ensure terminated-pod-gc-threshold set",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.3",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-1.3.6",
+      "name": "Ensure service account credentials rotated",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "1.3",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.1",
+      "name": "Ensure etcd encryption configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.2",
+      "name": "Ensure etcd peer TLS enabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-2.4",
+      "name": "Ensure etcd peer cert auth",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "2.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-3.2",
+      "name": "Ensure audit policy covers key operations",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "3.x",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.1",
+      "name": "Ensure anonymous kubelet auth disabled",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.2",
+      "name": "Ensure kubelet authorization Webhook",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.3",
+      "name": "Ensure kubelet client TLS",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.4",
+      "name": "Ensure kubelet HTTPS",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "HIGH",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.5",
+      "name": "Ensure kubelet streaming idle timeout",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.6",
+      "name": "Ensure protect kernel defaults",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.7",
+      "name": "Ensure iptables util chains",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.9",
+      "name": "Ensure event recording configured",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    },
+    {
+      "id": "CIS-4.2.12",
+      "name": "Ensure kubelet cert rotation",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "4.2",
+      "severity": "MEDIUM",
+      "status": "PROVIDER_MANAGED",
+      "message": "Control plane managed by AWS EKS. See AWS shared responsibility model."
+    }
+  ],
+  "ControlEvidence": {
+    "CC5.2": [
+      {
+        "category": "Audit",
+        "type": "audit-logging",
+        "description": "Audit logging: API server not found (managed cluster)",
+        "data": {
+          "apiServerFound": false
+        },
+        "timestamp": "2026-03-07T14:29:50Z",
+        "sha256": "f6a7b8c9d0e1abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      }
+    ],
+    "CC6.1": [
+      {
+        "category": "RBAC",
+        "type": "rbac-cluster-admin",
+        "description": "RBAC ClusterRoleBinding inventory and cluster-admin scope",
+        "data": {
+          "clusterRoleCount": 47,
+          "clusterRoleBindingCount": 23,
+          "roleCount": 31,
+          "roleBindingCount": 93,
+          "serviceAccountCount": 58,
+          "clusterAdminBindings": [
+            {
+              "name": "system:masters-binding",
+              "subject": "system:masters",
+              "type": "Group"
+            },
+            {
+              "name": "eks-admin-binding",
+              "subject": "break-glass-admin",
+              "type": "User"
+            }
+          ],
+          "wildcardRoles": [
+            "legacy-admin",
+            "dev-full-access"
+          ]
+        },
+        "timestamp": "2026-03-07T14:29:47Z",
+        "sha256": "a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890"
+      },
+      {
+        "category": "RBAC",
+        "type": "rbac-sa-token-mount",
+        "description": "Service account token mount audit across 12 namespaces",
+        "data": {
+          "namespacesAudited": 12,
+          "autoMountCount": 0
+        },
+        "timestamp": "2026-03-07T14:29:48Z",
+        "sha256": "b2c3d4e5f6a7890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+      }
+    ],
+    "CC6.3": [
+      {
+        "category": "RBAC",
+        "type": "rbac-namespace-scope",
+        "description": "Namespace scope ratio: 80% namespace-scoped",
+        "data": {
+          "totalRoleBindings": 116,
+          "namespaceScopedCount": 93,
+          "clusterScopedCount": 23,
+          "namespaceScopedPercent": 80
+        },
+        "timestamp": "2026-03-07T14:29:48Z",
+        "sha256": "c3d4e5f6a7b890abcdef1234567890abcdef1234567890abcdef1234567890abc"
+      }
+    ],
+    "CC6.6": [
+      {
+        "category": "Network",
+        "type": "network-policy-coverage",
+        "description": "NetworkPolicy coverage: 18 policies across 9 namespaces",
+        "data": {
+          "totalPolicies": 18,
+          "namespaceSummaries": [
+            {
+              "namespace": "production",
+              "policyCount": 4,
+              "hasIngress": true,
+              "hasEgress": true
+            },
+            {
+              "namespace": "api",
+              "policyCount": 3,
+              "hasIngress": true,
+              "hasEgress": true
+            },
+            {
+              "namespace": "workers",
+              "policyCount": 2,
+              "hasIngress": true,
+              "hasEgress": false
+            },
+            {
+              "namespace": "data",
+              "policyCount": 3,
+              "hasIngress": true,
+              "hasEgress": true
+            },
+            {
+              "namespace": "monitoring",
+              "policyCount": 2,
+              "hasIngress": true,
+              "hasEgress": false
+            },
+            {
+              "namespace": "logging",
+              "policyCount": 1,
+              "hasIngress": true,
+              "hasEgress": false
+            },
+            {
+              "namespace": "kube-system",
+              "policyCount": 1,
+              "hasIngress": true,
+              "hasEgress": false
+            },
+            {
+              "namespace": "cert-manager",
+              "policyCount": 1,
+              "hasIngress": false,
+              "hasEgress": true
+            },
+            {
+              "namespace": "ingress-nginx",
+              "policyCount": 1,
+              "hasIngress": true,
+              "hasEgress": true
+            }
+          ]
+        },
+        "timestamp": "2026-03-07T14:29:49Z",
+        "sha256": "d4e5f6a7b8c90abcdef1234567890abcdef1234567890abcdef1234567890abcd"
+      },
+      {
+        "category": "Network",
+        "type": "default-deny-status",
+        "description": "Default-deny status: 7 of 12 namespaces have default-deny policies",
+        "data": {
+          "totalNamespaces": 12,
+          "namespacesWithDeny": 7,
+          "namespacesWithoutDeny": [
+            "staging",
+            "dev",
+            "monitoring",
+            "logging",
+            "default"
+          ]
+        },
+        "timestamp": "2026-03-07T14:29:49Z",
+        "sha256": "e5f6a7b8c9d0abcdef1234567890abcdef1234567890abcdef1234567890abcde"
+      }
+    ],
+    "CC6.7": [
+      {
+        "category": "Encryption",
+        "type": "encryption-tls",
+        "description": "Encryption: etcd not found (managed cluster)",
+        "data": {
+          "etcdFound": false,
+          "certFileSet": false,
+          "clientCertAuth": false,
+          "peerCertFileSet": false,
+          "trustedCASet": false
+        },
+        "timestamp": "2026-03-07T14:29:50Z",
+        "sha256": "a7b8c9d0e1f2abcdef1234567890abcdef1234567890abcdef1234567890abcde0"
+      }
+    ],
+    "CC7.1": [
+      {
+        "category": "Audit",
+        "type": "audit-logging",
+        "description": "Audit logging: API server not found (managed cluster)",
+        "data": {
+          "apiServerFound": false
+        },
+        "timestamp": "2026-03-07T14:29:50Z",
+        "sha256": "f6a7b8c9d0e1abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      }
+    ],
+    "CC7.4": [
+      {
+        "category": "Audit",
+        "type": "audit-logging",
+        "description": "Audit logging: API server not found (managed cluster)",
+        "data": {
+          "apiServerFound": false
+        },
+        "timestamp": "2026-03-07T14:29:50Z",
+        "sha256": "f6a7b8c9d0e1abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      }
+    ],
+    "CC8.1": [
+      {
+        "category": "Encryption",
+        "type": "encryption-tls",
+        "description": "Encryption: etcd not found (managed cluster)",
+        "data": {
+          "etcdFound": false,
+          "certFileSet": false,
+          "clientCertAuth": false,
+          "peerCertFileSet": false,
+          "trustedCASet": false
+        },
+        "timestamp": "2026-03-07T14:29:50Z",
+        "sha256": "a7b8c9d0e1f2abcdef1234567890abcdef1234567890abcdef1234567890abcde0"
+      }
+    ]
+  },
+  "ControlNarratives": {
+    "A1.1": {
+      "CapacitySummary": "The organization maintains and monitors processing capacity through Kubernetes resource management controls that prevent resource exhaustion and ensure fair scheduling across workloads. all containers have CPU and memory limits defined.",
+      "GovernanceDetails": "Capacity management gaps identified: ResourceQuotas (namespace-level aggregate limits) and LimitRanges (default container constraints) are not fully configured across all namespaces.",
+      "Findings": null,
+      "AssessmentStatement": "Assessment: PASS — 2 checks passing."
+    },
+    "A1.2": {
+      "AvailabilitySummary": "The organization implements environmental protections to maintain workload availability and ensure controlled degradation during maintenance and failure scenarios. critical workloads run multiple replicas.",
+      "ResilienceDetails": "Workload resilience gaps identified: PodDisruptionBudgets (controlled disruption during maintenance), liveness probes (self-healing of unhealthy containers), and readiness probes (traffic management during startup and degradation) are not fully deployed across audited workloads.",
+      "Findings": [
+        {
+          "CheckID": "WH-003",
+          "Severity": "MEDIUM",
+          "Message": "4 containers missing health probes"
+        },
+        {
+          "CheckID": "WH-005",
+          "Severity": "MEDIUM",
+          "Message": "3 multi-replica deployments lack PDBs"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 5 checks passing and 2 checks failing."
+    },
+    "CC5.1": {
+      "TechControlSummary": "The organization selects and develops technology control activities through Kubernetes Pod Security Standards (PSS) and admission controllers. PSS provides three graduated security profiles — Privileged, Baseline, and Restricted — that enforce container security boundaries at the namespace level. Admission controllers serve as automated policy enforcement gates, validating workload configurations against these standards before deployment and preventing non-compliant resources from being created in the cluster.",
+      "PSSDetails": "",
+      "Findings": null,
+      "AssessmentStatement": "Assessment: PASS — 7 checks passing."
+    },
+    "CC5.2": {
+      "PolicySummary": "The organization deploys control activities through Pod Security Standards, which establish the expected security posture for workloads and are enforced by admission controllers at deployment time. Audit policy configuration should be reviewed to ensure comprehensive logging of security-relevant API operations, as this provides the procedural record of control enforcement.",
+      "Findings": null,
+      "AssessmentStatement": "Assessment: PASS — 5 checks passing."
+    },
+    "CC6.1": {
+      "AccessControlSummary": "The organization enforces logical access controls through Kubernetes Role-Based Access Control (RBAC), which provides granular permission management across all cluster resources. The RBAC configuration comprises 47 ClusterRoles and 23 ClusterRoleBindings. Access to the cluster-admin role, which grants unrestricted administrative privileges, is restricted to 2 authorized bindings: system:masters (Group) and break-glass-admin (User).",
+      "ScopingSummary": "",
+      "TokenMountSummary": "Service account credential exposure is controlled across all 12 audited namespaces. Automatic mounting of service account tokens is disabled, preventing unintended credential availability to workloads that do not require Kubernetes API access.",
+      "AuthSummary": "",
+      "Findings": [
+        {
+          "CheckID": "CIS-5.1.3",
+          "Severity": "HIGH",
+          "Message": "2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access"
+        },
+        {
+          "CheckID": "RBAC-3",
+          "Severity": "HIGH",
+          "Message": "2 ClusterRoles use wildcard: legacy-admin, dev-full-access"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 16 checks passing and 2 checks failing."
+    },
+    "CC6.2": {
+      "ProvisioningSummary": "The organization manages system credential provisioning through Kubernetes service accounts and role-based access bindings. Prior to granting access, users and automated workloads are assigned dedicated service accounts with permissions scoped to their operational requirements.",
+      "TokenSummary": "",
+      "Findings": null,
+      "AssessmentStatement": "Assessment: PASS — 4 checks passing."
+    },
+    "CC6.3": {
+      "ScopingSummary": "The organization enforces role-based access and least privilege through Kubernetes RBAC, which assigns permissions based on operational roles rather than individual identity. Access permissions are scoped to minimize the impact of compromised credentials: 80% of role bindings (93 of 116) are restricted to specific namespaces rather than granted cluster-wide.",
+      "WildcardSummary": "All ClusterRoles specify explicit resource and verb permissions. No wildcard (*) grants were identified, confirming that access is scoped to the minimum necessary for each role's function.",
+      "Findings": [
+        {
+          "CheckID": "CIS-5.1.3",
+          "Severity": "HIGH",
+          "Message": "2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access"
+        },
+        {
+          "CheckID": "RBAC-2",
+          "Severity": "HIGH",
+          "Message": "3 overly permissive role bindings found"
+        },
+        {
+          "CheckID": "RBAC-3",
+          "Severity": "HIGH",
+          "Message": "2 ClusterRoles use wildcard: legacy-admin, dev-full-access"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 5 checks passing and 3 checks failing."
+    },
+    "CC6.6": {
+      "CoverageSummary": "The organization implements network segmentation controls through Kubernetes NetworkPolicies to restrict lateral movement between workloads and protect against threats from sources outside system boundaries. The cluster enforces 18 NetworkPolicies across 12 namespaces, providing ingress and egress traffic controls that limit network communication to explicitly authorized paths.",
+      "DefaultDenySummary": "Default-deny policies establish a zero-trust baseline in 7 namespaces of 12, ensuring that only explicitly authorized network connections are permitted in those namespaces.",
+      "GapSummary": "Namespaces without default-deny policies: staging, dev, monitoring, logging, and default.",
+      "Findings": [
+        {
+          "CheckID": "CIS-5.3.2",
+          "Severity": "HIGH",
+          "Message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+        },
+        {
+          "CheckID": "NSA-NS-3",
+          "Severity": "HIGH",
+          "Message": "2 namespaces allow unrestricted egress"
+        },
+        {
+          "CheckID": "IH-002",
+          "Severity": "HIGH",
+          "Message": "2 namespaces without egress policies"
+        },
+        {
+          "CheckID": "NG-002",
+          "Severity": "MEDIUM",
+          "Message": "4 namespaces without LimitRanges"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 8 checks passing and 4 checks failing."
+    },
+    "CC6.7": {
+      "TLSSummary": "The organization restricts data transmission through encrypted channels for all Kubernetes API communications. As a managed cluster, TLS termination and certificate management for the API server are handled by the cloud provider, ensuring encrypted communication between clients and the control plane.",
+      "EtcdSummary": "The etcd data store is managed by the cloud provider and is not directly accessible. Encryption in transit for the data store is an inherited control from the provider's infrastructure.",
+      "Findings": null,
+      "AssessmentStatement": "Assessment: PASS — 6 checks passing."
+    },
+    "CC6.8": {
+      "SecurityPosture": "The organization implements controls to prevent the introduction of unauthorized or malicious software through Kubernetes Pod Security Standards and container security contexts. However, 1 container currently has in privileged mode, which grants full access to the host's resources and should be evaluated for necessity.",
+      "HardeningDetails": "Additional container hardening measures include: containers run as non-root users; Linux capabilities are dropped to the minimum required set; Seccomp profiles restrict available system calls.",
+      "Findings": [
+        {
+          "CheckID": "CIS-5.2.3",
+          "Severity": "CRITICAL",
+          "Message": "1 privileged container: monitoring/node-exporter"
+        },
+        {
+          "CheckID": "CIS-5.2.1",
+          "Severity": "CRITICAL",
+          "Message": "4 containers allow privilege escalation in namespace: production"
+        },
+        {
+          "CheckID": "NSA-PS-4",
+          "Severity": "CRITICAL",
+          "Message": "4 containers allow privilege escalation"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 22 checks passing and 3 checks failing."
+    },
+    "CC7.1": {
+      "AuditLoggingSummary": "The organization maintains a continuous audit trail of all cluster infrastructure events to support anomaly detection and forensic analysis. As a managed Kubernetes cluster, audit logging is provided by the cloud provider's control plane, which captures API server requests, authentication events, and authorization decisions. The organization supplements provider-managed audit logging with runtime monitoring of workload configurations and security policy compliance through automated benchmark scanning.",
+      "ConfigDetails": "",
+      "Findings": [
+        {
+          "CheckID": "CIS-5.2.3",
+          "Severity": "CRITICAL",
+          "Message": "1 privileged container: monitoring/node-exporter"
+        },
+        {
+          "CheckID": "CIS-5.3.2",
+          "Severity": "HIGH",
+          "Message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 12 checks passing and 2 checks failing."
+    },
+    "CC7.2": {
+      "MonitoringSummary": "The organization monitors system components and their operation for anomalies through automated security scanning and workload health monitoring. A centralized compliance scanning system provides a consolidated view of the cluster's security posture, covering privileged container detection, network policy enforcement, workload health probes, and resource utilization. Automated scans assess 7 control points across these domains, providing ongoing visibility into configuration drift and security baseline deviations.",
+      "Findings": [
+        {
+          "CheckID": "CIS-5.2.3",
+          "Severity": "CRITICAL",
+          "Message": "1 privileged container: monitoring/node-exporter"
+        },
+        {
+          "CheckID": "CIS-5.3.2",
+          "Severity": "HIGH",
+          "Message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+        },
+        {
+          "CheckID": "WH-003",
+          "Severity": "MEDIUM",
+          "Message": "4 containers missing health probes"
+        },
+        {
+          "CheckID": "WH-005",
+          "Severity": "MEDIUM",
+          "Message": "3 multi-replica deployments lack PDBs"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 3 checks passing and 4 checks failing."
+    },
+    "CC7.3": {
+      "EvaluationSummary": "The organization evaluates detected security events to determine whether they could result in a failure to meet its security objectives. Automated compliance scanning provides a centralized security dashboard with findings aggregated by severity, enabling the security team to prioritize investigation and response. Each finding includes the specific resource, namespace, and configuration detail that triggered the detection, supporting rapid triage and root cause analysis.",
+      "Findings": [
+        {
+          "CheckID": "CIS-5.2.3",
+          "Severity": "CRITICAL",
+          "Message": "1 privileged container: monitoring/node-exporter"
+        },
+        {
+          "CheckID": "CIS-5.3.2",
+          "Severity": "HIGH",
+          "Message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 1 check passing and 2 checks failing."
+    },
+    "CC7.4": {
+      "IncidentReadiness": "The organization maintains incident response readiness through continuous audit logging of all Kubernetes API operations, providing the forensic trail necessary to identify, evaluate, and respond to security incidents. Audit records capture the identity of actors, actions performed, resources affected, and timestamps, enabling the incident response team to reconstruct event sequences during investigation. Automated compliance scanning supplements the audit trail by continuously monitoring for configuration drift and security policy violations that may indicate an active incident or attempted compromise.",
+      "Findings": null,
+      "AssessmentStatement": "Assessment: PASS — 2 checks passing."
+    },
+    "CC7.5": {
+      "RecoverySummary": "The organization implements recovery controls to restore normal operations after security incidents. Kubernetes provides declarative state management through its reconciliation loop, which continuously drives the cluster toward the desired state defined in resource specifications. This self-healing capability automatically restarts failed containers, reschedules workloads from unhealthy nodes, and restores configuration state from the cluster's persistent data store. Audit log retention policies ensure that forensic records are preserved to support post-incident analysis and process improvement.",
+      "Findings": null,
+      "AssessmentStatement": "Assessment: PASS — 2 checks passing."
+    },
+    "CC8.1": {
+      "ChangeControlSummary": "The organization enforces change management controls through infrastructure-as-code practices and image provenance verification. However, 1 container currently has secrets exposed through environment variables. Environment variable secrets are visible in pod specifications and process listings; migrating to Kubernetes Secrets or an external secrets manager reduces this exposure.",
+      "SupplyChainSummary": "Supply chain integrity controls are in place: container images are pinned to immutable digests, preventing unauthorized image substitution; Software Bill of Materials (SBOM) attestations provide supply chain transparency for deployed artifacts.",
+      "EncryptionSummary": "",
+      "Findings": [
+        {
+          "CheckID": "CIS-5.1.2",
+          "Severity": "HIGH",
+          "Message": "3 roles grant get/list/watch on secrets: dev-team, monitoring, ci-deploy"
+        },
+        {
+          "CheckID": "CIS-5.4.1",
+          "Severity": "MEDIUM",
+          "Message": "8 pods reference secrets via environment variables"
+        }
+      ],
+      "AssessmentStatement": "Assessment: PARTIAL — 4 checks passing and 2 checks failing."
+    }
+  },
+  "ControlVerificationCommands": {
+    "CC5.1": [
+      {
+        "description": "Show Pod Security Standard labels per namespace",
+        "command": "kubectl get namespaces -o json | jq '.items[] | {name: .metadata.name, pss: (.metadata.labels | with_entries(select(.key | startswith(\"pod-security\"))))}'"
+      }
+    ],
+    "CC5.2": [
+      {
+        "description": "Verify audit logging configuration (self-hosted)",
+        "command": "kubectl get pods -n kube-system -l component=kube-apiserver -o json | jq '.items[0].spec.containers[0].args[] | select(startswith(\"--audit-\"))'"
+      },
+      {
+        "description": "Verify EKS audit logging status",
+        "command": "aws eks describe-cluster --name CLUSTER_NAME --query 'cluster.logging.clusterLogging[?contains(types, `audit`)]'"
+      }
+    ],
+    "CC6.1": [
+      {
+        "description": "Count cluster-admin bindings",
+        "command": "kubectl get clusterrolebindings -o json | jq '[.items[] | select(.roleRef.name==\"cluster-admin\")] | length'"
+      },
+      {
+        "description": "List cluster-admin binding details",
+        "command": "kubectl get clusterrolebindings -o json | jq '.items[] | select(.roleRef.name==\"cluster-admin\") | {name: .metadata.name, subjects: .subjects}'"
+      },
+      {
+        "description": "List service accounts with auto-mount enabled",
+        "command": "kubectl get serviceaccounts -A -o json | jq '.items[] | select(.automountServiceAccountToken == true) | {ns: .metadata.namespace, name: .metadata.name}'"
+      }
+    ],
+    "CC6.3": [
+      {
+        "description": "List ClusterRoles with wildcard permissions",
+        "command": "kubectl get clusterroles -o json | jq '.items[] | select(.rules[]? | (.resources[]? == \"*\") or (.verbs[]? == \"*\")) | .metadata.name'"
+      },
+      {
+        "description": "Count namespace-scoped vs cluster-scoped bindings",
+        "command": "echo \"RoleBindings: $(kubectl get rolebindings -A --no-headers 2\u003e/dev/null | wc -l), ClusterRoleBindings: $(kubectl get clusterrolebindings --no-headers 2\u003e/dev/null | wc -l)\""
+      }
+    ],
+    "CC6.6": [
+      {
+        "description": "List namespaces without NetworkPolicies",
+        "command": "kubectl get namespaces -o json | jq -r '.items[].metadata.name' | while read ns; do count=$(kubectl get networkpolicies -n \"$ns\" --no-headers 2\u003e/dev/null | wc -l); [ \"$count\" -eq 0 ] \u0026\u0026 echo \"$ns\"; done"
+      },
+      {
+        "description": "Count NetworkPolicies per namespace",
+        "command": "kubectl get networkpolicies -A --no-headers 2\u003e/dev/null | awk '{print $1}' | sort | uniq -c | sort -rn"
+      },
+      {
+        "description": "Check for default-deny NetworkPolicies",
+        "command": "kubectl get networkpolicies -A -o json | jq '.items[] | select(.spec.podSelector == {} and (.spec.ingress | length) == 0 and (.spec.egress | length) == 0) | {ns: .metadata.namespace, name: .metadata.name}'"
+      }
+    ],
+    "CC6.7": [
+      {
+        "description": "Verify API server TLS configuration",
+        "command": "kubectl get pods -n kube-system -l component=kube-apiserver -o json | jq '.items[0].spec.containers[0].args[] | select(startswith(\"--tls-\"))'"
+      },
+      {
+        "description": "Verify etcd TLS configuration",
+        "command": "kubectl get pods -n kube-system -l component=etcd -o json | jq '.items[0].spec.containers[0].args[] | select(startswith(\"--cert-\") or startswith(\"--peer-cert-\") or startswith(\"--trusted-ca-\"))'"
+      }
+    ],
+    "CC6.8": [
+      {
+        "description": "Show Pod Security Standard labels per namespace",
+        "command": "kubectl get namespaces -o json | jq '.items[] | {name: .metadata.name, pss: (.metadata.labels | with_entries(select(.key | startswith(\"pod-security\"))))}'"
+      }
+    ],
+    "CC7.1": [
+      {
+        "description": "Verify audit logging configuration (self-hosted)",
+        "command": "kubectl get pods -n kube-system -l component=kube-apiserver -o json | jq '.items[0].spec.containers[0].args[] | select(startswith(\"--audit-\"))'"
+      },
+      {
+        "description": "Verify EKS audit logging status",
+        "command": "aws eks describe-cluster --name CLUSTER_NAME --query 'cluster.logging.clusterLogging[?contains(types, `audit`)]'"
+      }
+    ],
+    "CC7.4": [
+      {
+        "description": "Verify audit logging configuration (self-hosted)",
+        "command": "kubectl get pods -n kube-system -l component=kube-apiserver -o json | jq '.items[0].spec.containers[0].args[] | select(startswith(\"--audit-\"))'"
+      },
+      {
+        "description": "Verify EKS audit logging status",
+        "command": "aws eks describe-cluster --name CLUSTER_NAME --query 'cluster.logging.clusterLogging[?contains(types, `audit`)]'"
+      }
+    ],
+    "CC8.1": [
+      {
+        "description": "Verify API server TLS configuration",
+        "command": "kubectl get pods -n kube-system -l component=kube-apiserver -o json | jq '.items[0].spec.containers[0].args[] | select(startswith(\"--tls-\"))'"
+      },
+      {
+        "description": "Verify etcd TLS configuration",
+        "command": "kubectl get pods -n kube-system -l component=etcd -o json | jq '.items[0].spec.containers[0].args[] | select(startswith(\"--cert-\") or startswith(\"--peer-cert-\") or startswith(\"--trusted-ca-\"))'"
+      }
+    ]
+  },
+  "ControlRemediations": {
+    "A1.2": [
+      {
+        "checkId": "WH-003",
+        "checkName": "Define liveness and readiness probes",
+        "severity": "MEDIUM",
+        "description": "Define liveness and readiness probes on all containers to enable self-healing and traffic management.",
+        "dryRunCmd": "varax remediate --check WH-003 --dry-run"
+      },
+      {
+        "checkId": "WH-005",
+        "checkName": "Create PodDisruptionBudgets",
+        "severity": "MEDIUM",
+        "description": "Create PodDisruptionBudgets for multi-replica workloads to ensure controlled maintenance and upgrades.",
+        "dryRunCmd": "varax remediate --check WH-005 --dry-run"
+      }
+    ],
+    "CC6.1": [
+      {
+        "checkId": "CIS-5.1.3",
+        "checkName": "Minimize wildcard use in Roles and ClusterRoles",
+        "severity": "HIGH",
+        "description": "Remove wildcard (*) permissions from Roles and ClusterRoles. Specify explicit resources and verbs.",
+        "dryRunCmd": "varax remediate --check CIS-5.1.3 --dry-run"
+      },
+      {
+        "checkId": "RBAC-3",
+        "checkName": "Remove wildcard permissions",
+        "severity": "HIGH",
+        "description": "Remove wildcard permissions from all Roles and ClusterRoles.",
+        "dryRunCmd": "varax remediate --check RBAC-3 --dry-run"
+      }
+    ],
+    "CC6.3": [
+      {
+        "checkId": "CIS-5.1.3",
+        "checkName": "Minimize wildcard use in Roles and ClusterRoles",
+        "severity": "HIGH",
+        "description": "Remove wildcard (*) permissions from Roles and ClusterRoles. Specify explicit resources and verbs.",
+        "dryRunCmd": "varax remediate --check CIS-5.1.3 --dry-run"
+      },
+      {
+        "checkId": "RBAC-2",
+        "checkName": "Verify least-privilege role bindings",
+        "severity": "HIGH",
+        "description": "Apply least-privilege RBAC policies. Replace broad permissions with specific resource/verb combinations.",
+        "dryRunCmd": "varax remediate --check RBAC-2 --dry-run"
+      },
+      {
+        "checkId": "RBAC-3",
+        "checkName": "Remove wildcard permissions",
+        "severity": "HIGH",
+        "description": "Remove wildcard permissions from all Roles and ClusterRoles.",
+        "dryRunCmd": "varax remediate --check RBAC-3 --dry-run"
+      }
+    ],
+    "CC6.6": [
+      {
+        "checkId": "CIS-5.3.2",
+        "checkName": "Ensure every namespace has a NetworkPolicy",
+        "severity": "HIGH",
+        "description": "Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.",
+        "dryRunCmd": "varax remediate --check CIS-5.3.2 --dry-run"
+      },
+      {
+        "checkId": "NSA-NS-3",
+        "checkName": "Restrict external network access",
+        "severity": "HIGH",
+        "description": "Restrict external network access to only required pods using egress NetworkPolicies.",
+        "dryRunCmd": "varax remediate --check NSA-NS-3 --dry-run"
+      },
+      {
+        "checkId": "IH-002",
+        "checkName": "Create egress NetworkPolicies",
+        "severity": "HIGH",
+        "description": "Create egress NetworkPolicies per namespace to restrict outbound traffic to only required destinations.",
+        "dryRunCmd": "varax remediate --check IH-002 --dry-run"
+      },
+      {
+        "checkId": "NG-002",
+        "checkName": "Create LimitRanges",
+        "severity": "MEDIUM",
+        "description": "Create LimitRanges in each namespace to set default container resource constraints.",
+        "dryRunCmd": "varax remediate --check NG-002 --dry-run"
+      }
+    ],
+    "CC6.8": [
+      {
+        "checkId": "CIS-5.2.3",
+        "checkName": "Minimize privileged containers",
+        "severity": "CRITICAL",
+        "description": "Do not allow privileged containers. Set privileged: false in security contexts.",
+        "dryRunCmd": "varax remediate --check CIS-5.2.3 --dry-run"
+      },
+      {
+        "checkId": "CIS-5.2.1",
+        "checkName": "Ensure allowPrivilegeEscalation is set to false",
+        "severity": "CRITICAL",
+        "description": "Set allowPrivilegeEscalation: false in pod security contexts.",
+        "dryRunCmd": "varax remediate --check CIS-5.2.1 --dry-run"
+      },
+      {
+        "checkId": "NSA-PS-4",
+        "checkName": "Prevent privilege escalation",
+        "severity": "CRITICAL",
+        "description": "Prevent privilege escalation with allowPrivilegeEscalation: false.",
+        "dryRunCmd": "varax remediate --check NSA-PS-4 --dry-run"
+      }
+    ],
+    "CC7.1": [
+      {
+        "checkId": "CIS-5.2.3",
+        "checkName": "Minimize privileged containers",
+        "severity": "CRITICAL",
+        "description": "Do not allow privileged containers. Set privileged: false in security contexts.",
+        "dryRunCmd": "varax remediate --check CIS-5.2.3 --dry-run"
+      },
+      {
+        "checkId": "CIS-5.3.2",
+        "checkName": "Ensure every namespace has a NetworkPolicy",
+        "severity": "HIGH",
+        "description": "Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.",
+        "dryRunCmd": "varax remediate --check CIS-5.3.2 --dry-run"
+      }
+    ],
+    "CC7.2": [
+      {
+        "checkId": "CIS-5.2.3",
+        "checkName": "Minimize privileged containers",
+        "severity": "CRITICAL",
+        "description": "Do not allow privileged containers. Set privileged: false in security contexts.",
+        "dryRunCmd": "varax remediate --check CIS-5.2.3 --dry-run"
+      },
+      {
+        "checkId": "CIS-5.3.2",
+        "checkName": "Ensure every namespace has a NetworkPolicy",
+        "severity": "HIGH",
+        "description": "Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.",
+        "dryRunCmd": "varax remediate --check CIS-5.3.2 --dry-run"
+      },
+      {
+        "checkId": "WH-003",
+        "checkName": "Define liveness and readiness probes",
+        "severity": "MEDIUM",
+        "description": "Define liveness and readiness probes on all containers to enable self-healing and traffic management.",
+        "dryRunCmd": "varax remediate --check WH-003 --dry-run"
+      },
+      {
+        "checkId": "WH-005",
+        "checkName": "Create PodDisruptionBudgets",
+        "severity": "MEDIUM",
+        "description": "Create PodDisruptionBudgets for multi-replica workloads to ensure controlled maintenance and upgrades.",
+        "dryRunCmd": "varax remediate --check WH-005 --dry-run"
+      }
+    ],
+    "CC7.3": [
+      {
+        "checkId": "CIS-5.2.3",
+        "checkName": "Minimize privileged containers",
+        "severity": "CRITICAL",
+        "description": "Do not allow privileged containers. Set privileged: false in security contexts.",
+        "dryRunCmd": "varax remediate --check CIS-5.2.3 --dry-run"
+      },
+      {
+        "checkId": "CIS-5.3.2",
+        "checkName": "Ensure every namespace has a NetworkPolicy",
+        "severity": "HIGH",
+        "description": "Apply NetworkPolicies to restrict egress traffic from pods to only required destinations.",
+        "dryRunCmd": "varax remediate --check CIS-5.3.2 --dry-run"
+      }
+    ],
+    "CC8.1": [
+      {
+        "checkId": "CIS-5.1.2",
+        "checkName": "Minimize access to secrets",
+        "severity": "HIGH",
+        "description": "Restrict access to Kubernetes secrets with fine-grained RBAC policies per namespace.",
+        "dryRunCmd": "varax remediate --check CIS-5.1.2 --dry-run"
+      },
+      {
+        "checkId": "CIS-5.4.1",
+        "checkName": "Prefer using Secrets as files over environment variables",
+        "severity": "MEDIUM",
+        "description": "Use Kubernetes secrets or an external secrets manager instead of environment variables for sensitive data.",
+        "dryRunCmd": "varax remediate --check CIS-5.4.1 --dry-run"
+      }
+    ]
+  },
+  "PassControls": 21,
+  "FailControls": 0,
+  "PartialControls": 27,
+  "NAControls": 0,
+  "CriticalCount": 9,
+  "HighCount": 21,
+  "TopFindings": [
+    {
+      "id": "CIS-5.2.3",
+      "name": "Minimize privileged containers",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "5.2",
+      "severity": "CRITICAL",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "Container runs in privileged mode",
+          "resource": {
+            "kind": "Pod",
+            "name": "node-exporter-k8s2x",
+            "namespace": "monitoring"
+          },
+          "field": "securityContext.privileged",
+          "value": "true"
+        }
+      ],
+      "message": "1 privileged container: monitoring/node-exporter"
+    },
+    {
+      "id": "NSA-PS-4",
+      "name": "Prevent privilege escalation",
+      "description": "",
+      "benchmark": "NSA-CISA",
+      "section": "Pod Security",
+      "severity": "CRITICAL",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "Privilege escalation allowed",
+          "resource": {
+            "kind": "Pod",
+            "name": "api-server-7f8d9",
+            "namespace": "production"
+          }
+        },
+        {
+          "message": "Privilege escalation allowed",
+          "resource": {
+            "kind": "Pod",
+            "name": "worker-3a2b1",
+            "namespace": "production"
+          }
+        },
+        {
+          "message": "Privilege escalation allowed",
+          "resource": {
+            "kind": "Pod",
+            "name": "scheduler-9c4d5",
+            "namespace": "production"
+          }
+        },
+        {
+          "message": "Privilege escalation allowed",
+          "resource": {
+            "kind": "Pod",
+            "name": "migrator-1e6f7",
+            "namespace": "production"
+          }
+        }
+      ],
+      "message": "4 containers allow privilege escalation"
+    },
+    {
+      "id": "CIS-5.2.1",
+      "name": "Ensure allowPrivilegeEscalation is set to false",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "5.2",
+      "severity": "CRITICAL",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "allowPrivilegeEscalation not set to false",
+          "resource": {
+            "kind": "Pod",
+            "name": "api-server-7f8d9",
+            "namespace": "production"
+          },
+          "field": "securityContext.allowPrivilegeEscalation"
+        },
+        {
+          "message": "allowPrivilegeEscalation not set to false",
+          "resource": {
+            "kind": "Pod",
+            "name": "worker-3a2b1",
+            "namespace": "production"
+          },
+          "field": "securityContext.allowPrivilegeEscalation"
+        },
+        {
+          "message": "allowPrivilegeEscalation not set to false",
+          "resource": {
+            "kind": "Pod",
+            "name": "scheduler-9c4d5",
+            "namespace": "production"
+          },
+          "field": "securityContext.allowPrivilegeEscalation"
+        },
+        {
+          "message": "allowPrivilegeEscalation not set to false",
+          "resource": {
+            "kind": "Pod",
+            "name": "migrator-1e6f7",
+            "namespace": "production"
+          },
+          "field": "securityContext.allowPrivilegeEscalation"
+        }
+      ],
+      "message": "4 containers allow privilege escalation in namespace: production"
+    },
+    {
+      "id": "NSA-NS-3",
+      "name": "Restrict external network access",
+      "description": "",
+      "benchmark": "NSA-CISA",
+      "section": "Network Security",
+      "severity": "HIGH",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "No egress NetworkPolicy",
+          "resource": {
+            "kind": "Namespace",
+            "name": "staging"
+          }
+        },
+        {
+          "message": "No egress NetworkPolicy",
+          "resource": {
+            "kind": "Namespace",
+            "name": "dev"
+          }
+        }
+      ],
+      "message": "2 namespaces allow unrestricted egress"
+    },
+    {
+      "id": "CIS-5.3.2",
+      "name": "Ensure every namespace has a NetworkPolicy",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "5.3",
+      "severity": "HIGH",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "No NetworkPolicy defined",
+          "resource": {
+            "kind": "Namespace",
+            "name": "staging"
+          }
+        },
+        {
+          "message": "No NetworkPolicy defined",
+          "resource": {
+            "kind": "Namespace",
+            "name": "dev"
+          }
+        },
+        {
+          "message": "No NetworkPolicy defined",
+          "resource": {
+            "kind": "Namespace",
+            "name": "monitoring"
+          }
+        }
+      ],
+      "message": "3 namespaces missing NetworkPolicy: staging, dev, monitoring"
+    },
+    {
+      "id": "CIS-5.1.2",
+      "name": "Minimize access to secrets",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "5.1",
+      "severity": "HIGH",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "Role grants secret access",
+          "resource": {
+            "kind": "Role",
+            "name": "dev-team",
+            "namespace": "development"
+          }
+        },
+        {
+          "message": "Role grants secret access",
+          "resource": {
+            "kind": "Role",
+            "name": "monitoring",
+            "namespace": "monitoring"
+          }
+        },
+        {
+          "message": "Role grants secret access",
+          "resource": {
+            "kind": "Role",
+            "name": "ci-deploy",
+            "namespace": "ci"
+          }
+        }
+      ],
+      "message": "3 roles grant get/list/watch on secrets: dev-team, monitoring, ci-deploy"
+    },
+    {
+      "id": "CIS-5.1.3",
+      "name": "Minimize wildcard use in Roles and ClusterRoles",
+      "description": "",
+      "benchmark": "CIS",
+      "section": "5.1",
+      "severity": "HIGH",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "Wildcard resource permission",
+          "resource": {
+            "kind": "ClusterRole",
+            "name": "legacy-admin"
+          },
+          "field": "rules[0].resources",
+          "value": "*"
+        },
+        {
+          "message": "Wildcard resource permission",
+          "resource": {
+            "kind": "ClusterRole",
+            "name": "dev-full-access"
+          },
+          "field": "rules[0].resources",
+          "value": "*"
+        }
+      ],
+      "message": "2 ClusterRoles use wildcard resources: legacy-admin, dev-full-access"
+    },
+    {
+      "id": "RBAC-2",
+      "name": "Verify least-privilege role bindings",
+      "description": "",
+      "benchmark": "RBAC",
+      "section": "Access Control",
+      "severity": "HIGH",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "Overly permissive binding",
+          "resource": {
+            "kind": "ClusterRoleBinding",
+            "name": "dev-cluster-admin"
+          }
+        },
+        {
+          "message": "Overly permissive binding",
+          "resource": {
+            "kind": "ClusterRoleBinding",
+            "name": "ci-admin-binding"
+          }
+        },
+        {
+          "message": "Overly permissive binding",
+          "resource": {
+            "kind": "RoleBinding",
+            "name": "staging-admin",
+            "namespace": "staging"
+          }
+        }
+      ],
+      "message": "3 overly permissive role bindings found"
+    },
+    {
+      "id": "RBAC-3",
+      "name": "Remove wildcard permissions",
+      "description": "",
+      "benchmark": "RBAC",
+      "section": "Access Control",
+      "severity": "HIGH",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "Wildcard permissions",
+          "resource": {
+            "kind": "ClusterRole",
+            "name": "legacy-admin"
+          },
+          "field": "rules[0].resources",
+          "value": "*"
+        },
+        {
+          "message": "Wildcard permissions",
+          "resource": {
+            "kind": "ClusterRole",
+            "name": "dev-full-access"
+          },
+          "field": "rules[0].verbs",
+          "value": "*"
+        }
+      ],
+      "message": "2 ClusterRoles use wildcard: legacy-admin, dev-full-access"
+    },
+    {
+      "id": "IH-002",
+      "name": "Create egress NetworkPolicies",
+      "description": "",
+      "benchmark": "Ingress",
+      "section": "Egress",
+      "severity": "HIGH",
+      "status": "FAIL",
+      "evidence": [
+        {
+          "message": "No egress NetworkPolicy",
+          "resource": {
+            "kind": "Namespace",
+            "name": "staging"
+          }
+        },
+        {
+          "message": "No egress NetworkPolicy",
+          "resource": {
+            "kind": "Namespace",
+            "name": "dev"
+          }
+        }
+      ],
+      "message": "2 namespaces without egress policies"
+    }
+  ],
+  "SkipRecommendations": false
+}

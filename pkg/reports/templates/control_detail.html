@@ -29,16 +29,57 @@
         </div>
     </div>
 
+    {{if .Narrative}}
+    <div class="section">
+        <div class="narrative-section">
+            <h4>Control Implementation</h4>
+            {{range .Narrative}}
+            {{if .Items}}
+            <div class="narrative-findings">
+                {{if .Body}}<strong>{{.Body}}</strong>{{end}}
+                <ul>
+                {{range .Items}}<li>{{.}}</li>
+                {{end}}
+                </ul>
+            </div>
+            {{else if .Body}}<p>{{.Body}}</p>{{end}}
+            {{end}}
+        </div>
+    </div>
+    {{end}}
+
     {{if .Evidence}}
     <div class="section">
-        <h2 class="section-title">Evidence</h2>
+        <h2 class="section-title">Evidence Artifacts</h2>
         {{range .Evidence}}
         <div class="evidence-item">
             <div class="evidence-category">{{.Category}}</div>
             <div>{{.Description}}</div>
+            {{if or .SHA256 (not .Timestamp.IsZero)}}
+            <div class="evidence-meta">
+                {{if not .Timestamp.IsZero}}Captured: {{formatTimestamp .Timestamp}}{{end}}
+                {{if and .SHA256 (not .Timestamp.IsZero)}}&nbsp;|&nbsp;{{end}}
+                {{if .SHA256}}SHA256: <code>{{.SHA256}}</code>{{end}}
+            </div>
+            {{end}}
             <div class="evidence-data">{{jsonPretty .Data}}</div>
         </div>
         {{end}}
+    </div>
+    {{end}}
+
+    {{if .VerificationCommands}}
+    <div class="section">
+        <div class="verification-section">
+            <h4>Auditor Verification Commands</h4>
+            <p class="verification-note">Run these commands against the assessed cluster to independently verify the evidence above.</p>
+            {{range .VerificationCommands}}
+            <div class="verification-item">
+                <div class="verification-desc">{{.Description}}</div>
+                <div class="evidence-data">{{.Command}}</div>
+            </div>
+            {{end}}
+        </div>
     </div>
     {{end}}
 

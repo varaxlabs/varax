@@ -470,6 +470,163 @@ tbody tr:hover {
     border-left: 2px solid #e2e8f0;
 }
 
+/* Assessment Period */
+.assessment-period {
+    font-size: 16px;
+    color: #2d3748;
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+.assessment-meta {
+    font-size: 13px;
+    color: #718096;
+    margin-top: 6px;
+}
+
+/* Scope Section */
+.scope-box {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 10px 0;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.scope-included {
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+}
+
+.scope-excluded {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+}
+
+/* Evidence Meta (SHA256 + Timestamp) */
+.evidence-meta {
+    font-size: 11px;
+    color: #718096;
+    font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+    margin: 6px 0;
+    padding: 4px 8px;
+    background: #edf2f7;
+    border-radius: 3px;
+}
+
+.evidence-meta code {
+    font-size: 11px;
+    color: #4a5568;
+    word-break: break-all;
+}
+
+/* Narrative Section */
+.narrative-section {
+    margin: 16px 0;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #1a365d;
+    border-radius: 4px;
+}
+
+.narrative-section h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a365d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.narrative-section p {
+    margin-bottom: 10px;
+    line-height: 1.7;
+}
+
+.narrative-findings {
+    background: #fffff0;
+    border: 1px solid #fefcbf;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 12px 0;
+}
+
+.narrative-assessment {
+    font-size: 13px;
+    padding: 8px 12px;
+    background: #f7fafc;
+    border-radius: 4px;
+    margin-top: 12px;
+}
+
+/* Verification Commands */
+.verification-section {
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+    border-radius: 6px;
+}
+
+.verification-section h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #276749;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.verification-note {
+    font-size: 12px;
+    color: #4a5568;
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.verification-item {
+    margin-bottom: 10px;
+}
+
+.verification-desc {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+/* Remediation YAML */
+.remediation-yaml-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a365d;
+    margin: 10px 0 4px;
+}
+
+.remediation-export {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #f7fafc;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #4a5568;
+}
+
+/* Provider Managed Enhanced */
+.provider-managed-note ul {
+    margin: 8px 0 8px 20px;
+    font-size: 13px;
+}
+
+.provider-managed-note li {
+    margin-bottom: 4px;
+}
+
+.provider-managed-note p {
+    margin: 8px 0;
+}
+
 /* Print Styles */
 @media print {
     @page {
@@ -525,6 +682,28 @@ tbody tr:hover {
 
     .practice-card {
         page-break-inside: avoid;
+    }
+
+    .narrative-section {
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .verification-section {
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .scope-box {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .evidence-meta {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
     p, li {

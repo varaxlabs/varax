@@ -6,6 +6,7 @@ import (
 
 	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
+	"github.com/varax/operator/pkg/reports/narrative"
 )
 
 // ReportType identifies which report template to render.
@@ -49,6 +50,13 @@ type ReportData struct {
 
 	// History (optional, for trend analysis)
 	HistoricalScores []float64
+	HistoricalTimes  []time.Time
+
+	// Assessment period (computed from scan history)
+	PeriodStart time.Time
+	PeriodEnd   time.Time
+	ScanCount   int
+	PeriodDays  int
 
 	// Scan metadata
 	ScanDuration         string
@@ -64,6 +72,15 @@ type ReportData struct {
 
 	// Per-control evidence (populated by generator)
 	ControlEvidence map[string][]evidence.EvidenceItem
+
+	// Per-control narratives (populated by generator)
+	ControlNarratives map[string]narrative.ControlNarrative
+
+	// Per-control verification commands (populated by generator)
+	ControlVerificationCommands map[string][]VerificationCommand
+
+	// Per-control structured remediations (populated by generator)
+	ControlRemediations map[string][]RemediationDetail
 
 	// Computed fields populated by the generator
 	PassControls    int
@@ -106,6 +123,8 @@ func ParseReportFormat(s string) (ReportFormat, error) {
 
 // ControlDetail is the template context for per-control evidence pages.
 type ControlDetail struct {
-	Control  models.ControlResult
-	Evidence []evidence.EvidenceItem
+	Control              models.ControlResult
+	Evidence             []evidence.EvidenceItem
+	Narrative            []narrative.NarrativeSection
+	VerificationCommands []VerificationCommand
 }

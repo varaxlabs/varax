@@ -9,7 +9,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-type encryptionSnapshot struct {
+// EncryptionSnapshot contains TLS and encryption configuration from etcd and the API server.
+type EncryptionSnapshot struct {
 	EtcdFound       bool   `json:"etcdFound"`
 	CertFileSet     bool   `json:"certFileSet"`
 	ClientCertAuth  bool   `json:"clientCertAuth"`
@@ -20,7 +21,7 @@ type encryptionSnapshot struct {
 
 func collectEncryption(ctx context.Context, client kubernetes.Interface) ([]EvidenceItem, error) {
 	now := time.Now().UTC()
-	snap := encryptionSnapshot{}
+	snap := EncryptionSnapshot{}
 
 	pods, err := client.CoreV1().Pods("kube-system").List(ctx, metav1.ListOptions{})
 	if err != nil {
@@ -63,8 +64,10 @@ func collectEncryption(ctx context.Context, client kubernetes.Interface) ([]Evid
 
 	return []EvidenceItem{{
 		Category:    "Encryption",
+		Type:        "encryption-tls",
 		Description: desc,
 		Data:        snap,
 		Timestamp:   now,
+		SHA256:      computeSHA256(snap),
 	}}, nil
 }
