@@ -41,10 +41,6 @@ func findingsSection(findings []Finding) NarrativeSection {
 	}
 
 	// Detect corroborating findings: group by normalized message content
-	type group struct {
-		checkIDs []string
-		message  string
-	}
 	groups := groupCorroboratingFindings(findings)
 
 	var items []string

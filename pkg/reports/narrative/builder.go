@@ -1,8 +1,6 @@
 package narrative
 
 import (
-	"fmt"
-
 	"github.com/varax/operator/pkg/evidence"
 	"github.com/varax/operator/pkg/models"
 )
@@ -68,45 +66,6 @@ func buildForControl(cr models.ControlResult, items []evidence.EvidenceItem) Con
 		return BuildA1_2(extractA1_2Raw(cr, items))
 	default:
 		return nil
-	}
-}
-
-// buildMinimal creates a simple narrative for controls with thin scan coverage.
-func buildMinimal(cr models.ControlResult, focus string) ControlNarrative {
-	passCount, failCount := countCheckStatus(cr)
-	status := statusLabel(passCount, failCount)
-
-	summary := fmt.Sprintf(
-		"This cluster was assessed for %s. %s %s mapped to this control, with %s.",
-		focus,
-		pluralize(len(cr.CheckResults), "check", "checks"),
-		verbAgreement(len(cr.CheckResults)),
-		countByStatus(passCount, failCount),
-	)
-
-	var findingsText string
-	if failCount > 0 {
-		findings := extractFindings(cr)
-		if len(findings) > 0 {
-			lines := make([]string, len(findings))
-			for i, f := range findings {
-				lines[i] = fmt.Sprintf("%s: %s", f.CheckID, f.Message)
-			}
-			findingsText = "Findings requiring attention: " + joinList(lines) + "."
-		}
-	}
-
-	assessment := fmt.Sprintf("Assessment: %s — %s.", status, countByStatus(passCount, failCount))
-
-	if findingsText != "" {
-		return MinimalNarrative{
-			Summary:    summary + " " + findingsText,
-			Assessment: assessment,
-		}
-	}
-	return MinimalNarrative{
-		Summary:    summary,
-		Assessment: assessment,
 	}
 }
 
