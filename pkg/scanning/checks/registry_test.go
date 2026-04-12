@@ -84,3 +84,43 @@ func TestRegisterRBAC_RegistersExpectedCount(t *testing.T) {
 	assert.Equal(t, 4, len(checks), "RegisterRBAC should register 4 checks")
 	assertCheckMetadata(t, checks, "RBAC")
 }
+
+func TestRegisterAPIHygiene_RegistersChecks(t *testing.T) {
+	registry := scanning.NewRegistry()
+	RegisterAPIHygiene(registry)
+	checks := registry.All()
+	assert.GreaterOrEqual(t, len(checks), 1)
+	assertCheckMetadata(t, checks, BenchmarkAPIHygiene)
+}
+
+func TestRegisterIngressHardening_RegistersChecks(t *testing.T) {
+	registry := scanning.NewRegistry()
+	RegisterIngressHardening(registry)
+	checks := registry.All()
+	assert.GreaterOrEqual(t, len(checks), 1)
+	assertCheckMetadata(t, checks, BenchmarkIngressHardening)
+}
+
+func TestRegisterNamespaceGov_RegistersChecks(t *testing.T) {
+	registry := scanning.NewRegistry()
+	RegisterNamespaceGov(registry)
+	checks := registry.All()
+	assert.GreaterOrEqual(t, len(checks), 1)
+	assertCheckMetadata(t, checks, BenchmarkNamespaceGov)
+}
+
+func TestRegisterSupplyChain_RegistersChecks(t *testing.T) {
+	registry := scanning.NewRegistry()
+	RegisterSupplyChain(registry)
+	checks := registry.All()
+	assert.GreaterOrEqual(t, len(checks), 1)
+	assertCheckMetadata(t, checks, BenchmarkSupplyChain)
+}
+
+func TestRegisterWorkloadHygiene_RegistersChecks(t *testing.T) {
+	registry := scanning.NewRegistry()
+	RegisterWorkloadHygiene(registry)
+	checks := registry.All()
+	assert.GreaterOrEqual(t, len(checks), 1)
+	assertCheckMetadata(t, checks, BenchmarkWorkloadHygiene)
+}
